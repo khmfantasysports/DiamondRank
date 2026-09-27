@@ -167,7 +167,9 @@ async function loadRankings() {
   }, 0);
 
   el.heroCount.textContent = state.rows.length.toLocaleString();
-  el.headerStatus.textContent = latest ? `${state.rows.length} hitters • ${formatDate(latest)}` : `${state.rows.length} hitters`;
+  el.headerStatus.textContent = latest
+    ? `${state.rows.length} hitters • ${new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(new Date(latest))}`
+    : `${state.rows.length} hitters`;
   el.dataUpdated.textContent = latest ? formatDate(latest) : "Update time unavailable";
 
   setLoading(false);
@@ -246,27 +248,26 @@ function renderBoard() {
   el.more.hidden = state.visible >= state.filtered.length;
 }
 
-function metricCard(label, value, explanation = "") {
+function clamp(value, min, max) {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : min;
+}
+
+function scoreRing(label, value, size = "small") {
+  const score = clamp(value, 0, 99.9);
   return `
-    <div class="metric-card">
+    <div class="score-ring-card ${size}">
+      <div class="score-ring" style="--meter:${score}" role="img" aria-label="${escapeHtml(label)} ${number1(value)} out of 99.9">
+        <div class="score-ring-center">
+          <strong>${number1(value)}</strong>
+        </div>
+      </div>
       <span>${escapeHtml(label)}</span>
-      <strong>${number1(value)}</strong>
-      ${explanation ? `<p>${escapeHtml(explanation)}</p>` : ""}
     </div>
   `;
 }
 
-function metricCardText(label, value, explanation = "") {
-  return `
-    <div class="metric-card">
-      <span>${escapeHtml(label)}</span>
-      <strong>${escapeHtml(value ?? "—")}</strong>
-      ${explanation ? `<p>${escapeHtml(explanation)}</p>` : ""}
-    </div>
-  `;
-}
-
-function traitRows(player) {
+function fantasyTraitMeters(player) {
   const traits = [
     ["Production", player.production_score],
     ["Power", player.power_score],
@@ -275,71 +276,135 @@ function traitRows(player) {
     ["Speed", player.speed_score]
   ];
 
-  return traits.map(([label, value]) => {
-    const score = Math.max(0, Math.min(99.9, Number(value) || 0));
-    return `
-      <div class="trait-row">
-        <div class="trait-label">${label}</div>
-        <div class="trait-track"><div class="trait-fill" style="width:${score}%"></div></div>
-        <div class="trait-value">${number1(value)}</div>
-      </div>
-    `;
-  }).join("");
+  return `
+    <div class="trait-meter-grid">
+      ${traits.map(([label, value]) => scoreRing(label, value, "trait")).join("")}
+    </div>
+  `;
 }
 
-function shapeCards(player) {
+function contextPosition(z) {
+  const value = Number(z);
+  if (!Number.isFinite(value)) return 50;
+  return clamp(50 + (value * 18), 5, 95);
+}
+
+function contextMeters(player) {
   const dims = Array.isArray(player.hitting_shape?.profile_dimensions)
     ? player.hitting_shape.profile_dimensions
     : [];
 
-  if (!dims.length) return `<div class="shape-card"><p>No hitting-shape dimensions available.</p></div>`;
+  if (!dims.length) {
+    return `<div class="compact-empty">No context-relative hitting profile is available.</div>`;
+  }
 
-  return dims.map((item) => `
-    <div class="shape-card">
-      <div class="topline">
-        <strong>${escapeHtml(item.label || item.key || "Trait")}</strong>
-        <em>${escapeHtml(item.band_label || "")}</em>
-      </div>
-      <p>Raw: ${item.raw_value ?? "—"}${item.z == null ? "" : ` • Context z ${number1(item.z)}`}</p>
+  return `
+    <div class="context-meter-grid">
+      ${dims.map((item) => {
+        const z = Number(item.z);
+        const position = contextPosition(z);
+        const band = item.band_label || "Context comparison";
+        return `
+          <div class="context-meter" role="img" aria-label="${escapeHtml(item.label || item.key || "Trait")}: ${escapeHtml(band)}, context z ${number1(z)}">
+            <strong>${escapeHtml(item.label || item.key || "Trait")}</strong>
+            <div class="context-track" style="--dot:${position}%">
+              <span class="context-mid"></span>
+              <span class="context-dot"></span>
+            </div>
+            <div class="context-scale"><span>−</span><b>${number1(z)}</b><span>+</span></div>
+            <small>${item.raw_value == null ? "—" : escapeHtml(item.raw_value)}</small>
+          </div>
+        `;
+      }).join("")}
     </div>
-  `).join("");
+  `;
 }
 
-function battedBallSummary(player) {
+function sprayProfile(player) {
   const items = Array.isArray(player.hitting_shape?.batted_ball_shape)
     ? player.hitting_shape.batted_ball_shape
     : [];
 
   if (!items.length) return "";
-  return `<div class="profile-meta">${items.map((item) => `<span class="chip">${escapeHtml(item.label || item.key)} ${item.pct == null ? "—" : `${number1(item.pct)}%`}</span>`).join("")}</div>`;
+
+  const byKey = Object.fromEntries(items.map((item) => [String(item.key || "").toUpperCase(), item]));
+  const pull = Number(byKey.PULL?.pct);
+  const center = Number(byKey.CENTER?.pct);
+  const oppo = Number(byKey.OPPO?.pct);
+  const gb = Number(byKey.GB?.pct);
+  const fb = Number(byKey.FB?.pct);
+  const ld = Number(byKey.LD?.pct);
+
+  const alpha = (value) => {
+    if (!Number.isFinite(value)) return 0.12;
+    return Math.min(0.82, 0.16 + (value / 100) * 1.25);
+  };
+
+  return `
+    <div class="spray-layout">
+      <div class="spray-card">
+        <div class="spray-title">
+          <strong>Spray tendency</strong>
+          <span>Pull / Center / Oppo</span>
+        </div>
+        <svg class="spray-field" viewBox="0 0 300 180" role="img" aria-label="Spray tendency: Pull ${number1(pull)} percent, Center ${number1(center)} percent, Opposite ${number1(oppo)} percent">
+          <path class="field-outline" d="M150 164 L34 70 Q150 -6 266 70 Z"></path>
+          <path class="field-zone" style="fill-opacity:${alpha(pull)}" d="M150 164 L34 70 Q72 28 113 32 Z"></path>
+          <path class="field-zone" style="fill-opacity:${alpha(center)}" d="M150 164 L113 32 Q150 15 187 32 Z"></path>
+          <path class="field-zone" style="fill-opacity:${alpha(oppo)}" d="M150 164 L187 32 Q228 28 266 70 Z"></path>
+          <path class="infield" d="M150 145 L124 119 L150 93 L176 119 Z"></path>
+          <circle class="home-plate-dot" cx="150" cy="157" r="4"></circle>
+          <text x="72" y="68" text-anchor="middle">PULL</text>
+          <text x="150" y="39" text-anchor="middle">CENTER</text>
+          <text x="228" y="68" text-anchor="middle">OPPO</text>
+          <text class="spray-pct" x="72" y="87" text-anchor="middle">${number1(pull)}%</text>
+          <text class="spray-pct" x="150" y="58" text-anchor="middle">${number1(center)}%</text>
+          <text class="spray-pct" x="228" y="87" text-anchor="middle">${number1(oppo)}%</text>
+        </svg>
+      </div>
+
+      <div class="contact-type-grid">
+        ${contactTypeCell("GB", "Ground ball", gb)}
+        ${contactTypeCell("FB", "Fly ball", fb)}
+        ${contactTypeCell("LD", "Line drive", ld)}
+      </div>
+    </div>
+  `;
 }
 
-function standoutSummary(player) {
-  const standout = Array.isArray(player.hitting_shape?.standout_traits)
-    ? player.hitting_shape.standout_traits
-    : [];
-  const watchout = Array.isArray(player.hitting_shape?.watchout_traits)
-    ? player.hitting_shape.watchout_traits
-    : [];
+function contactTypeCell(shortLabel, label, value) {
+  const pct = clamp(value, 0, 100);
+  return `
+    <div class="contact-type" role="img" aria-label="${escapeHtml(label)} ${number1(value)} percent">
+      <div class="contact-type-head"><strong>${shortLabel}</strong><span>${number1(value)}%</span></div>
+      <div class="contact-type-track"><i style="width:${pct}%"></i></div>
+    </div>
+  `;
+}
 
-  const pills = [
-    ...standout.map((x) => `<span class="chip emphasis">Standout: ${escapeHtml(x.label || x.key)}</span>`),
-    ...watchout.map((x) => `<span class="chip">Watch: ${escapeHtml(x.label || x.key)}</span>`)
-  ];
-
-  return pills.length ? `<div class="profile-meta">${pills.join("")}</div>` : "";
+function compactSwStr(player) {
+  return `
+    <div class="compact-stat-strip">
+      <div><small>SwStr</small><strong>${percentFromRate(player.swstr_pct)}</strong></div>
+      <div><small>Contact pctile</small><strong>${number1(player.swstr_contact_percentile)}</strong></div>
+      <div><small>Shape</small><strong class="text-value">${escapeHtml(player.swstr_shape_label || "—")}</strong></div>
+      <div><small>Sample</small><strong class="text-value">${integer(player.swstr_source_pa)} PA</strong></div>
+    </div>
+  `;
 }
 
 function compCards(player) {
   const comps = Array.isArray(player.top_comparables) ? player.top_comparables : [];
-  if (!comps.length) return `<div class="comp-card"><div class="comp-name">No comparables available.</div></div>`;
+  if (!comps.length) return `<div class="compact-empty">No comparables available.</div>`;
 
   return comps.map((comp, index) => `
     <div class="comp-card">
-      <div class="comp-rank">MATCH ${index + 1}</div>
+      <div class="comp-topline">
+        <span>Match ${index + 1}</span>
+        <strong>${number1(comp.match_score)}</strong>
+      </div>
       <div class="comp-name">${escapeHtml(comp.name || "Historical comp")}</div>
       <div class="comp-meta">${escapeHtml(comp.level || "—")} • ${escapeHtml(comp.season || "—")} • ${escapeHtml(comp.position || comp.position_family || "—")}</div>
-      <div class="comp-score"><strong>${number1(comp.match_score)}</strong><span>Match score</span></div>
     </div>
   `).join("");
 }
@@ -365,6 +430,7 @@ function explanationDetails(player) {
 }
 
 async function openPlayer(playerId) {
+  el.dialogContent.innerHTML = "";
   el.dialogContent.hidden = true;
   el.dialogLoading.hidden = false;
   el.dialogLoading.textContent = "Loading player profile…";
@@ -387,7 +453,6 @@ async function openPlayer(playerId) {
 
 function renderPlayer(player) {
   const evidence = player.current_evidence || {};
-  const exp = player.plain_language_explanations || {};
   const positionRankLabel = `${positionFamilyLabel(player.position_family)} #${integer(player.position_rank)}`;
 
   el.dialogContent.innerHTML = `
@@ -397,64 +462,62 @@ function renderPlayer(player) {
         <h2 id="dialogPlayerName">${escapeHtml(player.full_name)}</h2>
         <div class="profile-score"><strong>${number1(player.overall_score)}</strong><span>DiamondRank</span></div>
       </div>
-      <div class="profile-meta">
+      <div class="profile-meta compact-meta">
         <span class="chip">${escapeHtml(player.primary_position || player.position_family || "—")}</span>
         <span class="chip">${escapeHtml(player.current_org || "FA")}</span>
         <span class="chip">${escapeHtml(player.current_level || "—")}</span>
         <span class="chip">Age ${number1(player.age)}</span>
         <span class="chip emphasis">${escapeHtml(confidenceLabel(player.ranking_confidence))}</span>
       </div>
-      ${player.sample_size_warning ? `<div class="warning">${escapeHtml(player.sample_size_warning)}</div>` : ""}
+      ${player.sample_size_warning ? `<div class="warning compact-warning">${escapeHtml(player.sample_size_warning)}</div>` : ""}
     </div>
 
-    <section class="profile-section">
-      <div class="section-title-row"><h3>Core scores</h3><span>0.0–99.9 relative scale</span></div>
-      <div class="score-grid">
-        ${metricCard("Opportunity", player.opportunity_score, exp.opportunity)}
-        ${metricCard("Fantasy Profile", player.fantasy_profile_score, exp.fantasy_profile)}
+    <section class="profile-section compact-section">
+      <div class="section-title-row"><h3>Core scores</h3><span>Relative 0.0–99.9</span></div>
+      <div class="core-ring-grid">
+        ${scoreRing("Opportunity", player.opportunity_score, "core")}
+        ${scoreRing("Fantasy profile", player.fantasy_profile_score, "core")}
       </div>
     </section>
 
-    <section class="profile-section">
-      <div class="section-title-row"><h3>Fantasy skill profile</h3><span>Age- and level-adjusted</span></div>
-      <div class="trait-list">${traitRows(player)}</div>
+    <section class="profile-section compact-section">
+      <div class="section-title-row"><h3>Fantasy skill profile</h3><span>Age + level adjusted</span></div>
+      ${fantasyTraitMeters(player)}
     </section>
 
-    <section class="profile-section">
+    <section class="profile-section compact-section">
       <div class="section-title-row"><h3>Current evidence</h3><span>${escapeHtml(evidence.sample_tier || "—")} sample</span></div>
-      <div class="profile-meta">
-        <span class="chip">Season ${escapeHtml(evidence.season || "—")}</span>
-        <span class="chip">${escapeHtml(evidence.level || player.current_level || "—")}</span>
-        <span class="chip">${integer(evidence.pa)} PA</span>
-        <span class="chip">Age ${number1(evidence.age ?? player.age)}</span>
+      <div class="evidence-grid">
+        <div><small>Season</small><strong>${escapeHtml(evidence.season || "—")}</strong></div>
+        <div><small>Level</small><strong>${escapeHtml(evidence.level || player.current_level || "—")}</strong></div>
+        <div><small>PA</small><strong>${integer(evidence.pa)}</strong></div>
+        <div><small>Age</small><strong>${number1(evidence.age ?? player.age)}</strong></div>
       </div>
     </section>
 
-    <section class="profile-section">
-      <div class="section-title-row"><h3>Hitting shape</h3><span>Context-relative evidence</span></div>
-      ${standoutSummary(player)}
-      <div class="shape-grid" style="margin-top:10px">${shapeCards(player)}</div>
-      ${battedBallSummary(player)}
+    <section class="profile-section compact-section">
+      <div class="section-title-row"><h3>Context profile</h3><span>Left = below • right = above</span></div>
+      ${contextMeters(player)}
     </section>
 
-    <section class="profile-section">
-      <div class="section-title-row"><h3>SwStr evidence</h3><span>Supporting evidence only</span></div>
-      <div class="swstr-grid">
-        ${metricCardText("Raw SwStr", percentFromRate(player.swstr_pct))}
-        ${metricCard("Contact percentile", player.swstr_contact_percentile)}
-        <div class="metric-card"><span>Shape label</span><strong style="font-size:18px">${escapeHtml(player.swstr_shape_label || "—")}</strong><p>${integer(player.swstr_source_pa)} PA • ${escapeHtml(player.swstr_sample_tier || "—")}</p></div>
-      </div>
-      ${player.swstr_sample_warning ? `<div class="warning">${escapeHtml(player.swstr_sample_warning)}</div>` : ""}
-      ${exp.swstr ? `<p style="margin:10px 1px 0;color:var(--muted);font-size:11px;line-height:1.55">${escapeHtml(exp.swstr)}</p>` : ""}
+    <section class="profile-section compact-section">
+      <div class="section-title-row"><h3>Batted-ball shape</h3><span>Current evidence</span></div>
+      ${sprayProfile(player)}
     </section>
 
-    <section class="profile-section">
+    <section class="profile-section compact-section">
+      <div class="section-title-row"><h3>SwStr evidence</h3><span>Supporting only</span></div>
+      ${compactSwStr(player)}
+      ${player.swstr_sample_warning ? `<div class="warning compact-warning">${escapeHtml(player.swstr_sample_warning)}</div>` : ""}
+    </section>
+
+    <section class="profile-section compact-section">
       <div class="section-title-row"><h3>Historical comparables</h3><span>Top 3 refined-position matches</span></div>
       <div class="comps">${compCards(player)}</div>
     </section>
 
-    <section class="profile-section">
-      <div class="section-title-row"><h3>What the scores mean</h3><span>Methodology notes</span></div>
+    <section class="profile-section compact-section">
+      <div class="section-title-row"><h3>What the scores mean</h3><span>Methodology</span></div>
       <div class="explanation-list">${explanationDetails(player)}</div>
     </section>
   `;
@@ -462,6 +525,7 @@ function renderPlayer(player) {
   el.dialogLoading.hidden = true;
   el.dialogContent.hidden = false;
 }
+
 
 el.search.addEventListener("input", () => {
   state.visible = PAGE_SIZE;
