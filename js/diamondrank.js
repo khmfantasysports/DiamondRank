@@ -432,15 +432,47 @@ function contactTypeCell(shortLabel, label, value, tone = "") {
 }
 
 function compactSwStr(player) {
+  const percentile = clamp(player.swstr_contact_percentile, 0, 99.9);
+  const tone = scoreToneClass(percentile);
+
   return `
-    <div class="compact-stat-strip">
-      <div><small>SwStr</small><strong>${percentFromRate(player.swstr_pct)}</strong></div>
-      <div class="${scoreToneClass(player.swstr_contact_percentile)}"><small>Bat-to-ball</small><strong>${number1(player.swstr_contact_percentile)}</strong></div>
-      <div><small>Shape</small><strong class="text-value">${escapeHtml(player.swstr_shape_label || "—")}</strong></div>
-      <div><small>Sample</small><strong class="text-value">${integer(player.swstr_source_pa)} PA</strong></div>
+    <div class="swing-miss-card ${tone}">
+      <div class="swing-miss-head">
+        <div>
+          <small>Bat-to-ball percentile</small>
+          <strong>${number1(player.swstr_contact_percentile)}</strong>
+        </div>
+        <span>${escapeHtml(player.swstr_shape_label || "—")}</span>
+      </div>
+
+      <div class="batball-meter" style="--batball:${percentile}%">
+        <i></i>
+      </div>
+      <div class="batball-scale">
+        <span>More swing & miss</span>
+        <span>More contact</span>
+      </div>
+
+      <div class="swing-miss-facts">
+        <div>
+          <small>Swinging-strike rate</small>
+          <strong>${percentFromRate(player.swstr_pct)}</strong>
+          <span>Lower is better</span>
+        </div>
+        <div>
+          <small>Sample</small>
+          <strong>${integer(player.swstr_source_pa)} PA</strong>
+          <span>${escapeHtml(player.swstr_sample_tier || "—")}</span>
+        </div>
+      </div>
+
+      <p class="swing-miss-explainer">
+        ${percentFromRate(player.swstr_pct)} of pitches resulted in a swing-and-miss. The percentile shows how that bat-to-ball result compares with the current context.
+      </p>
     </div>
   `;
 }
+
 
 function compCards(player) {
   const comps = Array.isArray(player.top_comparables) ? player.top_comparables : [];
@@ -450,7 +482,6 @@ function compCards(player) {
     <div class="comp-card">
       <div class="comp-topline">
         <span>Match ${index + 1}</span>
-        <strong class="${scoreToneClass(comp.match_score)}">${number1(comp.match_score)}</strong>
       </div>
       <div class="comp-name">${escapeHtml(comp.name || "Historical comp")}</div>
       <div class="comp-meta">${escapeHtml(comp.level || "—")} • ${escapeHtml(comp.season || "—")} • ${escapeHtml(comp.position || comp.position_family || "—")}</div>
@@ -522,15 +553,8 @@ function renderPlayer(player) {
     </div>
 
     <section class="profile-section compact-section">
-      <div class="section-title-row"><h3>Core scores</h3><span>Relative 0.0–99.9</span></div>
-      <div class="score-colour-key" aria-label="Score colour scale">
-        <span><i style="background:var(--score-red)"></i>&lt;50</span>
-        <span><i style="background:var(--score-orange)"></i>50–64</span>
-        <span><i style="background:var(--score-gold)"></i>65–74</span>
-        <span><i style="background:var(--score-lime)"></i>75–84</span>
-        <span><i style="background:var(--score-emerald)"></i>85+</span>
-      </div>
-      <div class="core-ring-grid" style="margin-top:8px">
+      <div class="section-title-row"><h3>Core scores</h3></div>
+      <div class="core-ring-grid">
         ${scoreRing("Opportunity", player.opportunity_score, "core")}
         ${scoreRing("Fantasy profile", player.fantasy_profile_score, "core")}
       </div>
@@ -562,13 +586,13 @@ function renderPlayer(player) {
     </section>
 
     <section class="profile-section compact-section">
-      <div class="section-title-row"><h3>SwStr evidence</h3><span>Supporting only</span></div>
+      <div class="section-title-row"><h3>Swing & miss</h3><span>Bat-to-ball evidence</span></div>
       ${compactSwStr(player)}
       ${player.swstr_sample_warning ? `<div class="warning compact-warning">${escapeHtml(player.swstr_sample_warning)}</div>` : ""}
     </section>
 
     <section class="profile-section compact-section">
-      <div class="section-title-row"><h3>Historical comparables</h3><span>Top 3 refined-position matches</span></div>
+      <div class="section-title-row"><h3>Historical comparables</h3><span>Closest refined-position matches</span></div>
       <div class="comps">${compCards(player)}</div>
     </section>
 
