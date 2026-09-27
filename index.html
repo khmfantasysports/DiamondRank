@@ -26,7 +26,7 @@
         <div class="hero-copy">
           <p class="eyebrow">CURRENT HITTER BOARD</p>
           <h1>Prospect rankings with the evidence underneath.</h1>
-          <p class="hero-text">Overall rank, opportunity, fantasy skill profile, historical comparables and hitting-shape evidence — served from one current DiamondRank contract.</p>
+          <p class="hero-text">Overall rank, opportunity, fantasy profile, historical comparables and hitting-shape evidence.</p>
         </div>
         <div class="hero-stat" aria-label="Ranked hitter count">
           <span id="heroCount">—</span>
@@ -34,34 +34,13 @@
         </div>
       </section>
 
-      <section class="toolbar" aria-label="Leaderboard filters">
+      <section class="toolbar" id="leaderboardFilters" aria-label="Leaderboard filters">
         <label class="search-field">
           <span>Search</span>
           <input id="searchInput" type="search" autocomplete="off" placeholder="Player, org, position…" />
         </label>
 
-        <label>
-          <span>Position</span>
-          <select id="positionFilter">
-            <option value="">All positions</option>
-          </select>
-        </label>
-
-        <label>
-          <span>Organization</span>
-          <select id="orgFilter">
-            <option value="">All orgs</option>
-          </select>
-        </label>
-
-        <label>
-          <span>Level</span>
-          <select id="levelFilter">
-            <option value="">All levels</option>
-          </select>
-        </label>
-
-        <label>
+        <label class="sort-field">
           <span>Sort</span>
           <select id="sortSelect">
             <option value="rank">Overall Rank</option>
@@ -70,7 +49,33 @@
           </select>
         </label>
 
-        <button id="clearFilters" class="ghost-button" type="button">Clear</button>
+        <button id="mobileFilterToggle" class="filter-toggle" type="button" aria-expanded="false" aria-controls="leaderboardFilters">
+          Filters
+          <span id="activeFilterCount" hidden>0</span>
+        </button>
+
+        <label class="secondary-filter">
+          <span>Position</span>
+          <select id="positionFilter">
+            <option value="">All positions</option>
+          </select>
+        </label>
+
+        <label class="secondary-filter">
+          <span>Organization</span>
+          <select id="orgFilter">
+            <option value="">All orgs</option>
+          </select>
+        </label>
+
+        <label class="secondary-filter">
+          <span>Level</span>
+          <select id="levelFilter">
+            <option value="">All levels</option>
+          </select>
+        </label>
+
+        <button id="clearFilters" class="ghost-button secondary-filter" type="button">Clear filters</button>
       </section>
 
       <section class="board-panel" aria-labelledby="boardHeading">
