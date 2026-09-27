@@ -1330,3 +1330,158 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
   border-radius: 50%;
 }
 
+
+
+/* =========================================================
+   DiamondRank UI pass v5
+   - removes core score colour legend/range helper
+   - clearer Swing & Miss / bat-to-ball presentation
+   - hides legacy rank-based comp score until recalibrated
+   ========================================================= */
+
+.swing-miss-card {
+  --score-accent: var(--score-neutral);
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--score-accent) 20%, var(--border));
+  border-radius: 14px;
+  background: rgba(255,255,255,.012);
+}
+
+.swing-miss-card.tone-red { --score-accent: var(--score-red); }
+.swing-miss-card.tone-orange { --score-accent: var(--score-orange); }
+.swing-miss-card.tone-gold { --score-accent: var(--score-gold); }
+.swing-miss-card.tone-lime { --score-accent: var(--score-lime); }
+.swing-miss-card.tone-emerald { --score-accent: var(--score-emerald); }
+
+.swing-miss-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: end;
+}
+
+.swing-miss-head > div {
+  min-width: 0;
+}
+
+.swing-miss-head small,
+.swing-miss-facts small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.swing-miss-head strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--score-accent);
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+
+.swing-miss-head > span {
+  color: var(--score-accent);
+  font-size: 11px;
+  font-weight: 750;
+  text-align: right;
+}
+
+.batball-meter {
+  --batball: 50%;
+  position: relative;
+  height: 9px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--score-red) 50%, transparent),
+    color-mix(in srgb, var(--score-orange) 50%, transparent) 30%,
+    color-mix(in srgb, var(--score-gold) 45%, transparent) 50%,
+    color-mix(in srgb, var(--score-lime) 50%, transparent) 72%,
+    color-mix(in srgb, var(--score-emerald) 58%, transparent)
+  );
+}
+
+.batball-meter i {
+  position: absolute;
+  top: 50%;
+  left: var(--batball);
+  width: 13px;
+  height: 13px;
+  margin: -6.5px 0 0 -6.5px;
+  border: 2px solid #07110d;
+  border-radius: 50%;
+  background: var(--score-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--score-accent) 32%, transparent);
+}
+
+.batball-scale {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 5px;
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+.swing-miss-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.swing-miss-facts > div {
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255,255,255,.012);
+}
+
+.swing-miss-facts strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 18px;
+}
+
+.swing-miss-facts span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.swing-miss-explainer {
+  margin: 9px 1px 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.comp-topline {
+  min-height: 14px;
+}
+
+@media (max-width: 640px) {
+  .swing-miss-card {
+    padding: 10px;
+  }
+
+  .swing-miss-head strong {
+    font-size: 27px;
+  }
+
+  .swing-miss-head > span {
+    max-width: 120px;
+    font-size: 10px;
+  }
+
+  .swing-miss-facts strong {
+    font-size: 16px;
+  }
+}
