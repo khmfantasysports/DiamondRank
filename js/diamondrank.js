@@ -44,6 +44,9 @@ const el = {
   level: document.getElementById("levelFilter"),
   sort: document.getElementById("sortSelect"),
   clear: document.getElementById("clearFilters"),
+  toolbar: document.getElementById("leaderboardFilters"),
+  filterToggle: document.getElementById("mobileFilterToggle"),
+  activeFilterCount: document.getElementById("activeFilterCount"),
   board: document.getElementById("leaderboard"),
   loading: document.getElementById("loadingState"),
   error: document.getElementById("errorState"),
@@ -176,7 +179,20 @@ async function loadRankings() {
   applyFilters();
 }
 
+function activeFilterCount() {
+  return [el.position.value, el.org.value, el.level.value].filter(Boolean).length;
+}
+
+function updateFilterToggle() {
+  if (!el.filterToggle || !el.activeFilterCount) return;
+  const count = activeFilterCount();
+  el.activeFilterCount.textContent = String(count);
+  el.activeFilterCount.hidden = count === 0;
+  el.filterToggle.classList.toggle("has-active-filters", count > 0);
+}
+
 function applyFilters() {
+  updateFilterToggle();
   const q = el.search.value.trim().toLowerCase();
   const pos = el.position.value;
   const org = el.org.value;
@@ -238,9 +254,9 @@ function renderBoard() {
           <span class="confidence">${escapeHtml(confidenceLabel(row.ranking_confidence))}</span>
         </div>
       </div>
-      <div class="score-cell primary"><strong>${number1(row.overall_score)}</strong><span>Overall</span></div>
-      <div class="score-cell opportunity"><strong>${number1(row.opportunity_score)}</strong><span>Opportunity</span></div>
-      <div class="score-cell fantasy"><strong>${number1(row.fantasy_profile_score)}</strong><span>Fantasy</span></div>
+      <div class="score-cell primary ${scoreToneClass(row.overall_score)}"><strong>${number1(row.overall_score)}</strong><span>Overall</span></div>
+      <div class="score-cell opportunity ${scoreToneClass(row.opportunity_score)}"><strong>${number1(row.opportunity_score)}</strong><span>Opportunity</span></div>
+      <div class="score-cell fantasy ${scoreToneClass(row.fantasy_profile_score)}"><strong>${number1(row.fantasy_profile_score)}</strong><span>Fantasy</span></div>
       <div class="row-chevron" aria-hidden="true">›</div>
     </button>
   `).join("");
@@ -253,10 +269,30 @@ function clamp(value, min, max) {
   return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : min;
 }
 
+function scoreToneClass(value) {
+  const score = Number(value);
+  if (!Number.isFinite(score)) return "tone-neutral";
+  if (score >= 85) return "tone-emerald";
+  if (score >= 75) return "tone-lime";
+  if (score >= 65) return "tone-gold";
+  if (score >= 50) return "tone-orange";
+  return "tone-red";
+}
+
+function contextToneClass(value) {
+  const z = Number(value);
+  if (!Number.isFinite(z)) return "tone-neutral";
+  if (z >= 1.0) return "tone-emerald";
+  if (z >= 0.35) return "tone-lime";
+  if (z > -0.35) return "tone-gold";
+  if (z > -1.0) return "tone-orange";
+  return "tone-red";
+}
+
 function scoreRing(label, value, size = "small") {
   const score = clamp(value, 0, 99.9);
   return `
-    <div class="score-ring-card ${size}">
+    <div class="score-ring-card ${size} ${scoreToneClass(value)}">
       <div class="score-ring" style="--meter:${score}" role="img" aria-label="${escapeHtml(label)} ${number1(value)} out of 99.9">
         <div class="score-ring-center">
           <strong>${number1(value)}</strong>
@@ -289,6 +325,19 @@ function contextPosition(z) {
   return clamp(50 + (value * 18), 5, 95);
 }
 
+function contextRawLabel(item) {
+  const key = String(item?.key || "").toUpperCase();
+  const raw = Number(item?.raw_value);
+
+  if (!Number.isFinite(raw)) return "—";
+  if (key === "PRODUCTION") return `wRC+ ${raw.toFixed(1)}`;
+  if (key === "POWER") return `ISO ${raw.toFixed(3).replace(/^0/, "")}`;
+  if (key === "CONTACT") return `K% ${raw.toFixed(1)}`;
+  if (key === "DISCIPLINE") return `BB% ${raw.toFixed(1)}`;
+  if (key === "SPEED") return `Spd ${raw.toFixed(2)}`;
+  return String(item.raw_value);
+}
+
 function contextMeters(player) {
   const dims = Array.isArray(player.hitting_shape?.profile_dimensions)
     ? player.hitting_shape.profile_dimensions
@@ -305,14 +354,14 @@ function contextMeters(player) {
         const position = contextPosition(z);
         const band = item.band_label || "Context comparison";
         return `
-          <div class="context-meter" role="img" aria-label="${escapeHtml(item.label || item.key || "Trait")}: ${escapeHtml(band)}, context z ${number1(z)}">
+          <div class="context-meter ${contextToneClass(z)}" role="img" aria-label="${escapeHtml(item.label || item.key || "Trait")}: ${escapeHtml(band)}, context z ${number1(z)}">
             <strong>${escapeHtml(item.label || item.key || "Trait")}</strong>
             <div class="context-track" style="--dot:${position}%">
               <span class="context-mid"></span>
               <span class="context-dot"></span>
             </div>
             <div class="context-scale"><span>−</span><b>${number1(z)}</b><span>+</span></div>
-            <small>${item.raw_value == null ? "—" : escapeHtml(item.raw_value)}</small>
+            <small>${escapeHtml(contextRawLabel(item))}</small>
           </div>
         `;
       }).join("")}
@@ -349,9 +398,9 @@ function sprayProfile(player) {
         </div>
         <svg class="spray-field" viewBox="0 0 300 180" role="img" aria-label="Spray tendency: Pull ${number1(pull)} percent, Center ${number1(center)} percent, Opposite ${number1(oppo)} percent">
           <path class="field-outline" d="M150 164 L34 70 Q150 -6 266 70 Z"></path>
-          <path class="field-zone" style="fill-opacity:${alpha(pull)}" d="M150 164 L34 70 Q72 28 113 32 Z"></path>
-          <path class="field-zone" style="fill-opacity:${alpha(center)}" d="M150 164 L113 32 Q150 15 187 32 Z"></path>
-          <path class="field-zone" style="fill-opacity:${alpha(oppo)}" d="M150 164 L187 32 Q228 28 266 70 Z"></path>
+          <path class="field-zone spray-pull" style="fill-opacity:${alpha(pull)}" d="M150 164 L34 70 Q72 28 113 32 Z"></path>
+          <path class="field-zone spray-center" style="fill-opacity:${alpha(center)}" d="M150 164 L113 32 Q150 15 187 32 Z"></path>
+          <path class="field-zone spray-oppo" style="fill-opacity:${alpha(oppo)}" d="M150 164 L187 32 Q228 28 266 70 Z"></path>
           <path class="infield" d="M150 145 L124 119 L150 93 L176 119 Z"></path>
           <circle class="home-plate-dot" cx="150" cy="157" r="4"></circle>
           <text x="72" y="68" text-anchor="middle">PULL</text>
@@ -364,18 +413,18 @@ function sprayProfile(player) {
       </div>
 
       <div class="contact-type-grid">
-        ${contactTypeCell("GB", "Ground ball", gb)}
-        ${contactTypeCell("FB", "Fly ball", fb)}
-        ${contactTypeCell("LD", "Line drive", ld)}
+        ${contactTypeCell("GB", "Ground ball", gb, "ground")}
+        ${contactTypeCell("FB", "Fly ball", fb, "fly")}
+        ${contactTypeCell("LD", "Line drive", ld, "line")}
       </div>
     </div>
   `;
 }
 
-function contactTypeCell(shortLabel, label, value) {
+function contactTypeCell(shortLabel, label, value, tone = "") {
   const pct = clamp(value, 0, 100);
   return `
-    <div class="contact-type" role="img" aria-label="${escapeHtml(label)} ${number1(value)} percent">
+    <div class="contact-type ${escapeHtml(tone)}" role="img" aria-label="${escapeHtml(label)} ${number1(value)} percent">
       <div class="contact-type-head"><strong>${shortLabel}</strong><span>${number1(value)}%</span></div>
       <div class="contact-type-track"><i style="width:${pct}%"></i></div>
     </div>
@@ -386,7 +435,7 @@ function compactSwStr(player) {
   return `
     <div class="compact-stat-strip">
       <div><small>SwStr</small><strong>${percentFromRate(player.swstr_pct)}</strong></div>
-      <div><small>Contact pctile</small><strong>${number1(player.swstr_contact_percentile)}</strong></div>
+      <div class="${scoreToneClass(player.swstr_contact_percentile)}"><small>Bat-to-ball</small><strong>${number1(player.swstr_contact_percentile)}</strong></div>
       <div><small>Shape</small><strong class="text-value">${escapeHtml(player.swstr_shape_label || "—")}</strong></div>
       <div><small>Sample</small><strong class="text-value">${integer(player.swstr_source_pa)} PA</strong></div>
     </div>
@@ -401,7 +450,7 @@ function compCards(player) {
     <div class="comp-card">
       <div class="comp-topline">
         <span>Match ${index + 1}</span>
-        <strong>${number1(comp.match_score)}</strong>
+        <strong class="${scoreToneClass(comp.match_score)}">${number1(comp.match_score)}</strong>
       </div>
       <div class="comp-name">${escapeHtml(comp.name || "Historical comp")}</div>
       <div class="comp-meta">${escapeHtml(comp.level || "—")} • ${escapeHtml(comp.season || "—")} • ${escapeHtml(comp.position || comp.position_family || "—")}</div>
@@ -460,7 +509,7 @@ function renderPlayer(player) {
       <div class="profile-kicker">#${integer(player.overall_rank)} overall • ${escapeHtml(positionRankLabel)}</div>
       <div class="profile-title">
         <h2 id="dialogPlayerName">${escapeHtml(player.full_name)}</h2>
-        <div class="profile-score"><strong>${number1(player.overall_score)}</strong><span>DiamondRank</span></div>
+        <div class="profile-score ${scoreToneClass(player.overall_score)}"><strong>${number1(player.overall_score)}</strong><span>DiamondRank</span></div>
       </div>
       <div class="profile-meta compact-meta">
         <span class="chip">${escapeHtml(player.primary_position || player.position_family || "—")}</span>
@@ -474,7 +523,14 @@ function renderPlayer(player) {
 
     <section class="profile-section compact-section">
       <div class="section-title-row"><h3>Core scores</h3><span>Relative 0.0–99.9</span></div>
-      <div class="core-ring-grid">
+      <div class="score-colour-key" aria-label="Score colour scale">
+        <span><i style="background:var(--score-red)"></i>&lt;50</span>
+        <span><i style="background:var(--score-orange)"></i>50–64</span>
+        <span><i style="background:var(--score-gold)"></i>65–74</span>
+        <span><i style="background:var(--score-lime)"></i>75–84</span>
+        <span><i style="background:var(--score-emerald)"></i>85+</span>
+      </div>
+      <div class="core-ring-grid" style="margin-top:8px">
         ${scoreRing("Opportunity", player.opportunity_score, "core")}
         ${scoreRing("Fantasy profile", player.fantasy_profile_score, "core")}
       </div>
@@ -527,6 +583,13 @@ function renderPlayer(player) {
 }
 
 
+if (el.filterToggle && el.toolbar) {
+  el.filterToggle.addEventListener("click", () => {
+    const open = el.toolbar.classList.toggle("filters-open");
+    el.filterToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+}
+
 el.search.addEventListener("input", () => {
   state.visible = PAGE_SIZE;
   applyFilters();
@@ -543,6 +606,8 @@ el.clear.addEventListener("click", () => {
   el.org.value = "";
   el.level.value = "";
   el.sort.value = "rank";
+  if (el.toolbar) el.toolbar.classList.remove("filters-open");
+  if (el.filterToggle) el.filterToggle.setAttribute("aria-expanded", "false");
   state.visible = PAGE_SIZE;
   applyFilters();
 });
