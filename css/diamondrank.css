@@ -983,3 +983,350 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     font-size: 14px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank visual-density pass v3
+   Mobile filter compression + labelled context values + iOS modal hardening
+   ========================================================= */
+
+.filter-toggle {
+  display: none;
+}
+
+#activeFilterCount {
+  display: inline-grid;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  place-items: center;
+  border-radius: 999px;
+  color: #07110d;
+  background: var(--green-bright);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.filter-toggle.has-active-filters {
+  border-color: rgba(89,209,140,.5);
+  color: var(--green-bright);
+}
+
+.player-dialog {
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom)));
+  margin-top: max(6px, env(safe-area-inset-top));
+  margin-bottom: max(6px, env(safe-area-inset-bottom));
+}
+
+.dialog-shell {
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom)));
+  overscroll-behavior: contain;
+  scroll-padding-top: 10px;
+}
+
+.context-meter > small {
+  color: var(--muted);
+  font-weight: 650;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 13px;
+  }
+
+  .hero h1 {
+    font-size: 27px;
+  }
+
+  .hero-text {
+    max-width: 31rem;
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+
+  .toolbar {
+    grid-template-columns: minmax(0, 1fr) minmax(110px, .62fr);
+  }
+
+  .toolbar .search-field {
+    grid-column: 1 / -1;
+    order: 1;
+  }
+
+  .toolbar .sort-field {
+    grid-column: 1;
+    order: 2;
+  }
+
+  .filter-toggle {
+    display: flex;
+    grid-column: 2;
+    order: 3;
+    height: 37px;
+    padding: 0 11px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: var(--text);
+    background: #0a1811;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .toolbar .secondary-filter {
+    display: none;
+  }
+
+  .toolbar.filters-open .secondary-filter {
+    display: grid;
+  }
+
+  .toolbar.filters-open label.secondary-filter {
+    order: 4;
+  }
+
+  .toolbar.filters-open .ghost-button.secondary-filter {
+    display: block;
+    order: 5;
+  }
+
+  .toolbar.filters-open .secondary-filter:nth-of-type(3),
+  .toolbar.filters-open .secondary-filter:nth-of-type(4) {
+    grid-column: auto;
+  }
+
+  .toolbar.filters-open .secondary-filter:nth-of-type(5) {
+    grid-column: 1 / -1;
+  }
+
+  .toolbar.filters-open .ghost-button.secondary-filter {
+    grid-column: 1 / -1;
+  }
+
+  .player-dialog {
+    width: calc(100% - 8px);
+    max-height: calc(100dvh - max(8px, env(safe-area-inset-top)) - max(8px, env(safe-area-inset-bottom)));
+    margin-top: max(4px, env(safe-area-inset-top));
+    margin-bottom: max(4px, env(safe-area-inset-bottom));
+  }
+
+  .dialog-shell {
+    max-height: calc(100dvh - max(8px, env(safe-area-inset-top)) - max(8px, env(safe-area-inset-bottom)));
+  }
+
+  .context-meter > small {
+    font-size: 6.6px;
+    letter-spacing: -.01em;
+  }
+}
+
+
+/* =========================================================
+   DiamondRank visual colour system v4
+   Scores: red -> orange -> gold -> lime -> emerald
+   Spray direction uses distinct non-evaluative hues.
+   ========================================================= */
+
+:root {
+  --score-red: #f06b70;
+  --score-orange: #f29a52;
+  --score-gold: #e5c95c;
+  --score-lime: #a6da68;
+  --score-emerald: #72e5a5;
+  --score-neutral: #a5b6ab;
+
+  --spray-pull: #f29a52;
+  --spray-center: #72e5a5;
+  --spray-oppo: #6eb7e8;
+
+  --contact-ground: #72e5a5;
+  --contact-fly: #6eb7e8;
+  --contact-line: #e5c95c;
+}
+
+/* Shared score tones */
+.tone-red { --score-accent: var(--score-red); }
+.tone-orange { --score-accent: var(--score-orange); }
+.tone-gold { --score-accent: var(--score-gold); }
+.tone-lime { --score-accent: var(--score-lime); }
+.tone-emerald { --score-accent: var(--score-emerald); }
+.tone-neutral { --score-accent: var(--score-neutral); }
+
+/* Leaderboard and profile headline scores */
+.score-cell.tone-red strong,
+.profile-score.tone-red strong { color: var(--score-red); }
+
+.score-cell.tone-orange strong,
+.profile-score.tone-orange strong { color: var(--score-orange); }
+
+.score-cell.tone-gold strong,
+.profile-score.tone-gold strong { color: var(--score-gold); }
+
+.score-cell.tone-lime strong,
+.profile-score.tone-lime strong { color: var(--score-lime); }
+
+.score-cell.tone-emerald strong,
+.profile-score.tone-emerald strong { color: var(--score-emerald); }
+
+.score-cell.tone-neutral strong,
+.profile-score.tone-neutral strong { color: var(--score-neutral); }
+
+/* Circular score meters */
+.score-ring-card {
+  --score-accent: var(--score-neutral);
+}
+
+.score-ring-card.tone-red { --score-accent: var(--score-red); }
+.score-ring-card.tone-orange { --score-accent: var(--score-orange); }
+.score-ring-card.tone-gold { --score-accent: var(--score-gold); }
+.score-ring-card.tone-lime { --score-accent: var(--score-lime); }
+.score-ring-card.tone-emerald { --score-accent: var(--score-emerald); }
+
+.score-ring::before {
+  background:
+    radial-gradient(circle at center, #0a1711 56%, transparent 57%),
+    conic-gradient(
+      var(--score-accent) calc(var(--meter) * 1%),
+      color-mix(in srgb, var(--score-accent) 13%, transparent) 0
+    );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--score-accent) 22%, transparent),
+    0 0 16px color-mix(in srgb, var(--score-accent) 6%, transparent);
+}
+
+.score-ring-card .score-ring-center strong {
+  color: var(--score-accent);
+}
+
+.score-ring-card {
+  border-color: color-mix(in srgb, var(--score-accent) 22%, var(--border));
+}
+
+/* Context profile: colour indicates below/neutral/above context */
+.context-meter {
+  --score-accent: var(--score-neutral);
+}
+
+.context-meter.tone-red { --score-accent: var(--score-red); }
+.context-meter.tone-orange { --score-accent: var(--score-orange); }
+.context-meter.tone-gold { --score-accent: var(--score-gold); }
+.context-meter.tone-lime { --score-accent: var(--score-lime); }
+.context-meter.tone-emerald { --score-accent: var(--score-emerald); }
+
+.context-meter {
+  border-color: color-mix(in srgb, var(--score-accent) 17%, var(--border));
+}
+
+.context-dot {
+  background: var(--score-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--score-accent) 17%, transparent);
+}
+
+.context-scale b {
+  color: var(--score-accent);
+}
+
+/* Keep the below-to-above axis meaningful while the marker itself carries strength. */
+.context-track::before {
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--score-red) 58%, transparent) 0 42%,
+      color-mix(in srgb, var(--score-orange) 48%, transparent) 42% 49%,
+      rgba(159,179,166,.20) 49% 51%,
+      color-mix(in srgb, var(--score-lime) 48%, transparent) 51% 58%,
+      color-mix(in srgb, var(--score-emerald) 58%, transparent) 58% 100%
+    );
+}
+
+/* Spray tendency: colour describes field direction, not quality. */
+.spray-field .field-zone {
+  stroke-width: 1.25;
+}
+
+.spray-field .spray-pull {
+  fill: var(--spray-pull);
+  stroke: color-mix(in srgb, var(--spray-pull) 65%, white);
+}
+
+.spray-field .spray-center {
+  fill: var(--spray-center);
+  stroke: color-mix(in srgb, var(--spray-center) 65%, white);
+}
+
+.spray-field .spray-oppo {
+  fill: var(--spray-oppo);
+  stroke: color-mix(in srgb, var(--spray-oppo) 65%, white);
+}
+
+.spray-field text {
+  fill: rgba(243,247,244,.76);
+}
+
+.spray-field .spray-pct {
+  fill: #ffffff;
+}
+
+/* Batted-ball type accents */
+.contact-type {
+  --contact-accent: var(--score-neutral);
+}
+
+.contact-type.ground { --contact-accent: var(--contact-ground); }
+.contact-type.fly { --contact-accent: var(--contact-fly); }
+.contact-type.line { --contact-accent: var(--contact-line); }
+
+.contact-type {
+  border-color: color-mix(in srgb, var(--contact-accent) 20%, var(--border));
+}
+
+.contact-type-head strong,
+.contact-type-head span {
+  color: var(--contact-accent);
+}
+
+.contact-type-track {
+  background: color-mix(in srgb, var(--contact-accent) 11%, transparent);
+}
+
+.contact-type-track i {
+  background: var(--contact-accent);
+}
+
+/* Comparable match scores */
+.comp-topline strong.tone-red { color: var(--score-red); }
+.comp-topline strong.tone-orange { color: var(--score-orange); }
+.comp-topline strong.tone-gold { color: var(--score-gold); }
+.comp-topline strong.tone-lime { color: var(--score-lime); }
+.comp-topline strong.tone-emerald { color: var(--score-emerald); }
+
+/* SwStr bat-to-ball percentile */
+.compact-stat-strip .tone-red strong { color: var(--score-red); }
+.compact-stat-strip .tone-orange strong { color: var(--score-orange); }
+.compact-stat-strip .tone-gold strong { color: var(--score-gold); }
+.compact-stat-strip .tone-lime strong { color: var(--score-lime); }
+.compact-stat-strip .tone-emerald strong { color: var(--score-emerald); }
+
+/* Small legend only where the score colour could otherwise be ambiguous. */
+.score-colour-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 8px;
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+.score-colour-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.score-colour-key i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
