@@ -635,6 +635,208 @@ function compCards(player) {
 }
 
 
+function developmentTrendTone(trend) {
+  const value = String(trend || "").toLowerCase();
+  if (value.includes("up")) return "dev-up";
+  if (value.includes("down")) return "dev-down";
+  if (value.includes("stable")) return "dev-stable";
+  return "dev-neutral";
+}
+
+function developmentArrow(trend) {
+  const value = String(trend || "").toLowerCase();
+  if (value.includes("up")) return "↑";
+  if (value.includes("down")) return "↓";
+  if (value.includes("stable")) return "→";
+  return "•";
+}
+
+function developmentSummary(context) {
+  const status = String(context?.status || "");
+  const stages = Number(context?.qualified_stage_count) || 0;
+
+  if (status === "INSUFFICIENT_SAMPLE" || stages === 0) {
+    return {
+      label: "Limited history",
+      tone: "dev-summary-limited",
+      detail: "No qualified development stage yet."
+    };
+  }
+
+  if (status === "ONE_QUALIFIED_STAGE" || stages === 1) {
+    return {
+      label: "Baseline only",
+      tone: "dev-summary-limited",
+      detail: "Another qualified stage is needed before a development trend is shown."
+    };
+  }
+
+  const changes = Object.values(context?.recent_changes || {});
+  const positive = changes.filter((x) => String(x?.trend || "").toLowerCase().includes("up")).length;
+  const negative = changes.filter((x) => String(x?.trend || "").toLowerCase().includes("down")).length;
+  const stable = changes.filter((x) => String(x?.trend || "").toLowerCase().includes("stable")).length;
+
+  let label = "Mixed";
+  let tone = "dev-summary-mixed";
+
+  if (positive >= 3 && negative <= 1) {
+    label = "Improving";
+    tone = "dev-summary-up";
+  } else if (negative >= 3 && positive <= 1) {
+    label = "Cooling";
+    tone = "dev-summary-down";
+  } else if (stable >= 3 && positive <= 1 && negative <= 2) {
+    label = "Mostly stable";
+    tone = "dev-summary-stable";
+  } else if (positive > negative + 1) {
+    label = "Trending up";
+    tone = "dev-summary-up";
+  } else if (negative > positive + 1) {
+    label = "Trending down";
+    tone = "dev-summary-down";
+  }
+
+  return {
+    label,
+    tone,
+    detail: `${positive} improving · ${stable} stable · ${negative} declining`
+  };
+}
+
+function developmentSparkline(stages, key) {
+  const rows = Array.isArray(stages) ? stages : [];
+  const values = rows
+    .map((row, index) => ({
+      index,
+      value: Number(row?.[key])
+    }))
+    .filter((point) => Number.isFinite(point.value));
+
+  if (!values.length) return `<div class="dev-sparkline-empty">—</div>`;
+
+  const width = 100;
+  const height = 34;
+  const left = 4;
+  const right = 96;
+  const top = 4;
+  const bottom = 30;
+  const usableWidth = right - left;
+  const usableHeight = bottom - top;
+
+  const x = (i) =>
+    values.length === 1
+      ? 50
+      : left + (i / (values.length - 1)) * usableWidth;
+
+  const y = (value) => {
+    const clamped = clamp(value, -3, 3);
+    return top + ((3 - clamped) / 6) * usableHeight;
+  };
+
+  const points = values
+    .map((point, i) => `${x(i).toFixed(1)},${y(point.value).toFixed(1)}`)
+    .join(" ");
+
+  const last = values[values.length - 1];
+  const lastX = x(values.length - 1).toFixed(1);
+  const lastY = y(last.value).toFixed(1);
+  const zeroY = y(0).toFixed(1);
+
+  return `
+    <svg class="dev-sparkline" viewBox="0 0 ${width} ${height}" aria-hidden="true">
+      <line class="dev-sparkline-zero" x1="${left}" x2="${right}" y1="${zeroY}" y2="${zeroY}"></line>
+      <polyline points="${points}"></polyline>
+      <circle cx="${lastX}" cy="${lastY}" r="2.8"></circle>
+    </svg>
+  `;
+}
+
+function developmentPanel(player) {
+  const context = player.development_context || {};
+  const stages = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
+  const summary = developmentSummary(context);
+  const status = String(context.status || "");
+
+  if (!stages.length) {
+    return `
+      <div class="development-empty">
+        <strong>${escapeHtml(summary.label)}</strong>
+        <span>${escapeHtml(summary.detail)}</span>
+      </div>
+    `;
+  }
+
+  if (status !== "READY" || stages.length < 2) {
+    const only = stages[0] || {};
+    return `
+      <div class="development-baseline">
+        <div class="development-baseline-copy">
+          <strong>${escapeHtml(summary.label)}</strong>
+          <span>${escapeHtml(summary.detail)}</span>
+        </div>
+        <div class="development-stage-strip">
+          <div class="development-stage-pill current">
+            <b>${escapeHtml(only.season || "—")} · ${escapeHtml(only.level || "—")}</b>
+            <span>${integer(only.pa)} PA · Age ${number1(only.age)}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  const traits = [
+    ["Production", "production", "production_z"],
+    ["Power", "power", "power_z"],
+    ["Contact", "contact", "contact_z"],
+    ["Discipline", "discipline", "discipline_z"],
+    ["Speed", "speed", "speed_z"]
+  ];
+
+  const changes = context.recent_changes || {};
+
+  return `
+    <div class="development-overview">
+      <div class="development-summary-row">
+        <span class="development-summary-chip ${summary.tone}">${escapeHtml(summary.label)}</span>
+        <span class="development-summary-detail">${escapeHtml(summary.detail)}</span>
+      </div>
+
+      <div class="development-trait-grid">
+        ${traits.map(([label, key, stageKey]) => {
+          const change = changes[key] || {};
+          const trend = change.trend || "—";
+          return `
+            <div class="development-trait ${developmentTrendTone(trend)}">
+              <small>${escapeHtml(label)}</small>
+              ${developmentSparkline(stages, stageKey)}
+              <strong>${developmentArrow(trend)} ${escapeHtml(trend)}</strong>
+              <span>latest stage</span>
+            </div>
+          `;
+        }).join("")}
+      </div>
+
+      <div class="development-stage-head">
+        <strong>Stage progression</strong>
+        <span>${integer(context.qualified_stage_count)} qualified stages · ${integer(context.qualified_season_count)} seasons</span>
+      </div>
+
+      <div class="development-stage-strip">
+        ${stages.map((stage, index) => `
+          <div class="development-stage-pill ${index === stages.length - 1 ? "current" : ""}">
+            <b>${escapeHtml(stage.season || "—")} · ${escapeHtml(stage.level || "—")}</b>
+            <span>${integer(stage.pa)} PA · Age ${number1(stage.age)}</span>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="development-note">
+        Trends are relative to age and level context, so advancement to tougher competition is part of the comparison.
+      </div>
+    </div>
+  `;
+}
+
 function explanationDetails(player) {
   const exp = player.plain_language_explanations || {};
   const compCount = Number(player.comparable_context?.displayed_comparables) || 6;
@@ -648,11 +850,11 @@ function explanationDetails(player) {
     ["Opportunity", exp.opportunity],
     ["Fantasy Profile", exp.fantasy_profile],
     ["Current Evidence", exp.current_evidence],
+    ["Development", exp.development],
     ["Hitting Shape", exp.hitting_shape],
     ["Comparables", comparableExplanation],
     ["5-Year Outcomes", exp.comparable_selection],
-    ["Swing & Miss", exp.swstr],
-    ["Score Colours", exp.score_scale]
+    ["Swing & Miss", exp.swstr]
   ].filter(([, value]) => value);
 
   return items.map(([label, text]) => `
@@ -756,6 +958,14 @@ function renderPlayer(player) {
         <div><small>RBI</small><strong>${integer(evidence.rbi)}</strong></div>
         <div><small>SB</small><strong>${integer(evidence.sb)}</strong></div>
       </div>
+    </section>
+
+    <section class="profile-section compact-section development-section">
+      <div class="section-title-row">
+        <h3>Development</h3>
+        <span>${integer(player.development_context?.qualified_stage_count)} qualified stages</span>
+      </div>
+      ${developmentPanel(player)}
     </section>
 
     <section class="profile-section compact-section">
