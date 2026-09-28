@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07110d" />
   <title>DiamondRank Prospect Rankings</title>
   <meta name="description" content="DiamondRank prospect rankings built from historical opportunity, fantasy profile, scouting context and comparable evidence." />
-  <link rel="stylesheet" href="./css/diamondrank.css?v=15" />
+  <link rel="stylesheet" href="./css/diamondrank.css?v=19" />
 </head>
 <body>
   <div class="site-shell">
@@ -18,7 +18,7 @@
           <small>Prospect Intelligence</small>
         </span>
       </a>
-      <div class="header-status" id="headerStatus">Loading rankings…</div>
+      <div class="header-status" id="headerStatus">Current board</div>
     </header>
 
     <main>
@@ -28,9 +28,18 @@
           <h1>DiamondRank Hitter Rankings</h1>
           <p class="hero-text">Short-term prospect value • current skill shape • historical context</p>
         </div>
-        <div class="hero-stat" aria-label="Ranked hitter count">
-          <span id="heroCount">—</span>
-          <small>ranked hitters</small>
+
+        <div class="hero-summary-grid" aria-label="Leaderboard status">
+          <div class="hero-summary-card">
+            <small>Players Ranked</small>
+            <strong id="heroCount">—</strong>
+            <span>Current hitter pool</span>
+          </div>
+          <div class="hero-summary-card">
+            <small>Last Updated</small>
+            <strong id="heroUpdated">—</strong>
+            <span>Latest board refresh</span>
+          </div>
         </div>
       </section>
 
@@ -80,12 +89,13 @@
 
       <section class="board-panel" aria-labelledby="boardHeading">
         <div class="board-head board-head-compact">
-          <div>
+          <div class="board-head-title">
+            <span class="board-eyebrow">Player Rankings</span>
             <h2 id="boardHeading">Rankings</h2>
           </div>
-          <div class="board-meta">
+          <div class="board-result-summary">
+            <span>Matching Players</span>
             <strong id="resultCount">—</strong>
-            <span id="dataUpdated">—</span>
           </div>
         </div>
 
@@ -132,6 +142,6 @@
     </div>
   </dialog>
 
-  <script type="module" src="./js/diamondrank.js?v=16"></script>
+  <script type="module" src="./js/diamondrank.js?v=19"></script>
 </body>
 </html>
