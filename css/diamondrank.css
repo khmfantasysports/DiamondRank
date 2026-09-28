@@ -3376,3 +3376,112 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     padding: 5px 2px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v17
+   Development uses compact Trend tags instead of another score
+   ========================================================= */
+
+.development-trend-row,
+.development-detail-trend {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.development-trend-row {
+  margin-bottom: 8px;
+}
+
+.development-detail-trend {
+  margin-bottom: 10px;
+}
+
+.trend-label {
+  color: var(--muted-2);
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.trend-tag {
+  --trend-accent: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 7px;
+  border: 1px solid color-mix(in srgb, var(--trend-accent) 38%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--trend-accent) 7%, transparent);
+  color: var(--trend-accent);
+  font-size: 7px;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.trend-tag b {
+  font-size: 9px;
+  line-height: 1;
+}
+
+.trend-up {
+  --trend-accent: var(--score-emerald);
+}
+
+.trend-stable {
+  --trend-accent: var(--score-gold);
+}
+
+.trend-down {
+  --trend-accent: var(--score-orange);
+}
+
+.trend-mixed {
+  --trend-accent: #d3b36a;
+}
+
+.trend-baseline {
+  --trend-accent: var(--muted);
+}
+
+.trait-trend-tag {
+  margin: 3px auto 0;
+  width: fit-content;
+}
+
+.development-trait > strong {
+  display: none;
+}
+
+.development-detail-change .detail-trend-tag {
+  margin: 5px auto 0;
+  width: fit-content;
+}
+
+.development-detail-change em {
+  margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+  .development-trend-row {
+    gap: 5px;
+  }
+
+  .trend-tag {
+    padding: 3px 6px;
+    font-size: 6.3px;
+  }
+
+  .trend-tag b {
+    font-size: 8px;
+  }
+
+  .trend-label {
+    font-size: 6.2px;
+  }
+}
