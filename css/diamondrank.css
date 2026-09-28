@@ -1803,3 +1803,93 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     font-size: 16px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v7
+   Sticky modal controls + neutral comp-quality tones +
+   full outcome labels + meaningful-sample WAR context
+   ========================================================= */
+
+/* Dedicated sticky control strip: never overlays section content. */
+.dialog-shell {
+  padding-top: 0;
+}
+
+.dialog-control-bar {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  display: flex;
+  justify-content: flex-end;
+  min-height: 52px;
+  margin: 0 -22px 4px;
+  padding: 8px 22px 6px;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(10,23,17,.99) 0%,
+      rgba(10,23,17,.97) 72%,
+      rgba(10,23,17,0) 100%
+    );
+  pointer-events: none;
+}
+
+.dialog-close {
+  position: static;
+  float: none;
+  flex: 0 0 auto;
+  margin: 0;
+  pointer-events: auto;
+}
+
+.profile-head {
+  padding-right: 0;
+}
+
+/* Match quality is confidence/context, not player quality. */
+.match-quality.quality-broad {
+  color: #d3b36a;
+  border-color: rgba(211,179,106,.46);
+  background: rgba(211,179,106,.075);
+}
+
+.match-quality.quality-loose {
+  color: #c99569;
+  border-color: rgba(201,149,105,.46);
+  background: rgba(201,149,105,.075);
+}
+
+/* Full outcome names should wrap rather than truncate. */
+.outcome-legend small {
+  min-height: 20px;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  line-height: 1.12;
+}
+
+.outcome-sample-note {
+  margin-top: 6px;
+  color: var(--muted-2);
+  font-size: 7.5px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .dialog-control-bar {
+    min-height: 47px;
+    margin: 0 -14px 2px;
+    padding: 6px 14px 5px;
+  }
+
+  .outcome-legend small {
+    min-height: 19px;
+    font-size: 6.1px;
+  }
+
+  .outcome-sample-note {
+    font-size: 7px;
+  }
+}
