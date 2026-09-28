@@ -4097,3 +4097,23 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     font-size: 6.5px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v22
+   MLB secondary stats use the same fixed stat cards as the primary row
+   ========================================================= */
+
+.mlb-current-stat-grid-secondary {
+  margin-top: 5px;
+}
+
+.mlb-transition-meta {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .mlb-current-stat-grid-secondary {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
