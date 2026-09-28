@@ -635,6 +635,23 @@ function compCards(player) {
 }
 
 
+function signed1(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  const rounded = n.toFixed(2);
+  return n > 0 ? `+${rounded}` : rounded;
+}
+
+function developmentTrendFromDelta(delta) {
+  const value = Number(delta);
+  if (!Number.isFinite(value)) return "—";
+  if (value < -0.75) return "Down";
+  if (value < -0.25) return "Slightly Down";
+  if (value < 0.25) return "Stable";
+  if (value < 0.75) return "Slightly Up";
+  return "Up";
+}
+
 function developmentTrendTone(trend) {
   const value = String(trend || "").toLowerCase();
   if (value.includes("up")) return "dev-up";
@@ -651,30 +668,74 @@ function developmentArrow(trend) {
   return "•";
 }
 
-function developmentSummary(context) {
-  const status = String(context?.status || "");
-  const stages = Number(context?.qualified_stage_count) || 0;
+function annualDevelopmentSeries(stages) {
+  const rows = Array.isArray(stages) ? stages : [];
+  const traits = ["production_z", "power_z", "contact_z", "discipline_z", "speed_z"];
+  const bySeason = new Map();
 
-  if (status === "INSUFFICIENT_SAMPLE" || stages === 0) {
-    return {
-      label: "Limited history",
-      tone: "dev-summary-limited",
-      detail: "No qualified development stage yet."
-    };
-  }
+  rows.forEach((row) => {
+    const season = Number(row?.season);
+    const pa = Number(row?.pa);
+    if (!Number.isFinite(season) || !Number.isFinite(pa) || pa <= 0) return;
 
-  if (status === "ONE_QUALIFIED_STAGE" || stages === 1) {
+    if (!bySeason.has(season)) {
+      bySeason.set(season, {
+        season,
+        pa: 0,
+        levels: [],
+        sums: Object.fromEntries(traits.map((key) => [key, 0])),
+        weights: Object.fromEntries(traits.map((key) => [key, 0]))
+      });
+    }
+
+    const bucket = bySeason.get(season);
+    bucket.pa += pa;
+    if (row?.level && !bucket.levels.includes(row.level)) bucket.levels.push(row.level);
+
+    traits.forEach((key) => {
+      const value = Number(row?.[key]);
+      if (!Number.isFinite(value)) return;
+      bucket.sums[key] += value * pa;
+      bucket.weights[key] += pa;
+    });
+  });
+
+  return [...bySeason.values()]
+    .sort((a, b) => a.season - b.season)
+    .map((bucket) => {
+      const annual = {
+        season: bucket.season,
+        pa: bucket.pa,
+        levels: bucket.levels
+      };
+      traits.forEach((key) => {
+        annual[key] = bucket.weights[key] > 0
+          ? bucket.sums[key] / bucket.weights[key]
+          : null;
+      });
+      return annual;
+    });
+}
+
+function developmentSummaryFromAnnual(annual) {
+  if (!Array.isArray(annual) || annual.length < 2) {
     return {
       label: "Baseline only",
       tone: "dev-summary-limited",
-      detail: "Another qualified stage is needed before a development trend is shown."
+      detail: "A second qualified season is needed before a year-to-year trend is shown."
     };
   }
 
-  const changes = Object.values(context?.recent_changes || {});
-  const positive = changes.filter((x) => String(x?.trend || "").toLowerCase().includes("up")).length;
-  const negative = changes.filter((x) => String(x?.trend || "").toLowerCase().includes("down")).length;
-  const stable = changes.filter((x) => String(x?.trend || "").toLowerCase().includes("stable")).length;
+  const previous = annual[annual.length - 2];
+  const latest = annual[annual.length - 1];
+  const keys = ["production_z", "power_z", "contact_z", "discipline_z", "speed_z"];
+
+  const deltas = keys.map((key) => Number(latest[key]) - Number(previous[key]));
+  const trends = deltas.map(developmentTrendFromDelta);
+
+  const positive = trends.filter((x) => String(x).toLowerCase().includes("up")).length;
+  const negative = trends.filter((x) => String(x).toLowerCase().includes("down")).length;
+  const stable = trends.filter((x) => String(x).toLowerCase().includes("stable")).length;
 
   let label = "Mixed";
   let tone = "dev-summary-mixed";
@@ -699,13 +760,14 @@ function developmentSummary(context) {
   return {
     label,
     tone,
-    detail: `${positive} improving · ${stable} stable · ${negative} declining`
+    detail: `${positive} improving · ${stable} stable · ${negative} declining`,
+    previousSeason: previous.season,
+    latestSeason: latest.season
   };
 }
 
-function developmentSparkline(stages, key) {
-  const rows = Array.isArray(stages) ? stages : [];
-  const values = rows
+function developmentSparkline(rows, key) {
+  const values = (Array.isArray(rows) ? rows : [])
     .map((row, index) => ({
       index,
       value: Number(row?.[key])
@@ -754,45 +816,46 @@ function developmentSparkline(stages, key) {
 function developmentPanel(player) {
   const context = player.development_context || {};
   const stages = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
-  const summary = developmentSummary(context);
-  const status = String(context.status || "");
+  const annual = annualDevelopmentSeries(stages);
 
   if (!stages.length) {
     return `
       <div class="development-empty">
-        <strong>${escapeHtml(summary.label)}</strong>
-        <span>${escapeHtml(summary.detail)}</span>
+        <strong>Limited history</strong>
+        <span>No qualified development stage yet.</span>
       </div>
     `;
   }
 
-  if (status !== "READY" || stages.length < 2) {
-    const only = stages[0] || {};
+  if (annual.length < 2) {
+    const latest = annual[annual.length - 1] || {};
     return `
       <div class="development-baseline">
         <div class="development-baseline-copy">
-          <strong>${escapeHtml(summary.label)}</strong>
-          <span>${escapeHtml(summary.detail)}</span>
+          <strong>Baseline only</strong>
+          <span>A second qualified season is needed before a year-to-year trend is shown.</span>
         </div>
         <div class="development-stage-strip">
           <div class="development-stage-pill current">
-            <b>${escapeHtml(only.season || "—")} · ${escapeHtml(only.level || "—")}</b>
-            <span>${integer(only.pa)} PA · Age ${number1(only.age)}</span>
+            <b>${escapeHtml(latest.season || "—")} season</b>
+            <span>${integer(latest.pa)} qualified PA</span>
           </div>
         </div>
       </div>
     `;
   }
 
-  const traits = [
-    ["Production", "production", "production_z"],
-    ["Power", "power", "power_z"],
-    ["Contact", "contact", "contact_z"],
-    ["Discipline", "discipline", "discipline_z"],
-    ["Speed", "speed", "speed_z"]
-  ];
+  const previous = annual[annual.length - 2];
+  const latest = annual[annual.length - 1];
+  const summary = developmentSummaryFromAnnual(annual);
 
-  const changes = context.recent_changes || {};
+  const traits = [
+    ["Production", "production_z"],
+    ["Power", "power_z"],
+    ["Contact", "contact_z"],
+    ["Discipline", "discipline_z"],
+    ["Speed", "speed_z"]
+  ];
 
   return `
     <div class="development-overview">
@@ -801,24 +864,49 @@ function developmentPanel(player) {
         <span class="development-summary-detail">${escapeHtml(summary.detail)}</span>
       </div>
 
+      <div class="development-year-row">
+        <strong>${integer(previous.season)} → ${integer(latest.season)}</strong>
+        <span>PA-weighted season comparison</span>
+      </div>
+
+      <div class="development-change-key">
+        Change values compare full qualified-season evidence after age/level adjustment.
+      </div>
+
       <div class="development-trait-grid">
-        ${traits.map(([label, key, stageKey]) => {
-          const change = changes[key] || {};
-          const trend = change.trend || "—";
+        ${traits.map(([label, key]) => {
+          const delta = Number(latest[key]) - Number(previous[key]);
+          const trend = developmentTrendFromDelta(delta);
           return `
             <div class="development-trait ${developmentTrendTone(trend)}">
               <small>${escapeHtml(label)}</small>
-              ${developmentSparkline(stages, stageKey)}
+              ${developmentSparkline(annual, key)}
               <strong>${developmentArrow(trend)} ${escapeHtml(trend)}</strong>
-              <span>latest stage</span>
+              <span class="development-delta">${signed1(delta)}</span>
+              <span class="development-delta-label">year over year</span>
             </div>
           `;
         }).join("")}
       </div>
 
+      <div class="development-season-head">
+        <strong>Season profile</strong>
+        <span>${annual.length} qualified seasons</span>
+      </div>
+
+      <div class="development-season-strip">
+        ${annual.map((season, index) => `
+          <div class="development-season-pill ${index === annual.length - 1 ? "current" : ""}">
+            <b>${integer(season.season)}</b>
+            <span>${integer(season.pa)} PA</span>
+            <small>${escapeHtml((season.levels || []).join(" / ") || "—")}</small>
+          </div>
+        `).join("")}
+      </div>
+
       <div class="development-stage-head">
-        <strong>Stage progression</strong>
-        <span>${integer(context.qualified_stage_count)} qualified stages · ${integer(context.qualified_season_count)} seasons</span>
+        <strong>Level progression</strong>
+        <span>${integer(context.qualified_stage_count)} qualified stages</span>
       </div>
 
       <div class="development-stage-strip">
@@ -831,7 +919,7 @@ function developmentPanel(player) {
       </div>
 
       <div class="development-note">
-        Trends are relative to age and level context, so advancement to tougher competition is part of the comparison.
+        Season trends combine qualified stops using plate-appearance weighting. Each stop is already adjusted for age and level before the annual comparison.
       </div>
     </div>
   `;
@@ -963,7 +1051,7 @@ function renderPlayer(player) {
     <section class="profile-section compact-section development-section">
       <div class="section-title-row">
         <h3>Development</h3>
-        <span>${integer(player.development_context?.qualified_stage_count)} qualified stages</span>
+        <span>${integer(player.development_context?.qualified_season_count)} qualified seasons</span>
       </div>
       ${developmentPanel(player)}
     </section>
