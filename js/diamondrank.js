@@ -864,6 +864,16 @@ function developmentSparkline(rows, key) {
 }
 
 
+function signedValueToneClass(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "signed-neutral";
+  if (n <= -0.75) return "signed-red";
+  if (n < 0) return "signed-orange";
+  if (n === 0) return "signed-gold";
+  if (n < 0.25) return "signed-lime";
+  return "signed-green";
+}
+
 function mlbWrcToneClass(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return "mlb-tone-neutral";
@@ -903,7 +913,7 @@ function mlbTransitionCompact(player) {
         <div><small>HR</small><strong>${integer(mlb.hr)}</strong></div>
         <div><small>RBI</small><strong>${integer(mlb.rbi)}</strong></div>
         <div><small>SB</small><strong>${integer(mlb.sb)}</strong></div>
-        <div><small>WAR</small><strong>${Number.isFinite(Number(mlb.war)) ? Number(mlb.war).toFixed(2) : "—"}</strong></div>
+        <div><small>WAR</small><strong class="${signedValueToneClass(mlb.war)}">${Number.isFinite(Number(mlb.war)) ? Number(mlb.war).toFixed(2) : "—"}</strong></div>
       </div>
 
       <p>MLB evidence is shown separately from the minor-league development trend.</p>
@@ -947,7 +957,7 @@ function mlbTransitionDetails(player) {
           <div><small>HR</small><strong>${integer(mlb.hr)}</strong></div>
           <div><small>RBI</small><strong>${integer(mlb.rbi)}</strong></div>
           <div><small>SB</small><strong>${integer(mlb.sb)}</strong></div>
-          <div><small>WAR</small><strong>${Number.isFinite(Number(mlb.war)) ? Number(mlb.war).toFixed(2) : "—"}</strong></div>
+          <div><small>WAR</small><strong class="${signedValueToneClass(mlb.war)}">${Number.isFinite(Number(mlb.war)) ? Number(mlb.war).toFixed(2) : "—"}</strong></div>
         </div>
       </article>
 
@@ -1175,7 +1185,7 @@ function developmentDetailMarkup(player) {
                   ${traits.map(([label, key]) => `
                     <div>
                       <small>${escapeHtml(label)}</small>
-                      <strong>${signed1(season[key])}</strong>
+                      <strong class="${signedValueToneClass(season[key])}">${signed1(season[key])}</strong>
                     </div>
                   `).join("")}
                 </div>
