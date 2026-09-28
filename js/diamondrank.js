@@ -863,6 +863,98 @@ function developmentSparkline(rows, key) {
   `;
 }
 
+
+function mlbWrcToneClass(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "mlb-tone-neutral";
+  if (n >= 120) return "mlb-tone-emerald";
+  if (n >= 100) return "mlb-tone-lime";
+  if (n >= 85) return "mlb-tone-gold";
+  if (n >= 70) return "mlb-tone-orange";
+  return "mlb-tone-red";
+}
+
+function mlbTransitionCompact(player) {
+  const mlb = player.mlb_transition;
+  if (!mlb?.has_mlb_evidence) return "";
+
+  return `
+    <div class="mlb-transition-card ${mlbWrcToneClass(mlb.wrc_plus)}">
+      <div class="mlb-transition-head">
+        <div>
+          <small>MLB TRANSITION</small>
+          <strong>${yearValue(mlb.season)} · ${escapeHtml(mlb.team || player.current_org || "MLB")}</strong>
+        </div>
+        <span class="mlb-sample-tag">${escapeHtml(mlb.sample_label || "MLB Sample")}</span>
+      </div>
+
+      <div class="mlb-transition-summary">
+        <div>
+          <small>PA</small>
+          <strong>${integer(mlb.pa)}</strong>
+        </div>
+        <div>
+          <small>AVG / OBP / SLG</small>
+          <strong>${battingRate(mlb.avg)} / ${battingRate(mlb.obp)} / ${battingRate(mlb.slg)}</strong>
+        </div>
+        <div>
+          <small>wRC+</small>
+          <strong class="mlb-wrc-value">${number1(mlb.wrc_plus)}</strong>
+        </div>
+      </div>
+
+      <div class="mlb-transition-secondary">
+        <span>K% ${percentFromRate(mlb.k_pct)}</span>
+        <span>BB% ${percentFromRate(mlb.bb_pct)}</span>
+        <span>${integer(mlb.hr)} HR</span>
+      </div>
+
+      <p>MLB evidence is shown separately from the minor-league development trend.</p>
+    </div>
+  `;
+}
+
+function mlbTransitionDetails(player) {
+  const mlb = player.mlb_transition;
+  if (!mlb?.has_mlb_evidence) return "";
+
+  return `
+    <section class="development-detail-section mlb-detail-section">
+      <div class="development-detail-heading">
+        <div>
+          <h4>MLB transition</h4>
+          <span>${yearValue(mlb.season)} · ${escapeHtml(mlb.team || player.current_org || "MLB")}</span>
+        </div>
+        <span class="mlb-sample-tag">${escapeHtml(mlb.sample_label || "MLB Sample")}</span>
+      </div>
+
+      <div class="mlb-detail-stat-grid">
+        <div><small>G</small><strong>${integer(mlb.games)}</strong></div>
+        <div><small>PA</small><strong>${integer(mlb.pa)}</strong></div>
+        <div><small>AVG</small><strong>${battingRate(mlb.avg)}</strong></div>
+        <div><small>OBP</small><strong>${battingRate(mlb.obp)}</strong></div>
+        <div><small>SLG</small><strong>${battingRate(mlb.slg)}</strong></div>
+        <div class="${mlbWrcToneClass(mlb.wrc_plus)}"><small>wRC+</small><strong class="mlb-wrc-value">${number1(mlb.wrc_plus)}</strong></div>
+        <div><small>K%</small><strong>${percentFromRate(mlb.k_pct)}</strong></div>
+        <div><small>BB%</small><strong>${percentFromRate(mlb.bb_pct)}</strong></div>
+        <div><small>HR</small><strong>${integer(mlb.hr)}</strong></div>
+        <div><small>RBI</small><strong>${integer(mlb.rbi)}</strong></div>
+        <div><small>SB</small><strong>${integer(mlb.sb)}</strong></div>
+        <div><small>WAR</small><strong>${Number.isFinite(Number(mlb.war)) ? Number(mlb.war).toFixed(2) : "—"}</strong></div>
+      </div>
+
+      <div class="mlb-career-line">
+        <span>Career MLB</span>
+        <strong>${integer(mlb.career_games)} G · ${integer(mlb.career_pa)} PA · ${integer(mlb.career_ab)} AB</strong>
+      </div>
+
+      <p class="mlb-detail-note">
+        MLB performance is displayed as transition evidence and is not blended into the minor-league year-over-year trend.
+      </p>
+    </section>
+  `;
+}
+
 function developmentPanel(player) {
   const context = player.development_context || {};
   const stages = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
@@ -872,8 +964,9 @@ function developmentPanel(player) {
     return `
       <div class="development-empty">
         <strong>Limited history</strong>
-        <span>No qualified development stage yet.</span>
+        <span>No qualified minor-league development stage yet.</span>
       </div>
+      ${mlbTransitionCompact(player)}
     `;
   }
 
@@ -885,6 +978,7 @@ function developmentPanel(player) {
           <strong>Baseline only</strong>
           <span>A second qualified season is needed before a year-to-year trend is shown.</span>
         </div>
+        ${mlbTransitionCompact(player)}
         <button class="development-open-button" type="button" data-development-open>
           View development details
         </button>
@@ -946,6 +1040,8 @@ function developmentPanel(player) {
           `;
         }).join("")}
       </div>
+
+      ${mlbTransitionCompact(player)}
 
       <button class="development-open-button" type="button" data-development-open>
         View development details
@@ -1037,10 +1133,12 @@ function developmentDetailMarkup(player) {
           </section>
         `}
 
+        ${mlbTransitionDetails(player)}
+
         <section class="development-detail-section">
           <div class="development-detail-heading">
             <div>
-              <h4>Season profiles</h4>
+              <h4>Minor-league season profiles</h4>
               <span>${annual.length} qualified seasons</span>
             </div>
             <small>PA-weighted within season</small>
@@ -1081,7 +1179,7 @@ function developmentDetailMarkup(player) {
         <section class="development-detail-section">
           <div class="development-detail-heading">
             <div>
-              <h4>Level progression</h4>
+              <h4>Minor-league level progression</h4>
               <span>${integer(context.qualified_stage_count)} qualified stages</span>
             </div>
             <small>Individual stops</small>
