@@ -2823,3 +2823,141 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     font-size: 6.5px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v12
+   Development cards show actual latest-stage change magnitude
+   ========================================================= */
+
+.development-change-key {
+  margin: -2px 0 7px;
+  color: var(--muted-2);
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.development-trait .development-delta {
+  display: block;
+  margin-top: 4px;
+  color: var(--dev-accent);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 850;
+  letter-spacing: -.025em;
+}
+
+.development-trait .development-delta-label {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted-2);
+  font-size: 5.9px;
+  line-height: 1.1;
+}
+
+@media (max-width: 640px) {
+  .development-change-key {
+    margin-bottom: 6px;
+    font-size: 6.4px;
+  }
+
+  .development-trait .development-delta {
+    font-size: 11px;
+  }
+
+  .development-trait .development-delta-label {
+    font-size: 5.4px;
+  }
+}
+
+
+/* =========================================================
+   DiamondRank UI pass v13
+   Development headline is now year-over-year, not stage-to-stage
+   ========================================================= */
+
+.development-year-row,
+.development-season-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.development-year-row {
+  margin: -1px 0 6px;
+}
+
+.development-year-row strong {
+  color: var(--text);
+  font-size: 10px;
+}
+
+.development-year-row span,
+.development-season-head span {
+  color: var(--muted-2);
+  font-size: 7px;
+}
+
+.development-season-head {
+  margin-top: 10px;
+}
+
+.development-season-head strong {
+  font-size: 9px;
+}
+
+.development-season-strip {
+  display: flex;
+  gap: 5px;
+  margin-top: 6px;
+  padding-bottom: 3px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  overscroll-behavior-x: contain;
+}
+
+.development-season-pill {
+  flex: 0 0 auto;
+  min-width: 78px;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255,255,255,.012);
+}
+
+.development-season-pill.current {
+  border-color: color-mix(in srgb, var(--green-bright) 38%, var(--border));
+  background: color-mix(in srgb, var(--green-bright) 5%, transparent);
+}
+
+.development-season-pill b {
+  display: block;
+  font-size: 9px;
+  color: var(--text);
+}
+
+.development-season-pill span,
+.development-season-pill small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 6.5px;
+  line-height: 1.2;
+}
+
+@media (max-width: 640px) {
+  .development-year-row strong {
+    font-size: 9px;
+  }
+
+  .development-year-row span,
+  .development-season-head span {
+    font-size: 6.4px;
+  }
+
+  .development-season-pill {
+    min-width: 72px;
+    padding: 6px 7px;
+  }
+}
