@@ -2961,3 +2961,418 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     padding: 6px 7px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v14
+   Compact Development summary + dedicated Development Details popup
+   ========================================================= */
+
+.development-overview-compact .development-trait-grid {
+  margin-bottom: 9px;
+}
+
+.development-open-button {
+  display: flex;
+  width: 100%;
+  min-height: 38px;
+  margin-top: 9px;
+  padding: 8px 11px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid color-mix(in srgb, var(--green-bright) 28%, var(--border));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--green-bright) 4%, rgba(255,255,255,.01));
+  color: var(--text);
+  font: inherit;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.development-open-button span {
+  color: var(--green-bright);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.development-detail-open {
+  overflow: hidden;
+}
+
+.development-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: max(14px, env(safe-area-inset-top)) 12px max(14px, env(safe-area-inset-bottom));
+  background: rgba(0, 5, 3, .82);
+  backdrop-filter: blur(5px);
+}
+
+.development-detail-sheet {
+  width: min(760px, 100%);
+  max-height: min(88dvh, 900px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #081711;
+  box-shadow: 0 28px 80px rgba(0,0,0,.55);
+}
+
+.development-detail-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,23,17,.96);
+  backdrop-filter: blur(8px);
+}
+
+.development-detail-sticky small {
+  display: block;
+  color: var(--green-bright);
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .13em;
+}
+
+.development-detail-sticky h3 {
+  margin: 3px 0 0;
+  font-size: 23px;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.development-detail-close {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.025);
+  color: var(--text);
+  font: inherit;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.development-detail-body {
+  padding: 14px 16px 18px;
+}
+
+.development-detail-section + .development-detail-section {
+  margin-top: 17px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.development-detail-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.development-detail-heading h4 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.development-detail-heading span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.development-detail-heading > small {
+  color: var(--muted-2);
+  font-size: 7px;
+}
+
+.development-detail-change-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.development-detail-change {
+  --dev-accent: var(--score-neutral);
+  min-width: 0;
+  padding: 9px 6px;
+  border: 1px solid color-mix(in srgb, var(--dev-accent) 22%, var(--border));
+  border-radius: 11px;
+  text-align: center;
+}
+
+.development-detail-change.dev-up { --dev-accent: var(--score-emerald); }
+.development-detail-change.dev-down { --dev-accent: var(--score-orange); }
+.development-detail-change.dev-stable { --dev-accent: var(--score-gold); }
+
+.development-detail-change > small {
+  color: var(--text);
+  font-size: 6.5px;
+  font-weight: 800;
+}
+
+.development-value-shift {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.development-value-shift span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.development-value-shift b {
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+.development-value-shift strong {
+  color: var(--dev-accent);
+  font-size: 13px;
+}
+
+.development-detail-change em {
+  display: block;
+  margin-top: 4px;
+  color: var(--dev-accent);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.development-season-detail-list {
+  display: grid;
+  gap: 8px;
+}
+
+.development-season-detail {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: rgba(255,255,255,.012);
+}
+
+.development-season-detail.current {
+  border-color: color-mix(in srgb, var(--green-bright) 35%, var(--border));
+}
+
+.development-season-detail-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.development-season-detail-head strong {
+  font-size: 15px;
+}
+
+.development-season-detail-head span {
+  margin-left: 6px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.development-season-detail-head > b {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.development-raw-stat-grid,
+.development-z-grid {
+  display: grid;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.development-raw-stat-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.development-z-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.development-raw-stat-grid > div,
+.development-z-grid > div {
+  min-width: 0;
+  padding: 6px 3px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.development-raw-stat-grid small,
+.development-z-grid small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 5.8px;
+  font-weight: 800;
+}
+
+.development-raw-stat-grid strong,
+.development-z-grid strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+.development-z-grid strong {
+  color: var(--green-bright);
+}
+
+.development-stage-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+}
+
+.development-stage-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+}
+
+.development-stage-table th,
+.development-stage-table td {
+  padding: 8px 7px;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.development-stage-table th {
+  color: var(--muted-2);
+  font-size: 6px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.development-stage-table td {
+  color: var(--text);
+  font-size: 8px;
+}
+
+.development-stage-table th:first-child,
+.development-stage-table td:first-child {
+  text-align: left;
+}
+
+.development-stage-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.development-stage-table tr.current {
+  background: color-mix(in srgb, var(--green-bright) 4%, transparent);
+}
+
+.development-stage-table td strong {
+  display: block;
+  font-size: 8px;
+}
+
+.development-stage-table td span {
+  display: block;
+  margin-top: 1px;
+  color: var(--muted);
+  font-size: 6.5px;
+}
+
+.development-detail-empty,
+.development-detail-note {
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.development-detail-note {
+  margin-top: 14px;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+@media (max-width: 640px) {
+  .development-detail-overlay {
+    padding: max(8px, env(safe-area-inset-top)) 7px max(8px, env(safe-area-inset-bottom));
+  }
+
+  .development-detail-sheet {
+    max-height: 93dvh;
+    border-radius: 17px;
+  }
+
+  .development-detail-sticky {
+    padding: 11px 12px 9px;
+  }
+
+  .development-detail-sticky h3 {
+    font-size: 20px;
+  }
+
+  .development-detail-close {
+    width: 36px;
+    height: 36px;
+    font-size: 23px;
+  }
+
+  .development-detail-body {
+    padding: 11px 12px 15px;
+  }
+
+  .development-detail-change-grid {
+    gap: 4px;
+  }
+
+  .development-detail-change {
+    padding: 7px 3px;
+  }
+
+  .development-value-shift {
+    gap: 2px;
+  }
+
+  .development-value-shift span {
+    font-size: 7px;
+  }
+
+  .development-value-shift strong {
+    font-size: 10px;
+  }
+
+  .development-detail-change em {
+    font-size: 6.5px;
+  }
+
+  .development-season-detail {
+    padding: 8px;
+  }
+
+  .development-raw-stat-grid,
+  .development-z-grid {
+    gap: 4px;
+  }
+
+  .development-raw-stat-grid > div,
+  .development-z-grid > div {
+    padding: 5px 2px;
+  }
+}
