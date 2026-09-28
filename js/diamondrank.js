@@ -670,7 +670,10 @@ function developmentArrow(trend) {
 
 function annualDevelopmentSeries(stages) {
   const rows = Array.isArray(stages) ? stages : [];
-  const traits = ["production_z", "power_z", "contact_z", "discipline_z", "speed_z"];
+  const traits = [
+    "production_z", "power_z", "contact_z", "discipline_z", "speed_z",
+    "wrc_plus", "iso", "k_pct", "bb_pct", "speed_score"
+  ];
   const bySeason = new Map();
 
   rows.forEach((row) => {
@@ -835,12 +838,9 @@ function developmentPanel(player) {
           <strong>Baseline only</strong>
           <span>A second qualified season is needed before a year-to-year trend is shown.</span>
         </div>
-        <div class="development-stage-strip">
-          <div class="development-stage-pill current">
-            <b>${escapeHtml(latest.season || "—")} season</b>
-            <span>${integer(latest.pa)} qualified PA</span>
-          </div>
-        </div>
+        <button class="development-open-button" type="button" data-development-open>
+          View development details
+        </button>
       </div>
     `;
   }
@@ -858,7 +858,7 @@ function developmentPanel(player) {
   ];
 
   return `
-    <div class="development-overview">
+    <div class="development-overview development-overview-compact">
       <div class="development-summary-row">
         <span class="development-summary-chip ${summary.tone}">${escapeHtml(summary.label)}</span>
         <span class="development-summary-detail">${escapeHtml(summary.detail)}</span>
@@ -867,10 +867,6 @@ function developmentPanel(player) {
       <div class="development-year-row">
         <strong>${integer(previous.season)} → ${integer(latest.season)}</strong>
         <span>PA-weighted season comparison</span>
-      </div>
-
-      <div class="development-change-key">
-        Change values compare full qualified-season evidence after age/level adjustment.
       </div>
 
       <div class="development-trait-grid">
@@ -889,41 +885,205 @@ function developmentPanel(player) {
         }).join("")}
       </div>
 
-      <div class="development-season-head">
-        <strong>Season profile</strong>
-        <span>${annual.length} qualified seasons</span>
+      <button class="development-open-button" type="button" data-development-open>
+        View development details
+        <span aria-hidden="true">›</span>
+      </button>
+    </div>
+  `;
+}
+
+function annualStatValue(key, value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  if (key === "iso") return n.toFixed(3).replace(/^0/, "");
+  if (key === "k_pct" || key === "bb_pct") return `${n.toFixed(1)}%`;
+  if (key === "speed_score") return n.toFixed(2);
+  if (key === "wrc_plus") return n.toFixed(1);
+  return n.toFixed(2);
+}
+
+function developmentDetailMarkup(player) {
+  const context = player.development_context || {};
+  const stages = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
+  const annual = annualDevelopmentSeries(stages);
+  const traits = [
+    ["Production", "production_z"],
+    ["Power", "power_z"],
+    ["Contact", "contact_z"],
+    ["Discipline", "discipline_z"],
+    ["Speed", "speed_z"]
+  ];
+
+  const previous = annual.length >= 2 ? annual[annual.length - 2] : null;
+  const latest = annual.length ? annual[annual.length - 1] : null;
+
+  return `
+    <div class="development-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="developmentDetailTitle">
+      <div class="development-detail-sticky">
+        <div>
+          <small>DEVELOPMENT HISTORY</small>
+          <h3 id="developmentDetailTitle">${escapeHtml(player.full_name)}</h3>
+        </div>
+        <button class="development-detail-close" type="button" data-development-close aria-label="Close development details">×</button>
       </div>
 
-      <div class="development-season-strip">
-        ${annual.map((season, index) => `
-          <div class="development-season-pill ${index === annual.length - 1 ? "current" : ""}">
-            <b>${integer(season.season)}</b>
-            <span>${integer(season.pa)} PA</span>
-            <small>${escapeHtml((season.levels || []).join(" / ") || "—")}</small>
+      <div class="development-detail-body">
+        ${previous && latest ? `
+          <section class="development-detail-section">
+            <div class="development-detail-heading">
+              <div>
+                <h4>Year-over-year change</h4>
+                <span>${integer(previous.season)} → ${integer(latest.season)}</span>
+              </div>
+              <small>Age + level adjusted</small>
+            </div>
+
+            <div class="development-detail-change-grid">
+              ${traits.map(([label, key]) => {
+                const prev = Number(previous[key]);
+                const now = Number(latest[key]);
+                const delta = now - prev;
+                const trend = developmentTrendFromDelta(delta);
+                return `
+                  <div class="development-detail-change ${developmentTrendTone(trend)}">
+                    <small>${escapeHtml(label)}</small>
+                    <div class="development-value-shift">
+                      <span>${Number.isFinite(prev) ? prev.toFixed(2) : "—"}</span>
+                      <b>→</b>
+                      <strong>${Number.isFinite(now) ? now.toFixed(2) : "—"}</strong>
+                    </div>
+                    <em>${developmentArrow(trend)} ${signed1(delta)}</em>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </section>
+        ` : `
+          <section class="development-detail-section">
+            <div class="development-detail-empty">
+              A second qualified season is needed before a year-over-year comparison is available.
+            </div>
+          </section>
+        `}
+
+        <section class="development-detail-section">
+          <div class="development-detail-heading">
+            <div>
+              <h4>Season profiles</h4>
+              <span>${annual.length} qualified seasons</span>
+            </div>
+            <small>PA-weighted within season</small>
           </div>
-        `).join("")}
-      </div>
 
-      <div class="development-stage-head">
-        <strong>Level progression</strong>
-        <span>${integer(context.qualified_stage_count)} qualified stages</span>
-      </div>
+          <div class="development-season-detail-list">
+            ${annual.map((season, index) => `
+              <article class="development-season-detail ${index === annual.length - 1 ? "current" : ""}">
+                <div class="development-season-detail-head">
+                  <div>
+                    <strong>${integer(season.season)}</strong>
+                    <span>${escapeHtml((season.levels || []).join(" / ") || "—")}</span>
+                  </div>
+                  <b>${integer(season.pa)} PA</b>
+                </div>
 
-      <div class="development-stage-strip">
-        ${stages.map((stage, index) => `
-          <div class="development-stage-pill ${index === stages.length - 1 ? "current" : ""}">
-            <b>${escapeHtml(stage.season || "—")} · ${escapeHtml(stage.level || "—")}</b>
-            <span>${integer(stage.pa)} PA · Age ${number1(stage.age)}</span>
+                <div class="development-raw-stat-grid">
+                  <div><small>wRC+</small><strong>${annualStatValue("wrc_plus", season.wrc_plus)}</strong></div>
+                  <div><small>ISO</small><strong>${annualStatValue("iso", season.iso)}</strong></div>
+                  <div><small>K%</small><strong>${annualStatValue("k_pct", season.k_pct)}</strong></div>
+                  <div><small>BB%</small><strong>${annualStatValue("bb_pct", season.bb_pct)}</strong></div>
+                  <div><small>Spd</small><strong>${annualStatValue("speed_score", season.speed_score)}</strong></div>
+                </div>
+
+                <div class="development-z-grid">
+                  ${traits.map(([label, key]) => `
+                    <div>
+                      <small>${escapeHtml(label)}</small>
+                      <strong>${signed1(season[key])}</strong>
+                    </div>
+                  `).join("")}
+                </div>
+              </article>
+            `).join("")}
           </div>
-        `).join("")}
-      </div>
+        </section>
 
-      <div class="development-note">
-        Season trends combine qualified stops using plate-appearance weighting. Each stop is already adjusted for age and level before the annual comparison.
+        <section class="development-detail-section">
+          <div class="development-detail-heading">
+            <div>
+              <h4>Level progression</h4>
+              <span>${integer(context.qualified_stage_count)} qualified stages</span>
+            </div>
+            <small>Individual stops</small>
+          </div>
+
+          <div class="development-stage-table-wrap">
+            <table class="development-stage-table">
+              <thead>
+                <tr>
+                  <th>Stage</th>
+                  <th>PA</th>
+                  <th>wRC+</th>
+                  <th>ISO</th>
+                  <th>K%</th>
+                  <th>BB%</th>
+                  <th>Spd</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${stages.map((stage, index) => `
+                  <tr class="${index === stages.length - 1 ? "current" : ""}">
+                    <td>
+                      <strong>${escapeHtml(stage.season || "—")} · ${escapeHtml(stage.level || "—")}</strong>
+                      <span>Age ${number1(stage.age)}</span>
+                    </td>
+                    <td>${integer(stage.pa)}</td>
+                    <td>${annualStatValue("wrc_plus", stage.wrc_plus)}</td>
+                    <td>${annualStatValue("iso", stage.iso)}</td>
+                    <td>${annualStatValue("k_pct", stage.k_pct)}</td>
+                    <td>${annualStatValue("bb_pct", stage.bb_pct)}</td>
+                    <td>${annualStatValue("speed_score", stage.speed_score)}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="development-detail-note">
+          Season comparisons combine qualified stops using plate-appearance weighting. Trait values are relative to the player's age and level context; they describe observed development rather than future performance.
+        </div>
       </div>
     </div>
   `;
 }
+
+function openDevelopmentDetails(player) {
+  closeDevelopmentDetails();
+
+  const overlay = document.createElement("div");
+  overlay.className = "development-detail-overlay";
+  overlay.dataset.developmentOverlay = "true";
+  overlay.innerHTML = developmentDetailMarkup(player);
+
+  document.body.appendChild(overlay);
+  document.body.classList.add("development-detail-open");
+
+  const closeButton = overlay.querySelector("[data-development-close]");
+  closeButton?.focus();
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay || event.target.closest("[data-development-close]")) {
+      closeDevelopmentDetails();
+    }
+  });
+}
+
+function closeDevelopmentDetails() {
+  document.querySelector("[data-development-overlay]")?.remove();
+  document.body.classList.remove("development-detail-open");
+}
+
 
 function explanationDetails(player) {
   const exp = player.plain_language_explanations || {};
@@ -1091,6 +1251,10 @@ function renderPlayer(player) {
 
   el.dialogLoading.hidden = true;
   el.dialogContent.hidden = false;
+
+  el.dialogContent
+    .querySelector("[data-development-open]")
+    ?.addEventListener("click", () => openDevelopmentDetails(player));
 }
 
 
@@ -1131,14 +1295,22 @@ el.board.addEventListener("click", (event) => {
   const row = event.target.closest("[data-player-id]");
   if (row) openPlayer(row.dataset.playerId);
 });
-el.dialogClose.addEventListener("click", () => el.dialog.close());
+el.dialogClose.addEventListener("click", () => { closeDevelopmentDetails(); el.dialog.close(); });
 el.dialog.addEventListener("click", (event) => {
-  if (event.target === el.dialog) el.dialog.close();
+  if (event.target === el.dialog) { closeDevelopmentDetails(); el.dialog.close(); }
 });
 el.dialog.addEventListener("close", () => {
+  closeDevelopmentDetails();
   el.dialogContent.innerHTML = "";
   el.dialogContent.hidden = true;
   el.dialogLoading.hidden = false;
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && document.querySelector("[data-development-overlay]")) {
+    event.preventDefault();
+    closeDevelopmentDetails();
+  }
 });
 
 loadRankings();
