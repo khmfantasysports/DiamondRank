@@ -474,20 +474,119 @@ function compactSwStr(player) {
 }
 
 
+function outcomeToneClass(label) {
+  const key = String(label || "").toLowerCase();
+  if (key.includes("star")) return "outcome-star";
+  if (key.includes("regular")) return "outcome-regular";
+  if (key.includes("depth")) return "outcome-depth";
+  if (key.includes("limited")) return "outcome-limited";
+  if (key.includes("no mlb")) return "outcome-none";
+  return "outcome-neutral";
+}
+
+function matchQualityToneClass(key) {
+  const value = String(key || "").toUpperCase();
+  if (value === "TIGHT") return "quality-tight";
+  if (value === "STRONG") return "quality-strong";
+  if (value === "SOLID") return "quality-solid";
+  if (value === "BROAD") return "quality-broad";
+  if (value === "LOOSE") return "quality-loose";
+  return "quality-neutral";
+}
+
+function fiveYearOutcomePanel(player) {
+  const context = player.comparable_context || {};
+  const outcomes = context.five_year_outcomes || {};
+  const pool = Number(context.comparison_pool_size) || 0;
+
+  if (!pool) return "";
+
+  const buckets = [
+    ["No MLB", outcomes.no_mlb, "outcome-none"],
+    ["Limited", outcomes.limited_mlb, "outcome-limited"],
+    ["Depth", outcomes.depth_mlb, "outcome-depth"],
+    ["Regular", outcomes.regular_mlb, "outcome-regular"],
+    ["Star", outcomes.star_mlb, "outcome-star"]
+  ];
+
+  const segmentLabel = buckets
+    .map(([label, value]) => `${label} ${number1(value?.pct)}%`)
+    .join(", ");
+
+  return `
+    <div class="five-year-panel">
+      <div class="five-year-head">
+        <div>
+          <strong>5-Year MLB Outcomes</strong>
+          <span>All ${integer(pool)} refined comparables</span>
+        </div>
+      </div>
+
+      <div class="outcome-segments" role="img" aria-label="${escapeHtml(segmentLabel)}">
+        ${buckets.map(([, value, tone]) => `
+          <i class="${tone}" style="width:${clamp(value?.pct, 0, 100)}%"></i>
+        `).join("")}
+      </div>
+
+      <div class="outcome-legend">
+        ${buckets.map(([label, value, tone]) => `
+          <div class="${tone}">
+            <span></span>
+            <small>${escapeHtml(label)}</small>
+            <strong>${number1(value?.pct)}%</strong>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="outcome-medians">
+        <div>
+          <small>Median MLB PA</small>
+          <strong>${integer(outcomes.median_mlb_pa)}</strong>
+        </div>
+        <div>
+          <small>Median WAR</small>
+          <strong>${number1(outcomes.median_mlb_war)}</strong>
+        </div>
+        <div>
+          <small>Median wRC+</small>
+          <strong>${integer(outcomes.median_mlb_wrc_plus)}</strong>
+        </div>
+      </div>
+
+      <details class="outcome-definitions">
+        <summary>5-year outcome definitions</summary>
+        <div>
+          <p><b>No MLB:</b> ${escapeHtml(outcomes.definitions?.no_mlb || "0 MLB PA within five seasons")}</p>
+          <p><b>Limited MLB:</b> ${escapeHtml(outcomes.definitions?.limited_mlb || "1–249 MLB PA within five seasons")}</p>
+          <p><b>Depth MLB:</b> ${escapeHtml(outcomes.definitions?.depth_mlb || "250–999 MLB PA within five seasons")}</p>
+          <p><b>Regular MLB:</b> ${escapeHtml(outcomes.definitions?.regular_mlb || "1,000+ MLB PA below the Star threshold")}</p>
+          <p><b>Star MLB:</b> ${escapeHtml(outcomes.definitions?.star_mlb || "1,000+ MLB PA and 10+ WAR within five seasons")}</p>
+          <p><b>Median wRC+:</b> ${escapeHtml(outcomes.definitions?.median_wrc_plus || "Uses comps with a meaningful MLB sample")}</p>
+        </div>
+      </details>
+    </div>
+  `;
+}
+
 function compCards(player) {
   const comps = Array.isArray(player.top_comparables) ? player.top_comparables : [];
   if (!comps.length) return `<div class="compact-empty">No comparables available.</div>`;
 
-  return comps.map((comp, index) => `
-    <div class="comp-card">
-      <div class="comp-topline">
-        <span>Match ${index + 1}</span>
+  return comps.map((comp, index) => {
+    const outcome = comp.five_year_outcome || "—";
+    return `
+      <div class="comp-card">
+        <div class="comp-topline">
+          <span>Match ${index + 1}</span>
+        </div>
+        <div class="comp-name">${escapeHtml(comp.name || "Historical comp")}</div>
+        <div class="comp-meta">${escapeHtml(comp.level || "—")} • ${escapeHtml(comp.season || "—")} • ${escapeHtml(comp.position || comp.position_family || "—")}</div>
+        <div class="comp-outcome ${outcomeToneClass(outcome)}">${escapeHtml(outcome)}</div>
       </div>
-      <div class="comp-name">${escapeHtml(comp.name || "Historical comp")}</div>
-      <div class="comp-meta">${escapeHtml(comp.level || "—")} • ${escapeHtml(comp.season || "—")} • ${escapeHtml(comp.position || comp.position_family || "—")}</div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
+
 
 function explanationDetails(player) {
   const exp = player.plain_language_explanations || {};
@@ -497,7 +596,7 @@ function explanationDetails(player) {
     ["Fantasy Profile", exp.fantasy_profile],
     ["Historical comparables", exp.comparables],
     ["Comparable selection", exp.comparable_selection],
-    ["SwStr evidence", exp.swstr],
+    ["Swing & miss", exp.swstr],
     ["Score scale", exp.score_scale]
   ].filter(([, value]) => value);
 
@@ -592,8 +691,14 @@ function renderPlayer(player) {
     </section>
 
     <section class="profile-section compact-section">
-      <div class="section-title-row"><h3>Historical comparables</h3><span>Closest refined-position matches</span></div>
+      <div class="section-title-row comparables-title-row">
+        <h3>Historical comparables</h3>
+        ${player.comparable_context?.match_quality?.label
+          ? `<span class="match-quality ${matchQualityToneClass(player.comparable_context?.match_quality?.key)}">${escapeHtml(player.comparable_context.match_quality.label)}</span>`
+          : `<span>Closest refined-position matches</span>`}
+      </div>
       <div class="comps">${compCards(player)}</div>
+      ${fiveYearOutcomePanel(player)}
     </section>
 
     <section class="profile-section compact-section">
