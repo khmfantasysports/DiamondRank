@@ -4117,3 +4117,40 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v23
+   Signed values use semantic colour instead of always-green text
+   ========================================================= */
+
+.signed-green {
+  color: var(--score-emerald) !important;
+}
+
+.signed-lime {
+  color: var(--score-lime) !important;
+}
+
+.signed-gold {
+  color: var(--score-gold) !important;
+}
+
+.signed-orange {
+  color: var(--score-orange) !important;
+}
+
+.signed-red {
+  color: var(--score-red) !important;
+}
+
+.signed-neutral {
+  color: var(--muted) !important;
+}
+
+.development-z-grid strong.signed-green { color: var(--score-emerald) !important; }
+.development-z-grid strong.signed-lime { color: var(--score-lime) !important; }
+.development-z-grid strong.signed-gold { color: var(--score-gold) !important; }
+.development-z-grid strong.signed-orange { color: var(--score-orange) !important; }
+.development-z-grid strong.signed-red { color: var(--score-red) !important; }
+.development-z-grid strong.signed-neutral { color: var(--muted) !important; }
