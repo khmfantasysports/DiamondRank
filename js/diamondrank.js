@@ -879,7 +879,7 @@ function mlbTransitionCompact(player) {
   if (!mlb?.has_mlb_evidence) return "";
 
   return `
-    <div class="mlb-transition-card ${mlbWrcToneClass(mlb.wrc_plus)}">
+    <div class="mlb-transition-block">
       <div class="mlb-transition-head">
         <div>
           <small>MLB TRANSITION</small>
@@ -888,25 +888,20 @@ function mlbTransitionCompact(player) {
         <span class="mlb-sample-tag">${escapeHtml(mlb.sample_label || "MLB Sample")}</span>
       </div>
 
-      <div class="mlb-transition-summary">
-        <div>
-          <small>PA</small>
-          <strong>${integer(mlb.pa)}</strong>
-        </div>
-        <div>
-          <small>AVG / OBP / SLG</small>
-          <strong>${battingRate(mlb.avg)} / ${battingRate(mlb.obp)} / ${battingRate(mlb.slg)}</strong>
-        </div>
-        <div>
-          <small>wRC+</small>
-          <strong class="mlb-wrc-value">${number1(mlb.wrc_plus)}</strong>
-        </div>
+      <div class="current-stat-grid mlb-current-stat-grid">
+        <div><small>PA</small><strong>${integer(mlb.pa)}</strong></div>
+        <div><small>AVG</small><strong>${battingRate(mlb.avg)}</strong></div>
+        <div><small>OBP</small><strong>${battingRate(mlb.obp)}</strong></div>
+        <div><small>SLG</small><strong>${battingRate(mlb.slg)}</strong></div>
+        <div class="${mlbWrcToneClass(mlb.wrc_plus)}"><small>wRC+</small><strong class="mlb-wrc-value">${number1(mlb.wrc_plus)}</strong></div>
+        <div><small>K%</small><strong>${percentFromRate(mlb.k_pct)}</strong></div>
       </div>
 
-      <div class="mlb-transition-secondary">
-        <span>K% ${percentFromRate(mlb.k_pct)}</span>
+      <div class="mlb-transition-meta">
         <span>BB% ${percentFromRate(mlb.bb_pct)}</span>
         <span>${integer(mlb.hr)} HR</span>
+        <span>${integer(mlb.rbi)} RBI</span>
+        <span>${integer(mlb.sb)} SB</span>
       </div>
 
       <p>MLB evidence is shown separately from the minor-league development trend.</p>
@@ -923,25 +918,36 @@ function mlbTransitionDetails(player) {
       <div class="development-detail-heading">
         <div>
           <h4>MLB transition</h4>
-          <span>${yearValue(mlb.season)} · ${escapeHtml(mlb.team || player.current_org || "MLB")}</span>
+          <span>${escapeHtml(mlb.sample_label || "MLB Sample")}</span>
         </div>
-        <span class="mlb-sample-tag">${escapeHtml(mlb.sample_label || "MLB Sample")}</span>
+        <small>Transition evidence</small>
       </div>
 
-      <div class="mlb-detail-stat-grid">
-        <div><small>G</small><strong>${integer(mlb.games)}</strong></div>
-        <div><small>PA</small><strong>${integer(mlb.pa)}</strong></div>
-        <div><small>AVG</small><strong>${battingRate(mlb.avg)}</strong></div>
-        <div><small>OBP</small><strong>${battingRate(mlb.obp)}</strong></div>
-        <div><small>SLG</small><strong>${battingRate(mlb.slg)}</strong></div>
-        <div class="${mlbWrcToneClass(mlb.wrc_plus)}"><small>wRC+</small><strong class="mlb-wrc-value">${number1(mlb.wrc_plus)}</strong></div>
-        <div><small>K%</small><strong>${percentFromRate(mlb.k_pct)}</strong></div>
-        <div><small>BB%</small><strong>${percentFromRate(mlb.bb_pct)}</strong></div>
-        <div><small>HR</small><strong>${integer(mlb.hr)}</strong></div>
-        <div><small>RBI</small><strong>${integer(mlb.rbi)}</strong></div>
-        <div><small>SB</small><strong>${integer(mlb.sb)}</strong></div>
-        <div><small>WAR</small><strong>${Number.isFinite(Number(mlb.war)) ? Number(mlb.war).toFixed(2) : "—"}</strong></div>
-      </div>
+      <article class="development-season-detail mlb-season-detail">
+        <div class="development-season-detail-head">
+          <div>
+            <strong>${yearValue(mlb.season)}</strong>
+            <span>MLB · ${escapeHtml(mlb.team || player.current_org || "MLB")}</span>
+          </div>
+          <b>${integer(mlb.pa)} PA</b>
+        </div>
+
+        <div class="development-raw-stat-grid mlb-season-stat-grid">
+          <div><small>wRC+</small><strong class="${mlbWrcToneClass(mlb.wrc_plus)} mlb-wrc-value">${number1(mlb.wrc_plus)}</strong></div>
+          <div><small>AVG</small><strong>${battingRate(mlb.avg)}</strong></div>
+          <div><small>OBP</small><strong>${battingRate(mlb.obp)}</strong></div>
+          <div><small>SLG</small><strong>${battingRate(mlb.slg)}</strong></div>
+          <div><small>K%</small><strong>${percentFromRate(mlb.k_pct)}</strong></div>
+        </div>
+
+        <div class="development-z-grid mlb-season-stat-grid">
+          <div><small>BB%</small><strong>${percentFromRate(mlb.bb_pct)}</strong></div>
+          <div><small>HR</small><strong>${integer(mlb.hr)}</strong></div>
+          <div><small>RBI</small><strong>${integer(mlb.rbi)}</strong></div>
+          <div><small>SB</small><strong>${integer(mlb.sb)}</strong></div>
+          <div><small>WAR</small><strong>${Number.isFinite(Number(mlb.war)) ? Number(mlb.war).toFixed(2) : "—"}</strong></div>
+        </div>
+      </article>
 
       <div class="mlb-career-line">
         <span>Career MLB</span>
