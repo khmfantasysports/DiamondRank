@@ -2454,3 +2454,94 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     padding: 8px 7px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v10
+   - mobile filters arranged in clean two-column rows
+   - slightly smaller Core score meters
+   ========================================================= */
+
+/* Core scores: trim the large rings/cards slightly without
+   changing the five Fantasy skill-profile meters. */
+.score-ring-card.core {
+  padding: 10px 7px 9px;
+}
+
+.score-ring-card.core .score-ring {
+  --ring-size: 86px;
+}
+
+.score-ring-card.core .score-ring-center strong {
+  font-size: 26px;
+}
+
+.core-ring-grid {
+  gap: 8px;
+}
+
+/* Mobile filter layout:
+   Search
+   Sort | Filters
+   Position | Organization
+   Level | Clear filters
+*/
+@media (max-width: 640px) {
+  .toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .toolbar .search-field {
+    grid-column: 1 / -1;
+  }
+
+  .toolbar .sort-field {
+    grid-column: 1;
+  }
+
+  .filter-toggle {
+    grid-column: 2;
+  }
+
+  .toolbar.filters-open .secondary-filter:nth-of-type(3),
+  .toolbar.filters-open .secondary-filter:nth-of-type(4),
+  .toolbar.filters-open .secondary-filter:nth-of-type(5) {
+    grid-column: auto;
+  }
+
+  .toolbar.filters-open .ghost-button.secondary-filter {
+    grid-column: auto;
+    width: 100%;
+    align-self: end;
+  }
+
+  .toolbar label > span {
+    font-size: 8px;
+  }
+
+  .toolbar input,
+  .toolbar select,
+  .filter-toggle,
+  .ghost-button {
+    height: 38px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .score-ring-card.core {
+    padding: 9px 6px 8px;
+  }
+
+  .score-ring-card.core .score-ring {
+    --ring-size: 76px;
+  }
+
+  .score-ring-card.core .score-ring-center strong {
+    font-size: 22px;
+  }
+
+  .score-ring-card.core > span {
+    font-size: 9px;
+  }
+}
