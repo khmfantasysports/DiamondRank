@@ -897,11 +897,13 @@ function mlbTransitionCompact(player) {
         <div><small>K%</small><strong>${percentFromRate(mlb.k_pct)}</strong></div>
       </div>
 
-      <div class="mlb-transition-meta">
-        <span>BB% ${percentFromRate(mlb.bb_pct)}</span>
-        <span>${integer(mlb.hr)} HR</span>
-        <span>${integer(mlb.rbi)} RBI</span>
-        <span>${integer(mlb.sb)} SB</span>
+      <div class="current-stat-grid mlb-current-stat-grid mlb-current-stat-grid-secondary">
+        <div><small>G</small><strong>${integer(mlb.games)}</strong></div>
+        <div><small>BB%</small><strong>${percentFromRate(mlb.bb_pct)}</strong></div>
+        <div><small>HR</small><strong>${integer(mlb.hr)}</strong></div>
+        <div><small>RBI</small><strong>${integer(mlb.rbi)}</strong></div>
+        <div><small>SB</small><strong>${integer(mlb.sb)}</strong></div>
+        <div><small>WAR</small><strong>${Number.isFinite(Number(mlb.war)) ? Number(mlb.war).toFixed(2) : "—"}</strong></div>
       </div>
 
       <p>MLB evidence is shown separately from the minor-league development trend.</p>
