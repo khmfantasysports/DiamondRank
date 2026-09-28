@@ -3969,3 +3969,131 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     font-size: 8.5px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v21
+   MLB Transition now uses the same stat-pill language as the rest of the profile
+   ========================================================= */
+
+.mlb-transition-block {
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid var(--border);
+}
+
+.mlb-transition-block .mlb-transition-head {
+  align-items: center;
+}
+
+.mlb-transition-block .mlb-transition-head small {
+  color: var(--muted-2);
+}
+
+.mlb-transition-block .mlb-transition-head strong {
+  font-size: 10px;
+}
+
+.mlb-sample-tag {
+  border-color: var(--border);
+  background: rgba(255,255,255,.012);
+  color: var(--muted);
+}
+
+.mlb-current-stat-grid {
+  margin-top: 8px;
+}
+
+.mlb-current-stat-grid > div {
+  border-color: var(--border);
+  background: rgba(255,255,255,.012);
+}
+
+.mlb-current-stat-grid .mlb-wrc-value {
+  color: var(--mlb-accent, var(--text));
+}
+
+.mlb-transition-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.mlb-transition-meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 23px;
+  padding: 4px 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255,255,255,.01);
+  color: var(--muted);
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.mlb-transition-block > p {
+  margin: 7px 1px 0;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.4;
+}
+
+.mlb-detail-section {
+  --mlb-accent: var(--green-bright);
+}
+
+.mlb-season-detail {
+  border-color: var(--border);
+  background: rgba(255,255,255,.012);
+}
+
+.mlb-season-stat-grid > div {
+  border-color: var(--border);
+  background: rgba(255,255,255,.008);
+}
+
+.mlb-season-stat-grid strong {
+  color: var(--text);
+}
+
+.mlb-season-stat-grid .mlb-wrc-value.mlb-tone-emerald { color: var(--score-emerald); }
+.mlb-season-stat-grid .mlb-wrc-value.mlb-tone-lime { color: var(--score-lime); }
+.mlb-season-stat-grid .mlb-wrc-value.mlb-tone-gold { color: var(--score-gold); }
+.mlb-season-stat-grid .mlb-wrc-value.mlb-tone-orange { color: var(--score-orange); }
+.mlb-season-stat-grid .mlb-wrc-value.mlb-tone-red { color: var(--score-red); }
+
+.mlb-career-line {
+  margin-top: 8px;
+  border-color: var(--border);
+  background: rgba(255,255,255,.008);
+}
+
+@media (max-width: 640px) {
+  .mlb-transition-block {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .mlb-current-stat-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .mlb-current-stat-grid > div {
+    padding: 8px 3px;
+  }
+
+  .mlb-current-stat-grid small {
+    font-size: 6.5px;
+  }
+
+  .mlb-current-stat-grid strong {
+    font-size: 10px;
+  }
+
+  .mlb-transition-meta span {
+    font-size: 6.5px;
+  }
+}
