@@ -73,6 +73,11 @@ function number1(value) {
   return Number.isFinite(n) ? n.toFixed(1) : "—";
 }
 
+function yearValue(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? String(Math.trunc(n)) : "—";
+}
+
 function battingRate(value) {
   const n = Number(value);
   return Number.isFinite(n) ? n.toFixed(3).replace(/^0/, "") : "—";
@@ -769,6 +774,33 @@ function developmentSummaryFromAnnual(annual) {
   };
 }
 
+
+function publicDevelopmentTrend(summary) {
+  const label = String(summary?.label || "").toLowerCase();
+
+  if (label === "improving" || label === "trending up") {
+    return { label: "Trending Up", tone: "trend-up", icon: "↑" };
+  }
+  if (label === "cooling" || label === "trending down") {
+    return { label: "Trending Down", tone: "trend-down", icon: "↓" };
+  }
+  if (label === "mostly stable") {
+    return { label: "Stable", tone: "trend-stable", icon: "→" };
+  }
+  if (label === "baseline only") {
+    return { label: "Baseline", tone: "trend-baseline", icon: "•" };
+  }
+  return { label: "Mixed", tone: "trend-mixed", icon: "↕" };
+}
+
+function traitTrendTag(trend) {
+  const value = String(trend || "").toLowerCase();
+  if (value.includes("up")) return { label: "Up", tone: "trend-up", icon: "↑" };
+  if (value.includes("down")) return { label: "Down", tone: "trend-down", icon: "↓" };
+  if (value.includes("stable")) return { label: "Stable", tone: "trend-stable", icon: "→" };
+  return { label: "Mixed", tone: "trend-mixed", icon: "↕" };
+}
+
 function developmentSparkline(rows, key) {
   const values = (Array.isArray(rows) ? rows : [])
     .map((row, index) => ({
@@ -859,13 +891,21 @@ function developmentPanel(player) {
 
   return `
     <div class="development-overview development-overview-compact">
-      <div class="development-summary-row">
-        <span class="development-summary-chip ${summary.tone}">${escapeHtml(summary.label)}</span>
-        <span class="development-summary-detail">${escapeHtml(summary.detail)}</span>
-      </div>
+      ${(() => {
+        const overallTrend = publicDevelopmentTrend(summary);
+        return `
+          <div class="development-trend-row">
+            <span class="trend-label">Trend</span>
+            <span class="trend-tag ${overallTrend.tone}">
+              <b>${overallTrend.icon}</b> ${escapeHtml(overallTrend.label)}
+            </span>
+            <span class="development-summary-detail">${escapeHtml(summary.detail)}</span>
+          </div>
+        `;
+      })()}
 
       <div class="development-year-row">
-        <strong>${integer(previous.season)} → ${integer(latest.season)}</strong>
+        <strong>${yearValue(previous.season)} → ${yearValue(latest.season)}</strong>
         <span>PA-weighted season comparison</span>
       </div>
 
@@ -877,7 +917,10 @@ function developmentPanel(player) {
             <div class="development-trait ${developmentTrendTone(trend)}">
               <small>${escapeHtml(label)}</small>
               ${developmentSparkline(annual, key)}
-              <strong>${developmentArrow(trend)} ${escapeHtml(trend)}</strong>
+              ${(() => {
+                const tag = traitTrendTag(trend);
+                return `<span class="trend-tag trait-trend-tag ${tag.tone}"><b>${tag.icon}</b> ${escapeHtml(tag.label)}</span>`;
+              })()}
               <span class="development-delta">${signed1(delta)}</span>
               <span class="development-delta-label">year over year</span>
             </div>
@@ -934,7 +977,7 @@ function developmentDetailMarkup(player) {
             <div class="development-detail-heading">
               <div>
                 <h4>Year-over-year change</h4>
-                <span>${integer(previous.season)} → ${integer(latest.season)}</span>
+                <span>${yearValue(previous.season)} → ${yearValue(latest.season)}</span>
               </div>
               <small>Age + level adjusted</small>
             </div>
@@ -953,7 +996,15 @@ function developmentDetailMarkup(player) {
                       <b>→</b>
                       <strong>${Number.isFinite(now) ? now.toFixed(2) : "—"}</strong>
                     </div>
-                    <em>${developmentArrow(trend)} ${signed1(delta)}</em>
+                    ${(() => {
+                      const tag = traitTrendTag(trend);
+                      return `
+                        <span class="trend-tag detail-trend-tag ${tag.tone}">
+                          <b>${tag.icon}</b> ${escapeHtml(tag.label)}
+                        </span>
+                        <em>${signed1(delta)}</em>
+                      `;
+                    })()}
                   </div>
                 `;
               }).join("")}
@@ -981,7 +1032,7 @@ function developmentDetailMarkup(player) {
               <article class="development-season-detail ${index === annual.length - 1 ? "current" : ""}">
                 <div class="development-season-detail-head">
                   <div>
-                    <strong>${integer(season.season)}</strong>
+                    <strong>${yearValue(season.season)}</strong>
                     <span>${escapeHtml((season.levels || []).join(" / ") || "—")}</span>
                   </div>
                   <b>${integer(season.pa)} PA</b>
