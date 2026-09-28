@@ -374,6 +374,23 @@ function contextMeters(player) {
   `;
 }
 
+function battedBallContextLabel(z, label) {
+  const value = Number(z);
+  const name = String(label || "Rate");
+  if (!Number.isFinite(value)) return "Context unavailable";
+  if (value >= 1.0) return `Much more ${name.toLowerCase()} than context`;
+  if (value >= 0.35) return `More ${name.toLowerCase()} than context`;
+  if (value > -0.35) return `Typical ${name.toLowerCase()} mix`;
+  if (value > -1.0) return `Less ${name.toLowerCase()} than context`;
+  return `Much less ${name.toLowerCase()} than context`;
+}
+
+function battedBallContextPosition(z) {
+  const value = Number(z);
+  if (!Number.isFinite(value)) return 50;
+  return clamp(50 + (value * 20), 5, 95);
+}
+
 function sprayProfile(player) {
   const items = Array.isArray(player.hitting_shape?.batted_ball_shape)
     ? player.hitting_shape.batted_ball_shape
@@ -399,7 +416,7 @@ function sprayProfile(player) {
       <div class="spray-card">
         <div class="spray-title">
           <strong>Spray tendency</strong>
-          <span>Pull / Center / Oppo</span>
+          <span>Where contact is going</span>
         </div>
         <svg class="spray-field" viewBox="0 0 300 180" role="img" aria-label="Spray tendency: Pull ${number1(pull)} percent, Center ${number1(center)} percent, Opposite ${number1(oppo)} percent">
           <path class="field-outline" d="M150 164 L34 70 Q150 -6 266 70 Z"></path>
@@ -408,33 +425,51 @@ function sprayProfile(player) {
           <path class="field-zone spray-oppo" style="fill-opacity:${alpha(oppo)}" d="M150 164 L187 32 Q228 28 266 70 Z"></path>
           <path class="infield" d="M150 145 L124 119 L150 93 L176 119 Z"></path>
           <circle class="home-plate-dot" cx="150" cy="157" r="4"></circle>
-          <text x="91" y="72" text-anchor="middle">PULL</text>
+          <text x="94" y="74" text-anchor="middle">PULL</text>
           <text x="150" y="42" text-anchor="middle">CENTER</text>
-          <text x="209" y="72" text-anchor="middle">OPPO</text>
-          <text class="spray-pct" x="91" y="91" text-anchor="middle">${number1(pull)}%</text>
+          <text x="206" y="74" text-anchor="middle">OPPO</text>
+          <text class="spray-pct" x="94" y="93" text-anchor="middle">${number1(pull)}%</text>
           <text class="spray-pct" x="150" y="61" text-anchor="middle">${number1(center)}%</text>
-          <text class="spray-pct" x="209" y="91" text-anchor="middle">${number1(oppo)}%</text>
+          <text class="spray-pct" x="206" y="93" text-anchor="middle">${number1(oppo)}%</text>
         </svg>
       </div>
 
       <div class="contact-type-grid">
-        ${contactTypeCell("GB", "Ground ball", gb, "ground")}
-        ${contactTypeCell("FB", "Fly ball", fb, "fly")}
-        ${contactTypeCell("LD", "Line drive", ld, "line")}
+        ${contactTypeCell("GB", "Ground ball", gb, byKey.GB?.z, "ground")}
+        ${contactTypeCell("FB", "Fly ball", fb, byKey.FB?.z, "fly")}
+        ${contactTypeCell("LD", "Line drive", ld, byKey.LD?.z, "line")}
       </div>
     </div>
   `;
 }
 
-function contactTypeCell(shortLabel, label, value, tone = "") {
-  const pct = clamp(value, 0, 100);
+function contactTypeCell(shortLabel, label, value, z, tone = "") {
+  const position = battedBallContextPosition(z);
+  const contextLabel = battedBallContextLabel(z, label);
+
   return `
-    <div class="contact-type ${escapeHtml(tone)}" role="img" aria-label="${escapeHtml(label)} ${number1(value)} percent">
-      <div class="contact-type-head"><strong>${shortLabel}</strong><span>${number1(value)}%</span></div>
-      <div class="contact-type-track"><i style="width:${pct}%"></i></div>
+    <div class="contact-type ${escapeHtml(tone)}" role="img"
+      aria-label="${escapeHtml(label)} ${number1(value)} percent. ${escapeHtml(contextLabel)}">
+      <div class="contact-type-head">
+        <strong>${shortLabel}</strong>
+        <span>${number1(value)}%</span>
+      </div>
+
+      <div class="bb-context-track" style="--bb-dot:${position}%">
+        <span class="bb-context-mid"></span>
+        <i></i>
+      </div>
+
+      <div class="bb-context-scale">
+        <span>Less</span>
+        <span>More</span>
+      </div>
+
+      <small class="bb-context-label">${escapeHtml(contextLabel)}</small>
     </div>
   `;
 }
+
 
 function compactSwStr(player) {
   const percentile = clamp(player.swstr_contact_percentile, 0, 99.9);
@@ -602,13 +637,19 @@ function compCards(player) {
 
 function explanationDetails(player) {
   const exp = player.plain_language_explanations || {};
+  const compCount = Number(player.comparable_context?.displayed_comparables) || 6;
+  const comparableExplanation =
+    `Historical Comparables shows the ${compCount} closest refined-position profiles from the historical database. ` +
+    `Match Quality describes how tightly the strongest comparable group fits the current player overall. ` +
+    `The names are reference points for profile similarity, not predictions of who the player will become.`;
+
   const items = [
     ["DiamondScore", exp.overall],
     ["Opportunity", exp.opportunity],
     ["Fantasy Profile", exp.fantasy_profile],
     ["Current Evidence", exp.current_evidence],
     ["Hitting Shape", exp.hitting_shape],
-    ["Comparables", exp.comparables],
+    ["Comparables", comparableExplanation],
     ["5-Year Outcomes", exp.comparable_selection],
     ["Swing & Miss", exp.swstr],
     ["Score Colours", exp.score_scale]
