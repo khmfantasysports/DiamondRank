@@ -36,8 +36,8 @@ const state = {
 const el = {
   headerStatus: document.getElementById("headerStatus"),
   heroCount: document.getElementById("heroCount"),
+  heroUpdated: document.getElementById("heroUpdated"),
   resultCount: document.getElementById("resultCount"),
-  dataUpdated: document.getElementById("dataUpdated"),
   search: document.getElementById("searchInput"),
   position: document.getElementById("positionFilter"),
   org: document.getElementById("orgFilter"),
@@ -73,6 +73,13 @@ function number1(value) {
   return Number.isFinite(n) ? n.toFixed(1) : "—";
 }
 
+function contextNumber2(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  const normalized = Math.abs(n) < 0.005 ? 0 : n;
+  return normalized.toFixed(2);
+}
+
 function yearValue(value) {
   const n = Number(value);
   return Number.isFinite(n) ? String(Math.trunc(n)) : "—";
@@ -102,6 +109,16 @@ function formatDate(value) {
     month: "short",
     day: "numeric"
   }).format(d)}`;
+}
+
+function formatShortDate(value) {
+  if (!value) return "—";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric"
+  }).format(d);
 }
 
 function positionFamilyLabel(value) {
@@ -180,10 +197,8 @@ async function loadRankings() {
   }, 0);
 
   el.heroCount.textContent = state.rows.length.toLocaleString();
-  el.headerStatus.textContent = latest
-    ? `${state.rows.length} hitters • ${new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(new Date(latest))}`
-    : `${state.rows.length} hitters`;
-  el.dataUpdated.textContent = latest ? formatDate(latest) : "Update time unavailable";
+  el.heroUpdated.textContent = latest ? formatShortDate(latest) : "—";
+  el.headerStatus.textContent = "Current board";
 
   setLoading(false);
   applyFilters();
@@ -243,7 +258,7 @@ function applyFilters() {
 
 function renderBoard() {
   const visibleRows = state.filtered.slice(0, state.visible);
-  el.resultCount.textContent = `${state.filtered.length.toLocaleString()} shown`;
+  el.resultCount.textContent = state.filtered.length.toLocaleString();
 
   if (!visibleRows.length) {
     el.board.innerHTML = `<div class="state-card"><strong>No hitters match these filters.</strong></div>`;
@@ -364,13 +379,13 @@ function contextMeters(player) {
         const position = contextPosition(z);
         const band = item.band_label || "Context comparison";
         return `
-          <div class="context-meter ${contextToneClass(z)}" role="img" aria-label="${escapeHtml(item.label || item.key || "Trait")}: ${escapeHtml(band)}, context z ${number1(z)}">
+          <div class="context-meter ${contextToneClass(z)}" role="img" aria-label="${escapeHtml(item.label || item.key || "Trait")}: ${escapeHtml(band)}, context z ${contextNumber2(z)}">
             <strong>${escapeHtml(item.label || item.key || "Trait")}</strong>
             <div class="context-track" style="--dot:${position}%">
               <span class="context-mid"></span>
               <span class="context-dot"></span>
             </div>
-            <div class="context-scale"><span>−</span><b>${number1(z)}</b><span>+</span></div>
+            <div class="context-scale"><span>−</span><b>${contextNumber2(z)}</b><span>+</span></div>
             <small>${escapeHtml(contextRawLabel(item))}</small>
           </div>
         `;
@@ -893,6 +908,9 @@ function developmentPanel(player) {
     <div class="development-overview development-overview-compact">
       ${(() => {
         const overallTrend = publicDevelopmentTrend(summary);
+        const trendNote = overallTrend.label === "Trending Down"
+          ? `Trend measures recent direction, not current strength. This player can still rank #${integer(player.overall_rank)} because DiamondScore compares the current profile with the prospect pool.`
+          : "";
         return `
           <div class="development-trend-row">
             <span class="trend-label">Trend</span>
@@ -901,6 +919,7 @@ function developmentPanel(player) {
             </span>
             <span class="development-summary-detail">${escapeHtml(summary.detail)}</span>
           </div>
+          ${trendNote ? `<div class="development-rank-note">${escapeHtml(trendNote)}</div>` : ""}
         `;
       })()}
 
@@ -1323,10 +1342,20 @@ el.search.addEventListener("input", () => {
   state.visible = PAGE_SIZE;
   applyFilters();
 });
-for (const control of [el.position, el.org, el.level, el.sort]) {
+el.sort.addEventListener("change", () => {
+  state.visible = PAGE_SIZE;
+  applyFilters();
+});
+
+for (const control of [el.position, el.org, el.level]) {
   control.addEventListener("change", () => {
     state.visible = PAGE_SIZE;
     applyFilters();
+
+    if (window.matchMedia("(max-width: 640px)").matches && el.toolbar) {
+      el.toolbar.classList.remove("filters-open");
+      el.filterToggle?.setAttribute("aria-expanded", "false");
+    }
   });
 }
 el.clear.addEventListener("click", () => {
