@@ -1485,3 +1485,321 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     font-size: 16px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v6
+   Top 5 refined comps + match quality + 30-comp five-year MLB outcomes
+   ========================================================= */
+
+.comparables-title-row {
+  align-items: center;
+}
+
+.match-quality {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 25px;
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 8px !important;
+  line-height: 1;
+  font-weight: 850;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.match-quality.quality-tight {
+  color: var(--score-emerald);
+  border-color: color-mix(in srgb, var(--score-emerald) 42%, var(--border));
+  background: color-mix(in srgb, var(--score-emerald) 8%, transparent);
+}
+
+.match-quality.quality-strong {
+  color: var(--score-lime);
+  border-color: color-mix(in srgb, var(--score-lime) 40%, var(--border));
+  background: color-mix(in srgb, var(--score-lime) 7%, transparent);
+}
+
+.match-quality.quality-solid {
+  color: var(--score-gold);
+  border-color: color-mix(in srgb, var(--score-gold) 38%, var(--border));
+  background: color-mix(in srgb, var(--score-gold) 7%, transparent);
+}
+
+.match-quality.quality-broad {
+  color: var(--score-orange);
+  border-color: color-mix(in srgb, var(--score-orange) 38%, var(--border));
+  background: color-mix(in srgb, var(--score-orange) 7%, transparent);
+}
+
+.match-quality.quality-loose {
+  color: var(--score-red);
+  border-color: color-mix(in srgb, var(--score-red) 38%, var(--border));
+  background: color-mix(in srgb, var(--score-red) 7%, transparent);
+}
+
+.comps {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.comp-card {
+  grid-column: span 2;
+  display: flex;
+  min-width: 0;
+  min-height: 112px;
+  flex-direction: column;
+  padding: 9px;
+}
+
+.comp-card:nth-child(4),
+.comp-card:nth-child(5) {
+  grid-column: span 3;
+}
+
+.comp-name {
+  min-height: 0;
+  margin-top: 5px;
+}
+
+.comp-meta {
+  margin-top: 5px;
+}
+
+.comp-outcome {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 4px 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+.outcome-none { --outcome-color: var(--score-red); }
+.outcome-limited { --outcome-color: var(--score-orange); }
+.outcome-depth { --outcome-color: var(--score-gold); }
+.outcome-regular { --outcome-color: var(--score-lime); }
+.outcome-star { --outcome-color: var(--score-emerald); }
+.outcome-neutral { --outcome-color: var(--score-neutral); }
+
+.comp-outcome.outcome-none,
+.outcome-legend .outcome-none { color: var(--score-red); }
+.comp-outcome.outcome-limited,
+.outcome-legend .outcome-limited { color: var(--score-orange); }
+.comp-outcome.outcome-depth,
+.outcome-legend .outcome-depth { color: var(--score-gold); }
+.comp-outcome.outcome-regular,
+.outcome-legend .outcome-regular { color: var(--score-lime); }
+.comp-outcome.outcome-star,
+.outcome-legend .outcome-star { color: var(--score-emerald); }
+
+.five-year-panel {
+  margin-top: 10px;
+  padding: 11px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255,255,255,.012);
+}
+
+.five-year-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.five-year-head > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.five-year-head strong {
+  font-size: 12px;
+}
+
+.five-year-head span {
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+.outcome-segments {
+  display: flex;
+  height: 11px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+}
+
+.outcome-segments i {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+
+.outcome-segments .outcome-none { background: var(--score-red); }
+.outcome-segments .outcome-limited { background: var(--score-orange); }
+.outcome-segments .outcome-depth { background: var(--score-gold); }
+.outcome-segments .outcome-regular { background: var(--score-lime); }
+.outcome-segments .outcome-star { background: var(--score-emerald); }
+
+.outcome-legend {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.outcome-legend > div {
+  min-width: 0;
+  text-align: center;
+}
+
+.outcome-legend > div > span {
+  display: block;
+  width: 7px;
+  height: 7px;
+  margin: 0 auto 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.outcome-legend small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 7px;
+  color: var(--muted);
+}
+
+.outcome-legend strong {
+  display: block;
+  margin-top: 1px;
+  color: currentColor;
+  font-size: 11px;
+}
+
+.outcome-medians {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+}
+
+.outcome-medians > div {
+  min-width: 0;
+  padding: 9px 6px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+
+.outcome-medians > div:last-child {
+  border-right: 0;
+}
+
+.outcome-medians small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+
+.outcome-medians strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 18px;
+  letter-spacing: -.025em;
+}
+
+.outcome-definitions {
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.outcome-definitions summary {
+  padding: 8px 0 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.outcome-definitions > div {
+  padding-top: 5px;
+}
+
+.outcome-definitions p {
+  margin: 3px 0;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.outcome-definitions b {
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .comp-card {
+    min-height: 104px;
+    padding: 8px 7px;
+  }
+
+  .comp-outcome {
+    padding: 3px 5px;
+    font-size: 6.5px;
+  }
+
+  .five-year-panel {
+    padding: 9px;
+  }
+
+  .five-year-head > div {
+    gap: 6px;
+  }
+
+  .five-year-head strong {
+    font-size: 11px;
+  }
+
+  .outcome-segments {
+    height: 9px;
+  }
+
+  .outcome-legend {
+    gap: 2px;
+  }
+
+  .outcome-legend small {
+    font-size: 6.4px;
+  }
+
+  .outcome-legend strong {
+    font-size: 10px;
+  }
+
+  .outcome-medians > div {
+    padding: 8px 4px;
+  }
+
+  .outcome-medians small {
+    font-size: 6.5px;
+  }
+
+  .outcome-medians strong {
+    font-size: 16px;
+  }
+}
