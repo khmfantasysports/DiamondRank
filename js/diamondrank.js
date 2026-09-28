@@ -503,10 +503,10 @@ function fiveYearOutcomePanel(player) {
 
   const buckets = [
     ["No MLB", outcomes.no_mlb, "outcome-none"],
-    ["Limited", outcomes.limited_mlb, "outcome-limited"],
-    ["Depth", outcomes.depth_mlb, "outcome-depth"],
-    ["Regular", outcomes.regular_mlb, "outcome-regular"],
-    ["Star", outcomes.star_mlb, "outcome-star"]
+    ["Limited MLB", outcomes.limited_mlb, "outcome-limited"],
+    ["Depth MLB", outcomes.depth_mlb, "outcome-depth"],
+    ["Regular MLB", outcomes.regular_mlb, "outcome-regular"],
+    ["Star MLB", outcomes.star_mlb, "outcome-star"]
   ];
 
   const segmentLabel = buckets
@@ -553,6 +553,12 @@ function fiveYearOutcomePanel(player) {
         </div>
       </div>
 
+      <div class="outcome-sample-note">
+        ${Number(outcomes.meaningful_mlb_sample_count) > 0
+          ? `WAR & wRC+ use comps with 250+ MLB PA · n=${integer(outcomes.meaningful_mlb_sample_count)}`
+          : `No comps reached 250+ MLB PA; WAR & wRC+ are unavailable.`}
+      </div>
+
       <details class="outcome-definitions">
         <summary>5-year outcome definitions</summary>
         <div>
@@ -561,6 +567,7 @@ function fiveYearOutcomePanel(player) {
           <p><b>Depth MLB:</b> ${escapeHtml(outcomes.definitions?.depth_mlb || "250–999 MLB PA within five seasons")}</p>
           <p><b>Regular MLB:</b> ${escapeHtml(outcomes.definitions?.regular_mlb || "1,000+ MLB PA below the Star threshold")}</p>
           <p><b>Star MLB:</b> ${escapeHtml(outcomes.definitions?.star_mlb || "1,000+ MLB PA and 10+ WAR within five seasons")}</p>
+          <p><b>Median WAR:</b> ${escapeHtml(outcomes.definitions?.median_mlb_war || "Uses comps with a meaningful MLB sample")}</p>
           <p><b>Median wRC+:</b> ${escapeHtml(outcomes.definitions?.median_wrc_plus || "Uses comps with a meaningful MLB sample")}</p>
         </div>
       </details>
