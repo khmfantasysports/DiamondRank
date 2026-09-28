@@ -73,6 +73,11 @@ function number1(value) {
   return Number.isFinite(n) ? n.toFixed(1) : "—";
 }
 
+function battingRate(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n.toFixed(3).replace(/^0/, "") : "—";
+}
+
 function percentFromRate(value) {
   const n = Number(value);
   return Number.isFinite(n) ? `${(n * 100).toFixed(1)}%` : "—";
@@ -403,12 +408,12 @@ function sprayProfile(player) {
           <path class="field-zone spray-oppo" style="fill-opacity:${alpha(oppo)}" d="M150 164 L187 32 Q228 28 266 70 Z"></path>
           <path class="infield" d="M150 145 L124 119 L150 93 L176 119 Z"></path>
           <circle class="home-plate-dot" cx="150" cy="157" r="4"></circle>
-          <text x="72" y="68" text-anchor="middle">PULL</text>
-          <text x="150" y="39" text-anchor="middle">CENTER</text>
-          <text x="228" y="68" text-anchor="middle">OPPO</text>
-          <text class="spray-pct" x="72" y="87" text-anchor="middle">${number1(pull)}%</text>
-          <text class="spray-pct" x="150" y="58" text-anchor="middle">${number1(center)}%</text>
-          <text class="spray-pct" x="228" y="87" text-anchor="middle">${number1(oppo)}%</text>
+          <text x="91" y="72" text-anchor="middle">PULL</text>
+          <text x="150" y="42" text-anchor="middle">CENTER</text>
+          <text x="209" y="72" text-anchor="middle">OPPO</text>
+          <text class="spray-pct" x="91" y="91" text-anchor="middle">${number1(pull)}%</text>
+          <text class="spray-pct" x="150" y="61" text-anchor="middle">${number1(center)}%</text>
+          <text class="spray-pct" x="209" y="91" text-anchor="middle">${number1(oppo)}%</text>
         </svg>
       </div>
 
@@ -598,22 +603,25 @@ function compCards(player) {
 function explanationDetails(player) {
   const exp = player.plain_language_explanations || {};
   const items = [
-    ["Overall score", exp.overall],
+    ["DiamondScore", exp.overall],
     ["Opportunity", exp.opportunity],
     ["Fantasy Profile", exp.fantasy_profile],
-    ["Historical comparables", exp.comparables],
-    ["Comparable selection", exp.comparable_selection],
-    ["Swing & miss", exp.swstr],
-    ["Score scale", exp.score_scale]
+    ["Current Evidence", exp.current_evidence],
+    ["Hitting Shape", exp.hitting_shape],
+    ["Comparables", exp.comparables],
+    ["5-Year Outcomes", exp.comparable_selection],
+    ["Swing & Miss", exp.swstr],
+    ["Score Colours", exp.score_scale]
   ].filter(([, value]) => value);
 
   return items.map(([label, text]) => `
-    <details>
+    <details class="method-card">
       <summary>${escapeHtml(label)}</summary>
       <p>${escapeHtml(text)}</p>
     </details>
   `).join("");
 }
+
 
 async function openPlayer(playerId) {
   el.dialogContent.innerHTML = "";
@@ -643,11 +651,31 @@ function renderPlayer(player) {
 
   el.dialogContent.innerHTML = `
     <div class="profile-head">
-      <div class="profile-kicker">#${integer(player.overall_rank)} overall • ${escapeHtml(positionRankLabel)}</div>
-      <div class="profile-title">
+      <div class="player-name-row">
         <h2 id="dialogPlayerName">${escapeHtml(player.full_name)}</h2>
-        <div class="profile-score ${scoreToneClass(player.overall_score)}"><strong>${number1(player.overall_score)}</strong><span>DiamondRank</span></div>
       </div>
+
+      <div class="rank-score-strip">
+        <div class="rank-summary-card">
+          <small>DiamondRank</small>
+          <strong>#${integer(player.overall_rank)}</strong>
+          <span>Overall</span>
+        </div>
+
+        <div class="rank-summary-card">
+          <small>Position Rank</small>
+          <strong>#${integer(player.position_rank)}</strong>
+          <span>${escapeHtml(positionFamilyLabel(player.position_family))}</span>
+        </div>
+
+        <div class="diamondscore-card ${scoreToneClass(player.overall_score)}">
+          <small>DiamondScore</small>
+          <div class="diamondscore-ring" style="--meter:${clamp(player.overall_score, 0, 99.9)}">
+            <strong>${number1(player.overall_score)}</strong>
+          </div>
+        </div>
+      </div>
+
       <div class="profile-meta compact-meta">
         <span class="chip">${escapeHtml(player.primary_position || player.position_family || "—")}</span>
         <span class="chip">${escapeHtml(player.current_org || "FA")}</span>
@@ -679,6 +707,14 @@ function renderPlayer(player) {
         <div><small>PA</small><strong>${integer(evidence.pa)}</strong></div>
         <div><small>Age</small><strong>${number1(evidence.age ?? player.age)}</strong></div>
       </div>
+      <div class="current-stat-grid">
+        <div><small>AVG</small><strong>${battingRate(evidence.avg)}</strong></div>
+        <div><small>OBP</small><strong>${battingRate(evidence.obp)}</strong></div>
+        <div><small>SLG</small><strong>${battingRate(evidence.slg)}</strong></div>
+        <div><small>HR</small><strong>${integer(evidence.hr)}</strong></div>
+        <div><small>RBI</small><strong>${integer(evidence.rbi)}</strong></div>
+        <div><small>SB</small><strong>${integer(evidence.sb)}</strong></div>
+      </div>
     </section>
 
     <section class="profile-section compact-section">
@@ -709,8 +745,8 @@ function renderPlayer(player) {
     </section>
 
     <section class="profile-section compact-section">
-      <div class="section-title-row"><h3>What the scores mean</h3><span>Methodology</span></div>
-      <div class="explanation-list">${explanationDetails(player)}</div>
+      <div class="section-title-row"><h3>How to read DiamondRank</h3><span>Tap a topic</span></div>
+      <div class="explanation-list methodology-grid">${explanationDetails(player)}</div>
     </section>
   `;
 
