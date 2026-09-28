@@ -3485,3 +3485,261 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     font-size: 6.2px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank UI pass v18
+   Readability, header spacing, trend clarification, filter collapse
+   ========================================================= */
+
+/* Brighter/larger helper labels such as Age + level adjusted and Tap a topic. */
+.section-title-row > span {
+  color: #aebdb5;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Supporting Swing & Miss labels such as Lower is better. */
+.swing-miss-facts span {
+  color: #aebdb5;
+  font-size: 9.5px;
+  font-weight: 600;
+}
+
+.swing-miss-facts small,
+.batball-scale {
+  color: #9dada5;
+}
+
+/* Keep the top-right hitter/date status away from the viewport edge. */
+.site-header {
+  padding-inline: 6px;
+}
+
+.header-status {
+  padding-right: 2px;
+}
+
+/* Explain how current rank strength and recent trend can diverge. */
+.development-rank-note {
+  margin: -1px 0 8px;
+  padding: 7px 8px;
+  border: 1px solid rgba(177,224,197,.11);
+  border-radius: 9px;
+  background: rgba(255,255,255,.012);
+  color: #aebdb5;
+  font-size: 7.5px;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    padding-inline: 7px;
+  }
+
+  .header-status {
+    max-width: 140px;
+    padding-right: 1px;
+  }
+
+  .section-title-row > span {
+    font-size: 10px;
+  }
+
+  .swing-miss-facts span {
+    font-size: 9px;
+  }
+
+  .development-rank-note {
+    font-size: 7px;
+  }
+}
+
+
+/* =========================================================
+   DiamondRank UI pass v19
+   Leaderboard summary header + aligned mobile filter control
+   ========================================================= */
+
+.header-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid rgba(177,224,197,.14);
+  border-radius: 999px;
+  background: rgba(255,255,255,.018);
+  color: #aebdb5;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.header-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--green-bright);
+  box-shadow: 0 0 0 3px rgba(130,231,173,.08);
+}
+
+.leaderboard-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  align-items: stretch;
+  gap: 14px;
+  padding: 16px;
+}
+
+.leaderboard-hero .hero-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4px 2px;
+}
+
+.leaderboard-hero .hero-text {
+  margin-top: 9px;
+}
+
+.hero-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.hero-summary-card {
+  display: flex;
+  min-width: 0;
+  min-height: 94px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 13px;
+  border: 1px solid rgba(177,224,197,.14);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.008));
+}
+
+.hero-summary-card small {
+  color: #92a89b;
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.hero-summary-card strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--text);
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.hero-summary-card:first-child strong {
+  color: var(--green-bright);
+  font-size: 30px;
+}
+
+.hero-summary-card span {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 7.5px;
+  line-height: 1.25;
+}
+
+.board-head.board-head-compact {
+  align-items: center;
+  padding: 12px 14px;
+}
+
+.board-head-title {
+  min-width: 0;
+}
+
+.board-eyebrow {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--green-bright);
+  font-size: 6.5px;
+  font-weight: 850;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.board-head.board-head-compact h2 {
+  font-size: 21px;
+}
+
+.board-result-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  min-width: 74px;
+}
+
+.board-result-summary span {
+  color: #92a89b;
+  font-size: 6.5px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.board-result-summary strong {
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Align the Filters button with the Sort select, not its label. */
+@media (max-width: 640px) {
+  .leaderboard-hero {
+    grid-template-columns: 1fr;
+    gap: 11px;
+    padding: 14px;
+  }
+
+  .hero-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-summary-card {
+    min-height: 76px;
+    padding: 10px;
+  }
+
+  .hero-summary-card strong {
+    font-size: 20px;
+  }
+
+  .hero-summary-card:first-child strong {
+    font-size: 24px;
+  }
+
+  .hero-summary-card span {
+    font-size: 6.5px;
+  }
+
+  .board-head.board-head-compact {
+    padding: 11px 10px;
+  }
+
+  .board-result-summary {
+    min-width: 66px;
+  }
+
+  .filter-toggle {
+    align-self: end;
+    margin: 0;
+  }
+}
