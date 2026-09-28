@@ -1066,8 +1066,11 @@ function openDevelopmentDetails(player) {
   overlay.dataset.developmentOverlay = "true";
   overlay.innerHTML = developmentDetailMarkup(player);
 
-  document.body.appendChild(overlay);
-  document.body.classList.add("development-detail-open");
+  // The player profile is a native modal <dialog>, which lives in the
+  // browser top layer. Keep Development Details inside that same dialog
+  // so iOS Safari cannot render it behind the active modal.
+  el.dialog.appendChild(overlay);
+  el.dialog.classList.add("development-detail-active");
 
   const closeButton = overlay.querySelector("[data-development-close]");
   closeButton?.focus();
@@ -1080,8 +1083,8 @@ function openDevelopmentDetails(player) {
 }
 
 function closeDevelopmentDetails() {
-  document.querySelector("[data-development-overlay]")?.remove();
-  document.body.classList.remove("development-detail-open");
+  el.dialog?.querySelector("[data-development-overlay]")?.remove();
+  el.dialog?.classList.remove("development-detail-active");
 }
 
 
