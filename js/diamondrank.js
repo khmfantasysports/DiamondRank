@@ -641,10 +641,14 @@ function compCards(player) {
 
   return comps.map((comp, index) => {
     const outcome = comp.five_year_outcome || "—";
+    const matchPct = Number(comp.match_pct);
+    const matchLabel = Number.isFinite(matchPct)
+      ? `Match ${index + 1} · ${Math.round(matchPct)}%`
+      : `Match ${index + 1}`;
     return `
       <div class="comp-card">
         <div class="comp-topline">
-          <span>Match ${index + 1}</span>
+          <span>${matchLabel}</span>
         </div>
         <div class="comp-name">${escapeHtml(comp.name || "Historical comp")}</div>
         <div class="comp-meta">${escapeHtml(comp.level || "—")} • ${escapeHtml(comp.season || "—")} • ${escapeHtml(comp.position || comp.position_family || "—")}</div>
@@ -997,7 +1001,7 @@ function developmentPanel(player) {
           <span>A second qualified season is needed before a year-to-year trend is shown.</span>
         </div>
         ${mlbTransitionCompact(player)}
-        <button class="development-open-button" type="button" data-development-open>
+<button class="development-open-button" type="button" data-development-open>
           View development details
         </button>
       </div>
@@ -1279,8 +1283,8 @@ function explanationDetails(player) {
   const compCount = Number(player.comparable_context?.displayed_comparables) || 6;
   const comparableExplanation =
     `Historical Comparables shows the ${compCount} closest refined-position profiles from the historical database. ` +
-    `Match Quality describes how tightly the strongest comparable group fits the current player overall. ` +
-    `The names are reference points for profile similarity, not predictions of who the player will become.`;
+    `Each comp has its own Match %, derived from adjusted statistical distance; higher values mean a closer profile match. ` +
+    `Match % is a similarity score, not a probability of MLB success or a prediction of who the player will become.`;
 
   const items = [
     ["DiamondScore", exp.overall],
@@ -1424,9 +1428,7 @@ function renderPlayer(player) {
     <section class="profile-section compact-section">
       <div class="section-title-row comparables-title-row">
         <h3>Historical comparables</h3>
-        ${player.comparable_context?.match_quality?.label
-          ? `<span class="match-quality ${matchQualityToneClass(player.comparable_context?.match_quality?.key)}">${escapeHtml(player.comparable_context.match_quality.label)}</span>`
-          : `<span>Closest refined-position matches</span>`}
+        <span>Closest refined-position matches</span>
       </div>
       <div class="comps">${compCards(player)}</div>
       ${fiveYearOutcomePanel(player)}
