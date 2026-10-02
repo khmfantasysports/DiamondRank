@@ -1,0 +1,42 @@
+/* Pitcher-specific leaderboard/profile styling.
+   Keep this file small: generic visual primitives belong in diamondrank.css. */
+
+body[data-board-mode="pitchers"] .position-filter {
+  display: none;
+}
+
+body[data-board-mode="pitchers"] .toolbar {
+  grid-template-columns: minmax(190px,1.5fr) repeat(3,minmax(120px,.8fr)) auto;
+}
+
+.pitcher-row {
+  cursor: default;
+}
+
+.pitcher-row:hover {
+  background: rgba(89,209,140,.025);
+}
+
+.pitcher-row .player-meta .pitcher-role-label {
+  color: var(--muted-2);
+}
+
+.pitcher-row .row-status {
+  color: var(--muted-2);
+}
+
+@media (max-width: 900px) {
+  body[data-board-mode="pitchers"] .toolbar {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-board-mode="pitchers"] .toolbar {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+
+  body[data-board-mode="pitchers"] .toolbar.filters-open .position-filter {
+    display: none;
+  }
+}
