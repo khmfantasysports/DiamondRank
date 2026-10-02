@@ -259,6 +259,18 @@ function fiveYearPanel(player) {
       </div>
 
       <p class="pitcher-outcome-note">${escapeHtml(o.qualification_note || "")}</p>
+
+      <details class="pitcher-outcome-definitions">
+        <summary>5-year outcome definitions</summary>
+        <div>
+          <p><b>No MLB:</b> No MLB innings within the five-year outcome window.</p>
+          <p><b>Limited MLB:</b> MLB appearance, but fewer than 75 MLB innings.</p>
+          <p><b>MLB Depth:</b> 75 to fewer than 150 MLB innings.</p>
+          <p><b>MLB Role:</b> Historical outcome classified as Role Starter, Back End Starter, Role Reliever, or Middle Reliever.</p>
+          <p><b>Impact MLB:</b> Historical outcome classified as Mid Rotation Starter, Top End Starter, or High Leverage Reliever.</p>
+          <p><b>Median WAR & Starts:</b> Uses comparable pitchers with at least 75 MLB innings.</p>
+        </div>
+      </details>
     </div>
   `;
 }
@@ -366,25 +378,109 @@ function mlbTransitionCompact(player) {
   `;
 }
 
+
+function developmentTrendFromDelta(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "STABLE";
+  if (n >= 1.5) return "UP";
+  if (n <= -1.5) return "DOWN";
+  return "STABLE";
+}
+
+function developmentTrendTag(value) {
+  const trend = developmentTrendFromDelta(value);
+  if (trend === "UP") return { icon: "↗", label: "Up", tone: "trend-up" };
+  if (trend === "DOWN") return { icon: "↘", label: "Down", tone: "trend-down" };
+  return { icon: "→", label: "Stable", tone: "trend-steady" };
+}
+
+function developmentSparkline(timeline, key) {
+  const rows = (Array.isArray(timeline) ? timeline : [])
+    .filter((row) => Number.isFinite(Number(row?.[key])));
+  if (!rows.length) return "";
+
+  if (rows.length === 1) {
+    return `
+      <div class="pitcher-development-sparkline single" aria-hidden="true">
+        <span></span>
+      </div>
+    `;
+  }
+
+  const values = rows.map((row) => Number(row[key]));
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = Math.max(1, max - min);
+  const width = 78;
+  const height = 24;
+  const pad = 3;
+
+  const points = values.map((value, index) => {
+    const x = pad + (index / Math.max(1, values.length - 1)) * (width - pad * 2);
+    const y = height - pad - ((value - min) / range) * (height - pad * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+
+  return `
+    <svg class="pitcher-development-sparkline" viewBox="0 0 ${width} ${height}" aria-hidden="true">
+      <polyline points="${points}"></polyline>
+      ${points.split(" ").map((point) => {
+        const [cx, cy] = point.split(",");
+        return `<circle cx="${cx}" cy="${cy}" r="1.8"></circle>`;
+      }).join("")}
+    </svg>
+  `;
+}
+
+function developmentSummary(context) {
+  const deltas = context?.trait_deltas || {};
+  const values = [
+    deltas.miss_bats,
+    deltas.command,
+    deltas.run_prevention,
+    deltas.contact_management,
+    deltas.workload
+  ].filter((value) => Number.isFinite(Number(value)));
+
+  let improving = 0;
+  let stable = 0;
+  let declining = 0;
+
+  for (const value of values) {
+    const trend = developmentTrendFromDelta(value);
+    if (trend === "UP") improving += 1;
+    else if (trend === "DOWN") declining += 1;
+    else stable += 1;
+  }
+
+  return `${improving} improving · ${stable} stable · ${declining} declining`;
+}
+
 function developmentTraitCards(context) {
   const d = context.trait_deltas || {};
+  const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
   const traits = [
-    ["Miss Bats", d.miss_bats],
-    ["Command", d.command],
-    ["Run Prevention", d.run_prevention],
-    ["Contact Mgmt", d.contact_management],
-    ["Workload", d.workload]
+    ["Miss Bats", "miss_bats", d.miss_bats],
+    ["Command", "command", d.command],
+    ["Run Prevention", "run_prevention", d.run_prevention],
+    ["Contact Mgmt", "contact_management", d.contact_management],
+    ["Workload", "workload", d.workload]
   ];
 
   return `
     <div class="pitcher-development-traits">
-      ${traits.map(([label, value]) => `
-        <div class="pitcher-development-trait ${deltaToneClass(value)}">
-          <small>${escapeHtml(label)}</small>
-          <strong>${signed1(value)}</strong>
-          <span>year over year</span>
-        </div>
-      `).join("")}
+      ${traits.map(([label, key, value]) => {
+        const tag = developmentTrendTag(value);
+        return `
+          <div class="pitcher-development-trait ${deltaToneClass(value)}">
+            <small>${escapeHtml(label)}</small>
+            ${developmentSparkline(timeline, key)}
+            <b class="pitcher-trait-trend ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
+            <strong>${signed1(value)}</strong>
+            <span>year over year</span>
+          </div>
+        `;
+      }).join("")}
     </div>
   `;
 }
@@ -430,7 +526,7 @@ function developmentPanel(player) {
       <div class="pitcher-development-trend-row">
         <span>Trend</span>
         <b class="pitcher-trend-tag ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
-        <em>${signed1(context.overall_delta)} overall</em>
+        <em>${escapeHtml(developmentSummary(context))}</em>
       </div>
 
       <div class="pitcher-development-year-row">
@@ -656,7 +752,7 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
     <section class="pitcher-profile-section">
       <div class="pitcher-section-title">
         <h3>Fantasy skill profile</h3>
-        <span>Current evidence</span>
+        <span>Age + level adjusted</span>
       </div>
       <div class="pitcher-trait-grid">
         ${scoreRing("Miss Bats", f.miss_bats)}
@@ -709,19 +805,39 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
         <h3>Swing & miss</h3>
         <span>Evidence season</span>
       </div>
-      <div class="pitcher-swstr-card ${scoreToneClass(f.miss_bats)}">
-        <div>
-          <small>SwStr%</small>
-          <strong>${number1(e.swstr_pct)}%</strong>
+      <div class="pitcher-miss-card ${scoreToneClass(f.miss_bats)}">
+        <div class="pitcher-miss-head">
+          <div>
+            <small>Miss Bats Score</small>
+            <strong>${number1(f.miss_bats)}</strong>
+          </div>
+          <span>${Number(f.miss_bats) >= 75 ? "Strong miss-bat profile" : Number(f.miss_bats) >= 60 ? "Above context" : Number(f.miss_bats) >= 40 ? "Near context" : "Below context"}</span>
         </div>
-        <div>
-          <small>Miss Bats Score</small>
-          <strong>${number1(f.miss_bats)}</strong>
+
+        <div class="pitcher-miss-meter" style="--miss:${clamp(f.miss_bats, 0, 99.9)}%">
+          <i></i>
         </div>
-        <div>
-          <small>Batters Faced</small>
-          <strong>${integer(e.tbf)}</strong>
+        <div class="pitcher-miss-scale">
+          <span>Lower miss bats</span>
+          <span>Higher miss bats</span>
         </div>
+
+        <div class="pitcher-miss-facts">
+          <div>
+            <small>Swinging-strike rate</small>
+            <strong>${number1(e.swstr_pct)}%</strong>
+            <span>Evidence season</span>
+          </div>
+          <div>
+            <small>Sample</small>
+            <strong>${integer(e.tbf)} TBF</strong>
+            <span>${escapeHtml(evidenceSourceLabel(e.source))}</span>
+          </div>
+        </div>
+
+        <p>
+          The Miss Bats Score combines strikeout and swing-and-miss evidence against the pitcher's current age-and-level context.
+        </p>
       </div>
     </section>
 
