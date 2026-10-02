@@ -198,7 +198,7 @@ async function loadRankings() {
 
   el.heroCount.textContent = state.rows.length.toLocaleString();
   el.heroUpdated.textContent = latest ? formatShortDate(latest) : "—";
-  el.headerStatus.textContent = "Current board";
+  el.headerStatus.textContent = "Current hitter board";
 
   setLoading(false);
   applyFilters();
