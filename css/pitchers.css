@@ -1,5 +1,5 @@
 /* Pitcher-specific leaderboard/profile styling.
-   Keep this file small: generic visual primitives belong in diamondrank.css. */
+   Generic visual primitives belong in diamondrank.css. */
 
 body[data-board-mode="pitchers"] .position-filter {
   display: none;
@@ -9,20 +9,605 @@ body[data-board-mode="pitchers"] .toolbar {
   grid-template-columns: minmax(190px,1.5fr) repeat(3,minmax(120px,.8fr)) auto;
 }
 
-.pitcher-row {
-  cursor: default;
-}
-
-.pitcher-row:hover {
-  background: rgba(89,209,140,.025);
-}
-
 .pitcher-row .player-meta .pitcher-role-label {
   color: var(--muted-2);
 }
 
-.pitcher-row .row-status {
+/* ---------- Pitcher popup ---------- */
+
+.pitcher-profile-head h2 {
+  margin: 0;
+  font-size: clamp(30px, 6vw, 48px);
+  line-height: .98;
+  letter-spacing: -.04em;
+}
+
+.pitcher-rank-score-strip {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pitcher-rank-card,
+.pitcher-diamondscore-card {
+  min-width: 0;
+  min-height: 91px;
+  padding: 10px 8px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: rgba(255,255,255,.012);
+  text-align: center;
+}
+
+.pitcher-rank-card {
+  display: grid;
+  align-content: center;
+}
+
+.pitcher-rank-card small,
+.pitcher-diamondscore-card > small {
+  display: block;
   color: var(--muted-2);
+  font-size: 7.5px;
+  font-weight: 850;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.pitcher-rank-card strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+
+.pitcher-rank-card span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.pitcher-diamondscore-card {
+  --score-accent: var(--score-neutral);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border-color: color-mix(in srgb, var(--score-accent) 28%, var(--border));
+}
+
+.pitcher-diamondscore-card.tone-red { --score-accent: var(--score-red); }
+.pitcher-diamondscore-card.tone-orange { --score-accent: var(--score-orange); }
+.pitcher-diamondscore-card.tone-gold { --score-accent: var(--score-gold); }
+.pitcher-diamondscore-card.tone-lime { --score-accent: var(--score-lime); }
+.pitcher-diamondscore-card.tone-emerald { --score-accent: var(--score-emerald); }
+
+.pitcher-diamondscore-ring {
+  --meter: 0;
+  width: 62px;
+  aspect-ratio: 1;
+  margin-top: 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, #0a1711 57%, transparent 58%),
+    conic-gradient(
+      var(--score-accent) calc(var(--meter) * 1%),
+      color-mix(in srgb, var(--score-accent) 13%, transparent) 0
+    );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--score-accent) 20%, transparent);
+}
+
+.pitcher-diamondscore-ring strong {
+  color: var(--score-accent);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.pitcher-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.pitcher-meta span {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(255,255,255,.018);
+  font-size: 10px;
+}
+
+.pitcher-meta .emphasis {
+  color: var(--green-bright);
+  border-color: rgba(89,209,140,.28);
+}
+
+.pitcher-confidence-note {
+  margin: 7px 1px 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.pitcher-profile-section {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.pitcher-section-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.pitcher-section-title h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.pitcher-section-title span {
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+.pitcher-core-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 8px;
+}
+
+.pitcher-trait-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0,1fr));
+  gap: 5px;
+}
+
+.pitcher-score-ring-card {
+  --score-accent: var(--score-neutral);
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  padding: 7px 2px;
+  border: 1px solid color-mix(in srgb, var(--score-accent) 20%, var(--border));
+  border-radius: 12px;
+  background: rgba(255,255,255,.012);
+  text-align: center;
+}
+
+.pitcher-score-ring-card.tone-red { --score-accent: var(--score-red); }
+.pitcher-score-ring-card.tone-orange { --score-accent: var(--score-orange); }
+.pitcher-score-ring-card.tone-gold { --score-accent: var(--score-gold); }
+.pitcher-score-ring-card.tone-lime { --score-accent: var(--score-lime); }
+.pitcher-score-ring-card.tone-emerald { --score-accent: var(--score-emerald); }
+
+.pitcher-score-ring-card > span {
+  min-height: 19px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.1;
+}
+
+.pitcher-score-ring {
+  --meter: 0;
+  width: 52px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, #0a1711 56%, transparent 57%),
+    conic-gradient(
+      var(--score-accent) calc(var(--meter) * 1%),
+      color-mix(in srgb, var(--score-accent) 13%, transparent) 0
+    );
+}
+
+.pitcher-score-ring strong {
+  color: var(--score-accent);
+  font-size: 14px;
+}
+
+.pitcher-score-ring-card.core {
+  padding: 9px 6px 8px;
+}
+
+.pitcher-score-ring-card.core .pitcher-score-ring {
+  width: 76px;
+}
+
+.pitcher-score-ring-card.core .pitcher-score-ring strong {
+  font-size: 22px;
+}
+
+.pitcher-score-ring-card.core > span {
+  min-height: 0;
+  font-size: 9px;
+}
+
+.pitcher-evidence-grid,
+.pitcher-stat-grid,
+.pitcher-outcome-medians {
+  display: grid;
+  gap: 5px;
+}
+
+.pitcher-evidence-grid {
+  grid-template-columns: repeat(4, minmax(0,1fr));
+}
+
+.pitcher-stat-grid {
+  grid-template-columns: repeat(6, minmax(0,1fr));
+  margin-top: 6px;
+}
+
+.pitcher-evidence-grid > div,
+.pitcher-stat-grid > div,
+.pitcher-outcome-medians > div {
+  min-width: 0;
+  padding: 8px 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255,255,255,.012);
+  text-align: center;
+}
+
+.pitcher-evidence-grid small,
+.pitcher-stat-grid small,
+.pitcher-outcome-medians small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 6.5px;
+  font-weight: 850;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.pitcher-evidence-grid strong,
+.pitcher-stat-grid strong,
+.pitcher-outcome-medians strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+}
+
+.pitcher-context-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0,1fr));
+  gap: 5px;
+}
+
+.pitcher-context-meter {
+  --score-accent: var(--score-neutral);
+  min-width: 0;
+  padding: 8px 5px;
+  border: 1px solid color-mix(in srgb, var(--score-accent) 18%, var(--border));
+  border-radius: 11px;
+  background: rgba(255,255,255,.012);
+}
+
+.pitcher-context-meter.tone-red { --score-accent: var(--score-red); }
+.pitcher-context-meter.tone-orange { --score-accent: var(--score-orange); }
+.pitcher-context-meter.tone-gold { --score-accent: var(--score-gold); }
+.pitcher-context-meter.tone-lime { --score-accent: var(--score-lime); }
+.pitcher-context-meter.tone-emerald { --score-accent: var(--score-emerald); }
+
+.pitcher-context-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  align-items: baseline;
+}
+
+.pitcher-context-head strong {
+  font-size: 7px;
+  line-height: 1.1;
+}
+
+.pitcher-context-head span {
+  color: var(--score-accent);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.pitcher-context-track {
+  --pct: 50%;
+  height: 5px;
+  margin-top: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--score-accent) 12%, transparent);
+}
+
+.pitcher-context-track i {
+  display: block;
+  width: var(--pct);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--score-accent);
+}
+
+.pitcher-context-meter > small {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 6.5px;
+  text-align: center;
+}
+
+.pitcher-swstr-card {
+  --score-accent: var(--score-neutral);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--score-accent) 20%, var(--border));
+  border-radius: 12px;
+  background: rgba(255,255,255,.012);
+}
+
+.pitcher-swstr-card.tone-red { --score-accent: var(--score-red); }
+.pitcher-swstr-card.tone-orange { --score-accent: var(--score-orange); }
+.pitcher-swstr-card.tone-gold { --score-accent: var(--score-gold); }
+.pitcher-swstr-card.tone-lime { --score-accent: var(--score-lime); }
+.pitcher-swstr-card.tone-emerald { --score-accent: var(--score-emerald); }
+
+.pitcher-swstr-card > div {
+  padding: 10px 7px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+
+.pitcher-swstr-card > div:last-child {
+  border-right: 0;
+}
+
+.pitcher-swstr-card small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 7px;
+  text-transform: uppercase;
+}
+
+.pitcher-swstr-card strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--score-accent);
+  font-size: 18px;
+}
+
+.pitcher-comps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 6px;
+}
+
+.pitcher-comp-card {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: rgba(255,255,255,.012);
+}
+
+.pitcher-comp-top {
+  color: var(--green-bright);
+  font-size: 7px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.pitcher-comp-name {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.pitcher-comp-season {
+  margin-top: 3px;
+  color: var(--muted-2);
+  font-size: 7px;
+}
+
+.pitcher-comp-role {
+  display: inline-flex;
+  margin-top: 6px;
+  padding: 3px 5px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 6px;
+  font-weight: 850;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.outcome-none { color: var(--score-red); }
+.outcome-limited { color: var(--score-orange); }
+.outcome-depth { color: var(--score-gold); }
+.outcome-role { color: var(--score-lime); }
+.outcome-impact { color: var(--score-emerald); }
+.outcome-neutral { color: var(--score-neutral); }
+
+.pitcher-comp-stats {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 3px;
+  margin-top: 7px;
+}
+
+.pitcher-comp-stats span {
+  min-width: 0;
+  text-align: center;
+}
+
+.pitcher-comp-stats small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 5.5px;
+}
+
+.pitcher-comp-stats b {
+  display: block;
+  margin-top: 1px;
+  font-size: 8px;
+}
+
+.pitcher-five-year-panel {
+  margin-top: 9px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: rgba(255,255,255,.012);
+}
+
+.pitcher-five-year-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pitcher-five-year-head strong {
+  font-size: 11px;
+}
+
+.pitcher-five-year-head span {
+  color: var(--muted-2);
+  font-size: 7px;
+}
+
+.pitcher-outcome-segments {
+  display: flex;
+  height: 9px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+}
+
+.pitcher-outcome-segments i {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+
+.pitcher-outcome-segments .outcome-none { background: var(--score-red); }
+.pitcher-outcome-segments .outcome-limited { background: var(--score-orange); }
+.pitcher-outcome-segments .outcome-depth { background: var(--score-gold); }
+.pitcher-outcome-segments .outcome-role { background: var(--score-lime); }
+.pitcher-outcome-segments .outcome-impact { background: var(--score-emerald); }
+
+.pitcher-outcome-legend {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0,1fr));
+  gap: 2px;
+  margin-top: 7px;
+}
+
+.pitcher-outcome-legend > div {
+  min-width: 0;
+  text-align: center;
+}
+
+.pitcher-outcome-legend > div > span {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 0 auto 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pitcher-outcome-legend small {
+  display: block;
+  min-height: 18px;
+  color: var(--muted);
+  font-size: 6px;
+  line-height: 1.1;
+}
+
+.pitcher-outcome-legend strong {
+  display: block;
+  margin-top: 1px;
+  color: currentColor;
+  font-size: 9px;
+}
+
+.pitcher-outcome-medians {
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  margin-top: 8px;
+}
+
+.pitcher-outcome-note {
+  margin: 6px 0 0;
+  color: var(--muted-2);
+  font-size: 7px;
+  text-align: center;
+}
+
+.pitcher-method-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 5px;
+}
+
+.pitcher-method-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255,255,255,.012);
+}
+
+.pitcher-method-card[open] {
+  grid-column: 1 / -1;
+}
+
+.pitcher-method-card summary {
+  min-height: 42px;
+  padding: 8px;
+  display: grid;
+  align-content: center;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 7.5px;
+  font-weight: 800;
+  list-style: none;
+}
+
+.pitcher-method-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.pitcher-method-card p {
+  margin: 0;
+  padding: 0 9px 9px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.pitcher-empty {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  color: var(--muted);
+  font-size: 10px;
 }
 
 @media (max-width: 900px) {
@@ -38,5 +623,86 @@ body[data-board-mode="pitchers"] .toolbar {
 
   body[data-board-mode="pitchers"] .toolbar.filters-open .position-filter {
     display: none;
+  }
+
+  .pitcher-rank-score-strip {
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .pitcher-rank-card,
+  .pitcher-diamondscore-card {
+    min-height: 82px;
+    padding: 8px 5px;
+  }
+
+  .pitcher-rank-card strong {
+    font-size: 24px;
+  }
+
+  .pitcher-diamondscore-ring {
+    width: 55px;
+  }
+
+  .pitcher-trait-grid,
+  .pitcher-context-grid {
+    gap: 4px;
+  }
+
+  .pitcher-score-ring {
+    width: 47px;
+  }
+
+  .pitcher-score-ring strong {
+    font-size: 12px;
+  }
+
+  .pitcher-score-ring-card > span {
+    font-size: 6.2px;
+  }
+
+  .pitcher-stat-grid {
+    gap: 4px;
+  }
+
+  .pitcher-stat-grid > div {
+    padding: 7px 2px;
+  }
+
+  .pitcher-stat-grid small {
+    font-size: 6px;
+  }
+
+  .pitcher-stat-grid strong {
+    font-size: 10px;
+  }
+
+  .pitcher-context-meter {
+    padding: 7px 3px;
+  }
+
+  .pitcher-context-head strong,
+  .pitcher-context-meter > small {
+    font-size: 5.8px;
+  }
+
+  .pitcher-context-head span {
+    font-size: 9px;
+  }
+
+  .pitcher-comps {
+    gap: 5px;
+  }
+
+  .pitcher-comp-card {
+    padding: 7px 6px;
+  }
+
+  .pitcher-comp-name {
+    font-size: 9.5px;
+  }
+
+  .pitcher-comp-role {
+    font-size: 5.5px;
   }
 }
