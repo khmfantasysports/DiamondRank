@@ -1666,3 +1666,90 @@ body[data-board-mode="pitchers"] .toolbar {
     font-size: 8.5px;
   }
 }
+
+
+/* =========================================================
+   Pitcher popup v30
+   Overall Development trend pill matches hitter styling.
+   ========================================================= */
+
+.pitcher-development-trend-row {
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.pitcher-development-trend-row > span {
+  color: var(--muted-2);
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.pitcher-trend-tag {
+  --trend-accent: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 7px;
+  border: 1px solid color-mix(in srgb, var(--trend-accent) 38%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--trend-accent) 7%, transparent);
+  color: var(--trend-accent);
+  font-size: 7px;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pitcher-trend-tag.trend-up {
+  --trend-accent: var(--score-emerald);
+}
+
+.pitcher-trend-tag.trend-stable {
+  --trend-accent: var(--score-gold);
+}
+
+.pitcher-trend-tag.trend-down {
+  --trend-accent: var(--score-orange);
+}
+
+.pitcher-trend-tag.trend-mixed {
+  --trend-accent: #d3b36a;
+}
+
+.pitcher-trend-tag.trend-baseline {
+  --trend-accent: var(--muted);
+}
+
+.pitcher-development-trend-row em {
+  min-width: 0;
+  margin-left: 0;
+  color: var(--muted);
+  font-size: 8.5px;
+  font-style: normal;
+  line-height: 1.2;
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .pitcher-development-trend-row {
+    gap: 5px;
+  }
+
+  .pitcher-trend-tag {
+    padding: 3px 6px;
+    font-size: 6.3px;
+  }
+
+  .pitcher-development-trend-row > span {
+    font-size: 6.2px;
+  }
+
+  .pitcher-development-trend-row em {
+    max-width: none;
+    font-size: 7.5px;
+    text-align: left;
+  }
+}
