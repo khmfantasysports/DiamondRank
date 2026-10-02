@@ -24,6 +24,17 @@ function integer(value) {
   return Number.isFinite(n) ? Math.round(n).toLocaleString() : "—";
 }
 
+function signed1(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  if (Math.abs(n) < 0.05) return "0.0";
+  return `${n > 0 ? "+" : ""}${n.toFixed(1)}`;
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, Number(value) || 0));
+}
+
 function scoreToneClass(value) {
   const score = Number(value);
   if (!Number.isFinite(score)) return "tone-neutral";
@@ -34,6 +45,26 @@ function scoreToneClass(value) {
   return "tone-red";
 }
 
+function contextToneClass(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "tone-neutral";
+  if (n >= 75) return "tone-emerald";
+  if (n >= 60) return "tone-lime";
+  if (n >= 40) return "tone-gold";
+  if (n >= 25) return "tone-orange";
+  return "tone-red";
+}
+
+function deltaToneClass(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "delta-neutral";
+  if (n >= 5) return "delta-up-strong";
+  if (n >= 1.5) return "delta-up";
+  if (n <= -5) return "delta-down-strong";
+  if (n <= -1.5) return "delta-down";
+  return "delta-neutral";
+}
+
 function confidenceLabel(value) {
   if (!value) return "Confidence —";
   const text = String(value).toLowerCase().replaceAll("_", " ");
@@ -41,7 +72,7 @@ function confidenceLabel(value) {
 }
 
 function scoreRing(label, value, size = "trait") {
-  const meter = Math.max(0, Math.min(99.9, Number(value) || 0));
+  const meter = clamp(value, 0, 99.9);
   return `
     <div class="pitcher-score-ring-card ${size} ${scoreToneClass(value)}">
       <div class="pitcher-score-ring" style="--meter:${meter}">
@@ -61,16 +92,45 @@ function statCell(label, value) {
   `;
 }
 
-function contextMeter(label, value, rawLabel = "") {
-  const pct = Math.max(0, Math.min(99.9, Number(value) || 0));
+function contextMeter(label, percentile, rawLabel = "") {
+  const value = Number(percentile);
+  if (!Number.isFinite(value)) return "";
+  const position = clamp(value, 5, 95);
   return `
-    <div class="pitcher-context-meter ${scoreToneClass(value)}">
-      <div class="pitcher-context-head">
-        <strong>${escapeHtml(label)}</strong>
-        <span>${number1(value)}</span>
+    <div class="context-meter ${contextToneClass(value)}"
+      role="img"
+      aria-label="${escapeHtml(label)}: ${number1(value)} percentile context">
+      <strong>${escapeHtml(label)}</strong>
+      <div class="context-track" style="--dot:${position}%">
+        <span class="context-mid"></span>
+        <span class="context-dot"></span>
       </div>
-      <div class="pitcher-context-track" style="--pct:${pct}%"><i></i></div>
+      <div class="context-scale">
+        <span>−</span>
+        <b>${integer(value)} pct</b>
+        <span>+</span>
+      </div>
       <small>${escapeHtml(rawLabel)}</small>
+    </div>
+  `;
+}
+
+function contextMeters(player) {
+  const c = player.context_profile || {};
+  const e = player.current_evidence || {};
+  const items = [
+    ["K-BB", c.kbb_percentile, `${number1(e.k_minus_bb_pct)}%`],
+    ["xFIP", c.xfip_percentile, number2(e.xfip)],
+    ["HR Suppression", c.hr_suppression_percentile, "Peer context"],
+    ["Strike%", c.strike_percentile, `${number1(e.strike_pct)}%`],
+    ["GB%", c.gb_percentile, `${number1(e.gb_pct)}%`]
+  ].filter(([, value]) => Number.isFinite(Number(value)));
+
+  if (!items.length) return `<div class="pitcher-empty">No context-relative pitching profile is available.</div>`;
+
+  return `
+    <div class="context-meter-grid">
+      ${items.map(([label, value, raw]) => contextMeter(label, value, raw)).join("")}
     </div>
   `;
 }
@@ -85,25 +145,35 @@ function outcomeTone(label) {
   return "outcome-neutral";
 }
 
+function roleAwareCompStat(comp) {
+  const branch = String(comp.historical_role_branch || "").toUpperCase();
+  if (branch === "RELIEVER") return { label: "SV+H", value: integer(comp.saves_holds_5y) };
+  if (branch === "STARTER") return { label: "GS", value: integer(comp.starts_5y) };
+  return { label: "G", value: integer(comp.games_5y) };
+}
+
 function comparableCards(player) {
   const comps = Array.isArray(player.top_comparables) ? player.top_comparables : [];
   if (!comps.length) return `<div class="pitcher-empty">No historical comparables available.</div>`;
 
-  return comps.map((comp) => `
-    <article class="pitcher-comp-card">
-      <div class="pitcher-comp-top">
-        <span>Match ${integer(comp.rank)} · ${number1(comp.match_pct)}%</span>
-      </div>
-      <strong class="pitcher-comp-name">${escapeHtml(comp.name || "Historical comp")}</strong>
-      <div class="pitcher-comp-season">${escapeHtml(comp.anchor_season || "—")}</div>
-      <div class="pitcher-comp-role ${outcomeTone(comp.historical_role)}">${escapeHtml(comp.historical_role || "—")}</div>
-      <div class="pitcher-comp-stats">
-        <span><small>IP</small><b>${number1(comp.mlb_ip_5y)}</b></span>
-        <span><small>WAR</small><b>${number2(comp.war_5y)}</b></span>
-        <span><small>GS</small><b>${integer(comp.starts_5y)}</b></span>
-      </div>
-    </article>
-  `).join("");
+  return comps.map((comp) => {
+    const roleStat = roleAwareCompStat(comp);
+    return `
+      <article class="pitcher-comp-card">
+        <div class="pitcher-comp-top">
+          <span>Match ${integer(comp.rank)} · ${number1(comp.match_pct)}%</span>
+        </div>
+        <strong class="pitcher-comp-name">${escapeHtml(comp.name || "Historical comp")}</strong>
+        <div class="pitcher-comp-season">${escapeHtml(comp.anchor_season || "—")}</div>
+        <div class="pitcher-comp-role ${outcomeTone(comp.historical_role)}">${escapeHtml(comp.historical_role || "—")}</div>
+        <div class="pitcher-comp-stats">
+          <span><small>IP</small><b>${number1(comp.mlb_ip_5y)}</b></span>
+          <span><small>WAR</small><b>${number2(comp.war_5y)}</b></span>
+          <span><small>${escapeHtml(roleStat.label)}</small><b>${escapeHtml(roleStat.value)}</b></span>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 function fiveYearPanel(player) {
@@ -129,7 +199,7 @@ function fiveYearPanel(player) {
       </div>
 
       <div class="pitcher-outcome-segments">
-        ${buckets.map((b) => `<i class="${toneForKey(b.key)}" style="width:${Math.max(0, Math.min(100, Number(b.pct) || 0))}%"></i>`).join("")}
+        ${buckets.map((b) => `<i class="${toneForKey(b.key)}" style="width:${clamp(b.pct, 0, 100)}%"></i>`).join("")}
       </div>
 
       <div class="pitcher-outcome-legend">
@@ -153,13 +223,285 @@ function fiveYearPanel(player) {
   `;
 }
 
+function trendTag(context) {
+  const key = String(context?.trend_key || "");
+  if (key === "TRENDING_UP") return { icon: "↗", label: "Trending Up", tone: "trend-up" };
+  if (key === "TRENDING_DOWN") return { icon: "↘", label: "Trending Down", tone: "trend-down" };
+  if (key === "STEADY") return { icon: "→", label: "Steady", tone: "trend-steady" };
+  if (key === "BASELINE_ONLY") return { icon: "•", label: "Baseline Only", tone: "trend-baseline" };
+  return { icon: "•", label: "Limited History", tone: "trend-baseline" };
+}
+
+function mlbTransitionCompact(player) {
+  const mlb = player.mlb_transition || {};
+  if (!mlb.has_mlb_evidence) return "";
+
+  const savesHolds = (Number(mlb.saves) || 0) + (Number(mlb.holds) || 0);
+
+  return `
+    <div class="pitcher-mlb-transition">
+      <div class="pitcher-mlb-transition-head">
+        <div>
+          <small>MLB TRANSITION</small>
+          <strong>${integer(mlb.season)} · ${escapeHtml(mlb.team || player.current_org || "MLB")}</strong>
+        </div>
+        <span>${escapeHtml(mlb.sample_label || "MLB Sample")}</span>
+      </div>
+
+      <div class="pitcher-mlb-stat-grid">
+        ${statCell("IP", number1(mlb.ip))}
+        ${statCell("ERA", number2(mlb.era))}
+        ${statCell("WHIP", number2(mlb.whip))}
+        ${statCell("xFIP", number2(mlb.xfip))}
+        ${statCell("K%", `${number1(mlb.k_pct)}%`)}
+        ${statCell("BB%", `${number1(mlb.bb_pct)}%`)}
+      </div>
+
+      <div class="pitcher-mlb-stat-grid pitcher-mlb-stat-grid-secondary">
+        ${statCell("G", integer(mlb.games))}
+        ${statCell("GS", integer(mlb.starts))}
+        ${statCell("WAR", number2(mlb.war))}
+        ${statCell("K-BB%", `${number1(mlb.k_minus_bb_pct)}%`)}
+        ${statCell("SwStr%", `${number1(mlb.swstr_pct)}%`)}
+        ${statCell("SV+H", integer(savesHolds))}
+      </div>
+
+      <p>MLB performance is transition evidence and is not blended into the minor-league year-over-year trend.</p>
+    </div>
+  `;
+}
+
+function developmentTraitCards(context) {
+  const d = context.trait_deltas || {};
+  const traits = [
+    ["Miss Bats", d.miss_bats],
+    ["Command", d.command],
+    ["Run Prevention", d.run_prevention],
+    ["Contact Mgmt", d.contact_management],
+    ["Workload", d.workload]
+  ];
+
+  return `
+    <div class="pitcher-development-traits">
+      ${traits.map(([label, value]) => `
+        <div class="pitcher-development-trait ${deltaToneClass(value)}">
+          <small>${escapeHtml(label)}</small>
+          <strong>${signed1(value)}</strong>
+          <span>year over year</span>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function developmentPanel(player) {
+  const context = player.development_context || {};
+  const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
+  const count = Number(context.qualified_season_count) || 0;
+  const tag = trendTag(context);
+
+  if (!count) {
+    return `
+      <div class="pitcher-development-empty">
+        <strong>Limited history</strong>
+        <span>No 40+ IP minor-league season is available for a qualified trend.</span>
+      </div>
+      ${mlbTransitionCompact(player)}
+    `;
+  }
+
+  if (count === 1) {
+    const only = timeline[0] || {};
+    return `
+      <div class="pitcher-development-overview">
+        <div class="pitcher-development-trend-row">
+          <span>Trend</span>
+          <b class="pitcher-trend-tag ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
+        </div>
+        <div class="pitcher-development-year-row">
+          <strong>${integer(only.season)}</strong>
+          <span>${escapeHtml(only.primary_level || only.highest_level || "—")} · ${number1(only.ip)} IP</span>
+        </div>
+        ${mlbTransitionCompact(player)}
+        <button class="pitcher-development-open" type="button" data-pitcher-development-open>
+          View development details <span aria-hidden="true">›</span>
+        </button>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="pitcher-development-overview">
+      <div class="pitcher-development-trend-row">
+        <span>Trend</span>
+        <b class="pitcher-trend-tag ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
+        <em>${signed1(context.overall_delta)} overall</em>
+      </div>
+
+      <div class="pitcher-development-year-row">
+        <strong>${integer(context.previous_season)} → ${integer(context.latest_season)}</strong>
+        <span>40+ IP season comparison</span>
+      </div>
+
+      ${developmentTraitCards(context)}
+      ${mlbTransitionCompact(player)}
+
+      <button class="pitcher-development-open" type="button" data-pitcher-development-open>
+        View development details <span aria-hidden="true">›</span>
+      </button>
+    </div>
+  `;
+}
+
+function developmentSeasonCard(season, isCurrent) {
+  const scoreItems = [
+    ["Miss Bats", season.miss_bats],
+    ["Command", season.command],
+    ["Run Prevention", season.run_prevention],
+    ["Contact Mgmt", season.contact_management],
+    ["Workload", season.workload]
+  ];
+
+  return `
+    <article class="pitcher-development-season ${isCurrent ? "current" : ""}">
+      <div class="pitcher-development-season-head">
+        <div>
+          <strong>${integer(season.season)}</strong>
+          <span>${escapeHtml(season.primary_level || season.highest_level || "—")} · Age ${number1(season.age)}</span>
+        </div>
+        <b>${number1(season.ip)} IP</b>
+      </div>
+
+      <div class="pitcher-development-raw-grid">
+        ${statCell("K%", `${number1(season.k_pct)}%`)}
+        ${statCell("BB%", `${number1(season.bb_pct)}%`)}
+        ${statCell("K-BB%", `${number1(season.k_minus_bb_pct)}%`)}
+        ${statCell("ERA", number2(season.era))}
+        ${statCell("WHIP", number2(season.whip))}
+        ${statCell("xFIP", number2(season.xfip))}
+      </div>
+
+      <div class="pitcher-development-score-grid">
+        ${scoreItems.map(([label, value]) => `
+          <div class="${scoreToneClass(value)}">
+            <small>${escapeHtml(label)}</small>
+            <strong>${number1(value)}</strong>
+          </div>
+        `).join("")}
+      </div>
+    </article>
+  `;
+}
+
+function mlbTransitionDetails(player) {
+  const mlb = player.mlb_transition || {};
+  if (!mlb.has_mlb_evidence) return "";
+
+  const savesHolds = (Number(mlb.saves) || 0) + (Number(mlb.holds) || 0);
+
+  return `
+    <section class="pitcher-development-detail-section">
+      <div class="pitcher-development-detail-heading">
+        <div>
+          <h4>MLB Transition</h4>
+          <span>${integer(mlb.season)} · ${escapeHtml(mlb.team || player.current_org || "MLB")}</span>
+        </div>
+        <small>${escapeHtml(mlb.sample_label || "MLB Sample")}</small>
+      </div>
+
+      <div class="pitcher-development-raw-grid pitcher-development-mlb-grid">
+        ${statCell("IP", number1(mlb.ip))}
+        ${statCell("ERA", number2(mlb.era))}
+        ${statCell("WHIP", number2(mlb.whip))}
+        ${statCell("xFIP", number2(mlb.xfip))}
+        ${statCell("K%", `${number1(mlb.k_pct)}%`)}
+        ${statCell("BB%", `${number1(mlb.bb_pct)}%`)}
+        ${statCell("K-BB%", `${number1(mlb.k_minus_bb_pct)}%`)}
+        ${statCell("SwStr%", `${number1(mlb.swstr_pct)}%`)}
+        ${statCell("WAR", number2(mlb.war))}
+        ${statCell("G", integer(mlb.games))}
+        ${statCell("GS", integer(mlb.starts))}
+        ${statCell("SV+H", integer(savesHolds))}
+      </div>
+
+      <p class="pitcher-development-note">
+        MLB performance is shown as transition evidence and is not blended into the minor-league development trend.
+      </p>
+    </section>
+  `;
+}
+
+function developmentDetailMarkup(player) {
+  const context = player.development_context || {};
+  const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
+  const tag = trendTag(context);
+
+  return `
+    <div class="pitcher-development-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="pitcherDevelopmentTitle">
+      <div class="pitcher-development-detail-sticky">
+        <div>
+          <small>DEVELOPMENT HISTORY</small>
+          <h3 id="pitcherDevelopmentTitle">${escapeHtml(player.full_name)}</h3>
+        </div>
+        <button class="pitcher-development-detail-close" type="button" data-pitcher-development-close aria-label="Close development details">×</button>
+      </div>
+
+      <div class="pitcher-development-detail-body">
+        <section class="pitcher-development-detail-section">
+          <div class="pitcher-development-detail-heading">
+            <div>
+              <h4>Year-over-year change</h4>
+              <span>${context.previous_season ? `${integer(context.previous_season)} → ${integer(context.latest_season)}` : "Baseline only"}</span>
+            </div>
+            <small>40+ IP seasons</small>
+          </div>
+
+          <div class="pitcher-development-detail-trend">
+            <b class="pitcher-trend-tag ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
+            ${context.previous_season ? `<span>${signed1(context.overall_delta)} overall</span>` : ""}
+          </div>
+
+          ${context.previous_season ? developmentTraitCards(context) : `
+            <div class="pitcher-development-empty">
+              <strong>Baseline only</strong>
+              <span>A second 40+ IP MiLB season is needed before year-over-year change is shown.</span>
+            </div>
+          `}
+        </section>
+
+        ${mlbTransitionDetails(player)}
+
+        <section class="pitcher-development-detail-section">
+          <div class="pitcher-development-detail-heading">
+            <div>
+              <h4>Minor-league season profiles</h4>
+              <span>${integer(context.qualified_season_count)} qualified seasons</span>
+            </div>
+            <small>Age + level context</small>
+          </div>
+
+          <div class="pitcher-development-season-list">
+            ${timeline.length
+              ? timeline.map((season, index) => developmentSeasonCard(season, index === timeline.length - 1)).join("")
+              : `<div class="pitcher-development-empty"><strong>Limited history</strong><span>No 40+ IP MiLB season is available.</span></div>`
+            }
+          </div>
+        </section>
+
+        <p class="pitcher-development-note">${escapeHtml(context.qualification_note || "")}</p>
+      </div>
+    </div>
+  `;
+}
+
 function readingGuide() {
   const items = [
     ["DiamondScore", "Overall DiamondRank score for the current pitcher board."],
     ["Opportunity", "Historical-comparable opportunity signal from the 30 closest eligible pitcher profiles."],
     ["Fantasy Profile", "Fantasy-minded underlying pitching profile built from miss bats, command, run prevention, contact management and workload."],
     ["Current Evidence", "The season and level selected by the pitcher evidence rules. Raw rates are displayed from that evidence season."],
-    ["Context Profile", "Percentile-style comparisons against the pitcher's age and level context. Higher values mean more of the named trait."],
+    ["Development", "Year-to-year change uses qualified 40+ IP MiLB seasons. MLB performance is shown separately as transition evidence."],
+    ["Context Profile", "Centered age-and-level context meters. Left is below context, right is above context; the raw stat is shown under each meter."],
     ["Comparables", "The six closest historical matches. Match % is profile similarity, not a probability of the same career result."],
     ["5-Year Outcomes", "Observed MLB outcomes across all 30 historical comparables during the five seasons after their anchor season."]
   ];
@@ -172,10 +514,9 @@ function readingGuide() {
   `).join("");
 }
 
-function renderProfile(player, dialogContent, dialogLoading) {
+function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDetails) {
   const e = player.current_evidence || {};
   const f = player.fantasy_skill_profile || {};
-  const c = player.context_profile || {};
 
   dialogContent.innerHTML = `
     <div class="pitcher-profile-head">
@@ -194,7 +535,7 @@ function renderProfile(player, dialogContent, dialogLoading) {
         </div>
         <div class="pitcher-diamondscore-card ${scoreToneClass(player.overall_score)}">
           <small>DiamondScore</small>
-          <div class="pitcher-diamondscore-ring" style="--meter:${Math.max(0, Math.min(99.9, Number(player.overall_score) || 0))}">
+          <div class="pitcher-diamondscore-ring" style="--meter:${clamp(player.overall_score, 0, 99.9)}">
             <strong>${number1(player.overall_score)}</strong>
           </div>
         </div>
@@ -255,16 +596,18 @@ function renderProfile(player, dialogContent, dialogLoading) {
 
     <section class="pitcher-profile-section">
       <div class="pitcher-section-title">
+        <h3>Development</h3>
+        <span>${integer(player.development_context?.qualified_season_count)} qualified seasons</span>
+      </div>
+      ${developmentPanel(player)}
+    </section>
+
+    <section class="pitcher-profile-section">
+      <div class="pitcher-section-title">
         <h3>Context profile</h3>
-        <span>Age + level context</span>
+        <span>Left = below • right = above</span>
       </div>
-      <div class="pitcher-context-grid">
-        ${contextMeter("K-BB", c.kbb_percentile, `${number1(e.k_minus_bb_pct)}%`)}
-        ${contextMeter("xFIP", c.xfip_percentile, number2(e.xfip))}
-        ${contextMeter("HR Suppression", c.hr_suppression_percentile, "Peer context")}
-        ${contextMeter("Strike%", c.strike_percentile, `${number1(e.strike_pct)}%`)}
-        ${contextMeter("GB%", c.gb_percentile, `${number1(e.gb_pct)}%`)}
-      </div>
+      ${contextMeters(player)}
     </section>
 
     <section class="pitcher-profile-section">
@@ -308,6 +651,10 @@ function renderProfile(player, dialogContent, dialogLoading) {
 
   dialogLoading.hidden = true;
   dialogContent.hidden = false;
+
+  dialogContent
+    .querySelector("[data-pitcher-development-open]")
+    ?.addEventListener("click", () => openDevelopmentDetails(player));
 }
 
 export function createPitcherPopup({ supabase }) {
@@ -316,7 +663,33 @@ export function createPitcherPopup({ supabase }) {
   const dialogLoading = document.getElementById("dialogLoading");
   const dialogContent = document.getElementById("dialogContent");
 
+  function closeDevelopmentDetails() {
+    dialog.querySelector("[data-pitcher-development-overlay]")?.remove();
+    dialog.classList.remove("development-detail-active");
+  }
+
+  function openDevelopmentDetails(player) {
+    closeDevelopmentDetails();
+
+    const overlay = document.createElement("div");
+    overlay.className = "pitcher-development-detail-overlay";
+    overlay.dataset.pitcherDevelopmentOverlay = "true";
+    overlay.innerHTML = developmentDetailMarkup(player);
+
+    dialog.appendChild(overlay);
+    dialog.classList.add("development-detail-active");
+
+    overlay.querySelector("[data-pitcher-development-close]")?.focus();
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target.closest("[data-pitcher-development-close]")) {
+        closeDevelopmentDetails();
+      }
+    });
+  }
+
   async function open(playerId) {
+    closeDevelopmentDetails();
     dialogContent.innerHTML = "";
     dialogContent.hidden = true;
     dialogLoading.hidden = false;
@@ -335,10 +708,11 @@ export function createPitcherPopup({ supabase }) {
       return;
     }
 
-    renderProfile(data, dialogContent, dialogLoading);
+    renderProfile(data, dialogContent, dialogLoading, openDevelopmentDetails);
   }
 
   function close() {
+    closeDevelopmentDetails();
     if (dialog.open) dialog.close();
   }
 
@@ -349,10 +723,18 @@ export function createPitcherPopup({ supabase }) {
   });
 
   dialog.addEventListener("close", () => {
+    closeDevelopmentDetails();
     dialogContent.innerHTML = "";
     dialogContent.hidden = true;
     dialogLoading.hidden = false;
     dialogLoading.textContent = "Loading pitcher profile…";
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && dialog.querySelector("[data-pitcher-development-overlay]")) {
+      event.preventDefault();
+      closeDevelopmentDetails();
+    }
   });
 
   return { open, close };
