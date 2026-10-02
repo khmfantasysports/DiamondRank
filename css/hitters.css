@@ -4154,3 +4154,77 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
 .development-z-grid strong.signed-orange { color: var(--score-orange) !important; }
 .development-z-grid strong.signed-red { color: var(--score-red) !important; }
 .development-z-grid strong.signed-neutral { color: var(--muted) !important; }
+
+
+/* =========================================================
+   DiamondRank hitter compatibility v26
+   Use the shared leaderboard summary-card layout so the
+   hitter Last Updated card matches the pitcher board.
+   ========================================================= */
+
+body[data-board-mode="hitters"] .hero-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+body[data-board-mode="hitters"] .hero-summary-card {
+  display: block;
+  min-width: 110px;
+  min-height: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.012);
+  text-align: right;
+}
+
+body[data-board-mode="hitters"] .hero-summary-card small,
+body[data-board-mode="hitters"] .hero-summary-card span {
+  display: block;
+  margin: 0;
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+body[data-board-mode="hitters"] .hero-summary-card small {
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+body[data-board-mode="hitters"] .hero-summary-card strong,
+body[data-board-mode="hitters"] .hero-summary-card:first-child strong {
+  display: block;
+  margin: 3px 0 2px;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  body[data-board-mode="hitters"] .hero-summary-grid {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  body[data-board-mode="hitters"] .hero-summary-card {
+    min-width: 82px;
+    min-height: 0;
+    padding: 7px 8px;
+  }
+
+  body[data-board-mode="hitters"] .hero-summary-card:first-child {
+    display: none;
+  }
+
+  body[data-board-mode="hitters"] .hero-summary-card strong,
+  body[data-board-mode="hitters"] .hero-summary-card:first-child strong {
+    font-size: 16px;
+  }
+
+  body[data-board-mode="hitters"] .hero-summary-card span,
+  body[data-board-mode="hitters"] .hero-summary-card small {
+    font-size: 6.5px;
+  }
+}
