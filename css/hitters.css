@@ -4228,3 +4228,294 @@ body[data-board-mode="hitters"] .hero-summary-card:first-child strong {
     font-size: 6.5px;
   }
 }
+
+
+/* =========================================================
+   DiamondRank hitter shell parity v31
+   Use the same top-of-board layout as the pitcher board.
+   Hitter-only differences remain data/filter-specific.
+   ========================================================= */
+
+body[data-board-mode="hitters"] .header-status {
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: right;
+  text-transform: none;
+  box-shadow: none;
+}
+
+body[data-board-mode="hitters"] .header-status::before {
+  display: none;
+}
+
+/* Hero: same compact copy + right-side summary card layout as pitchers. */
+body[data-board-mode="hitters"] .leaderboard-hero {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 16px;
+}
+
+body[data-board-mode="hitters"] .leaderboard-hero .hero-copy {
+  display: block;
+  min-width: 0;
+  padding: 0;
+}
+
+body[data-board-mode="hitters"] .leaderboard-hero .hero-text {
+  margin-top: 7px;
+}
+
+body[data-board-mode="hitters"] .hero-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+body[data-board-mode="hitters"] .hero-summary-card {
+  display: block;
+  min-width: 110px;
+  min-height: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.012);
+  text-align: right;
+}
+
+body[data-board-mode="hitters"] .hero-summary-card small,
+body[data-board-mode="hitters"] .hero-summary-card span {
+  display: block;
+  margin: 0;
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+body[data-board-mode="hitters"] .hero-summary-card small {
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+body[data-board-mode="hitters"] .hero-summary-card strong,
+body[data-board-mode="hitters"] .hero-summary-card:first-child strong {
+  display: block;
+  margin: 3px 0 2px;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: normal;
+}
+
+body[data-board-mode="hitters"] .hero-summary-card span {
+  line-height: normal;
+}
+
+/* Board heading/result count: identical density to pitchers. */
+body[data-board-mode="hitters"] .board-head.board-head-compact {
+  min-height: 0;
+  align-items: flex-end;
+  padding: 11px 18px;
+}
+
+body[data-board-mode="hitters"] .board-eyebrow {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--green-bright);
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+body[data-board-mode="hitters"] .board-head.board-head-compact h2 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -.025em;
+}
+
+body[data-board-mode="hitters"] .board-result-summary {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+body[data-board-mode="hitters"] .board-result-summary span {
+  color: var(--muted-2);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+body[data-board-mode="hitters"] .board-result-summary strong {
+  color: var(--text);
+  font-size: 13px;
+  line-height: normal;
+}
+
+/* Toolbar uses the shared shell. Position remains an extra hitter filter. */
+body[data-board-mode="hitters"] .toolbar {
+  margin: 8px 0;
+  padding: 12px;
+  gap: 10px;
+  border-radius: 16px;
+}
+
+@media (max-width: 640px) {
+  body[data-board-mode="hitters"] .header-status {
+    max-width: 116px;
+    font-size: 9px;
+    line-height: 1.25;
+  }
+
+  body[data-board-mode="hitters"] .leaderboard-hero {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 9px;
+    padding: 12px 13px;
+    border-radius: 16px;
+  }
+
+  body[data-board-mode="hitters"] .leaderboard-hero .hero-copy {
+    display: block;
+    padding: 0;
+  }
+
+  body[data-board-mode="hitters"] .leaderboard-hero .eyebrow {
+    margin-bottom: 4px;
+    font-size: 8px;
+  }
+
+  body[data-board-mode="hitters"] .leaderboard-hero h1 {
+    font-size: 25px;
+    line-height: 1;
+  }
+
+  body[data-board-mode="hitters"] .leaderboard-hero .hero-text {
+    margin-top: 6px;
+    max-width: 34rem;
+    font-size: 9.5px;
+    line-height: 1.3;
+  }
+
+  body[data-board-mode="hitters"] .hero-summary-grid {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  body[data-board-mode="hitters"] .hero-summary-card {
+    min-width: 82px;
+    min-height: 0;
+    padding: 7px 8px;
+  }
+
+  body[data-board-mode="hitters"] .hero-summary-card:first-child {
+    display: none;
+  }
+
+  body[data-board-mode="hitters"] .hero-summary-card strong,
+  body[data-board-mode="hitters"] .hero-summary-card:first-child strong {
+    font-size: 16px;
+  }
+
+  body[data-board-mode="hitters"] .hero-summary-card span,
+  body[data-board-mode="hitters"] .hero-summary-card small {
+    font-size: 6.5px;
+  }
+
+  /* Same mobile Search / Sort | Filters shell as pitchers. */
+  body[data-board-mode="hitters"] .toolbar {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    margin: 7px 0;
+    padding: 7px;
+    gap: 7px;
+    border-radius: 14px;
+  }
+
+  body[data-board-mode="hitters"] .toolbar .search-field {
+    grid-column: 1 / -1;
+    order: 1;
+  }
+
+  body[data-board-mode="hitters"] .toolbar .sort-field {
+    grid-column: 1;
+    order: 2;
+  }
+
+  body[data-board-mode="hitters"] .filter-toggle {
+    display: flex;
+    grid-column: 2;
+    order: 3;
+    min-height: 38px;
+    align-self: end;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 0;
+    color: var(--text);
+    background: #0a1811;
+  }
+
+  body[data-board-mode="hitters"] .toolbar .secondary-filter {
+    display: none;
+  }
+
+  body[data-board-mode="hitters"] .toolbar.filters-open .secondary-filter {
+    display: grid;
+    grid-column: auto;
+    order: 4;
+  }
+
+  body[data-board-mode="hitters"] .toolbar.filters-open .ghost-button.secondary-filter {
+    display: block;
+    grid-column: auto;
+    width: 100%;
+    order: 5;
+    align-self: end;
+  }
+
+  body[data-board-mode="hitters"] .toolbar label > span {
+    font-size: 8px;
+  }
+
+  body[data-board-mode="hitters"] .toolbar input,
+  body[data-board-mode="hitters"] .toolbar select,
+  body[data-board-mode="hitters"] .filter-toggle,
+  body[data-board-mode="hitters"] .ghost-button {
+    height: 38px;
+    min-height: 38px;
+    padding-inline: 10px;
+    font-size: 13px;
+  }
+
+  body[data-board-mode="hitters"] .board-head.board-head-compact {
+    align-items: flex-end;
+    padding: 9px 12px;
+  }
+
+  body[data-board-mode="hitters"] .board-head.board-head-compact h2 {
+    font-size: 19px;
+  }
+
+  body[data-board-mode="hitters"] .board-result-summary {
+    min-width: 0;
+  }
+
+  body[data-board-mode="hitters"] .board-result-summary span {
+    font-size: 8px;
+  }
+
+  body[data-board-mode="hitters"] .board-result-summary strong {
+    font-size: 11px;
+  }
+}
