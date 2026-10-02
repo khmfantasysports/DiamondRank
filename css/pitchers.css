@@ -1275,3 +1275,56 @@ body[data-board-mode="pitchers"] .toolbar {
     padding: 11px 12px 15px;
   }
 }
+
+
+/* =========================================================
+   Pitcher popup v28
+   Shared DiamondRank colour language:
+   red → orange → gold → lime → green.
+   Raw evidence remains neutral, matching hitters.
+   ========================================================= */
+
+.pitcher-mlb-stat-grid .tone-red strong { color: var(--score-red); }
+.pitcher-mlb-stat-grid .tone-orange strong { color: var(--score-orange); }
+.pitcher-mlb-stat-grid .tone-gold strong { color: var(--score-gold); }
+.pitcher-mlb-stat-grid .tone-lime strong { color: var(--score-lime); }
+.pitcher-mlb-stat-grid .tone-emerald strong { color: var(--score-emerald); }
+
+.pitcher-mlb-stat-grid .signed-green strong { color: var(--score-emerald); }
+.pitcher-mlb-stat-grid .signed-lime strong { color: var(--score-lime); }
+.pitcher-mlb-stat-grid .signed-gold strong { color: var(--score-gold); }
+.pitcher-mlb-stat-grid .signed-orange strong { color: var(--score-orange); }
+.pitcher-mlb-stat-grid .signed-red strong { color: var(--score-red); }
+.pitcher-mlb-stat-grid .signed-neutral strong { color: var(--muted); }
+
+.pitcher-development-trait.delta-up-strong {
+  border-color: color-mix(in srgb, var(--score-emerald) 26%, var(--border));
+}
+.pitcher-development-trait.delta-up {
+  border-color: color-mix(in srgb, var(--score-lime) 24%, var(--border));
+}
+.pitcher-development-trait.delta-neutral {
+  border-color: color-mix(in srgb, var(--score-gold) 17%, var(--border));
+}
+.pitcher-development-trait.delta-down {
+  border-color: color-mix(in srgb, var(--score-orange) 24%, var(--border));
+}
+.pitcher-development-trait.delta-down-strong {
+  border-color: color-mix(in srgb, var(--score-red) 26%, var(--border));
+}
+
+.pitcher-development-score-grid .tone-red {
+  border-color: color-mix(in srgb, var(--score-red) 22%, var(--border));
+}
+.pitcher-development-score-grid .tone-orange {
+  border-color: color-mix(in srgb, var(--score-orange) 22%, var(--border));
+}
+.pitcher-development-score-grid .tone-gold {
+  border-color: color-mix(in srgb, var(--score-gold) 22%, var(--border));
+}
+.pitcher-development-score-grid .tone-lime {
+  border-color: color-mix(in srgb, var(--score-lime) 22%, var(--border));
+}
+.pitcher-development-score-grid .tone-emerald {
+  border-color: color-mix(in srgb, var(--score-emerald) 22%, var(--border));
+}
