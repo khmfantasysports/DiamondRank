@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07110d" />
   <title>DiamondRank Prospect Rankings</title>
   <meta name="description" content="DiamondRank prospect rankings built from historical opportunity, fantasy profile, scouting context and comparable evidence." />
-  <link rel="stylesheet" href="./css/diamondrank.css?v=22" />
+  <link rel="stylesheet" href="./css/diamondrank.css?v=24" />
 </head>
 <body>
   <div class="site-shell">
@@ -24,16 +24,16 @@
     <main>
       <section class="hero leaderboard-hero">
         <div class="hero-copy">
-          <p class="eyebrow">CURRENT HITTER BOARD</p>
-          <h1>DiamondRank Hitter Rankings</h1>
-          <p class="hero-text">Short-term prospect value • current skill shape • historical context</p>
+          <p class="eyebrow" id="heroEyebrow">CURRENT HITTER BOARD</p>
+          <h1 id="heroTitle">DiamondRank Hitter Rankings</h1>
+          <p class="hero-text" id="heroText">Short-term prospect value • current skill shape • historical context</p>
         </div>
 
         <div class="hero-summary-grid" aria-label="Leaderboard status">
           <div class="hero-summary-card">
             <small>Players Ranked</small>
             <strong id="heroCount">—</strong>
-            <span>Current hitter pool</span>
+            <span id="heroPoolLabel">Current hitter pool</span>
           </div>
           <div class="hero-summary-card">
             <small>Last Updated</small>
@@ -42,6 +42,11 @@
           </div>
         </div>
       </section>
+
+      <nav class="board-mode-switch" aria-label="Ranking type">
+        <a class="board-mode-button" href="./?mode=hitters" data-board-mode="hitters">Hitters</a>
+        <a class="board-mode-button" href="./?mode=pitchers" data-board-mode="pitchers">Pitchers</a>
+      </nav>
 
       <section class="toolbar" id="leaderboardFilters" aria-label="Leaderboard filters">
         <label class="search-field">
@@ -63,7 +68,7 @@
           <span id="activeFilterCount" hidden>0</span>
         </button>
 
-        <label class="secondary-filter">
+        <label class="secondary-filter position-filter">
           <span>Position</span>
           <select id="positionFilter">
             <option value="">All positions</option>
@@ -91,7 +96,7 @@
         <div class="board-head board-head-compact">
           <div class="board-head-title">
             <span class="board-eyebrow">Player Rankings</span>
-            <h2 id="boardHeading">Rankings</h2>
+            <h2 id="boardHeading">Hitter Rankings</h2>
           </div>
           <div class="board-result-summary">
             <span>Matching Players</span>
@@ -142,6 +147,6 @@
     </div>
   </dialog>
 
-  <script type="module" src="./js/diamondrank.js?v=22"></script>
+  <script type="module" src="./js/diamondrank.js?v=24"></script>
 </body>
 </html>
