@@ -24,6 +24,26 @@ function integer(value) {
   return Number.isFinite(n) ? Math.round(n).toLocaleString() : "—";
 }
 
+function yearValue(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? String(Math.trunc(n)) : "—";
+}
+
+function qualifiedSeasonLabel(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  const count = Math.round(n);
+  return `${count} qualified season${count === 1 ? "" : "s"}`;
+}
+
+function evidenceSourceLabel(value) {
+  const key = String(value || "").toUpperCase();
+  if (key === "CURRENT_MILB_40_PLUS") return "Current MiLB · 40+ IP";
+  if (key === "PRIOR_MILB_40_PLUS") return "Prior MiLB · 40+ IP";
+  if (key === "CURRENT_MILB_SMALL_SAMPLE") return "Current MiLB · Small sample";
+  return String(value || "—").replaceAll("_", " ");
+}
+
 function signed1(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return "—";
@@ -65,6 +85,26 @@ function deltaToneClass(value) {
   return "delta-neutral";
 }
 
+function signedToneClass(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "signed-neutral";
+  if (n < -0.5) return "signed-red";
+  if (n < 0) return "signed-orange";
+  if (n === 0) return "signed-gold";
+  if (n < 1.5) return "signed-lime";
+  return "signed-green";
+}
+
+function mlbKbbToneClass(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "tone-neutral";
+  if (n >= 25) return "tone-emerald";
+  if (n >= 18) return "tone-lime";
+  if (n >= 12) return "tone-gold";
+  if (n >= 6) return "tone-orange";
+  return "tone-red";
+}
+
 function confidenceLabel(value) {
   if (!value) return "Confidence —";
   const text = String(value).toLowerCase().replaceAll("_", " ");
@@ -83,9 +123,9 @@ function scoreRing(label, value, size = "trait") {
   `;
 }
 
-function statCell(label, value) {
+function statCell(label, value, toneClass = "") {
   return `
-    <div>
+    <div class="${escapeHtml(toneClass)}">
       <small>${escapeHtml(label)}</small>
       <strong>${escapeHtml(value ?? "—")}</strong>
     </div>
@@ -223,6 +263,61 @@ function fiveYearPanel(player) {
   `;
 }
 
+
+function normalizedDevelopmentContext(player) {
+  const original = player.development_context || {};
+  const profile = player.fantasy_skill_profile || {};
+  const evidenceSeason = Number(player.current_evidence?.season);
+
+  const timeline = (Array.isArray(original.stage_timeline) ? original.stage_timeline : [])
+    .map((row) => ({ ...row }))
+    .sort((a, b) => Number(a.season) - Number(b.season));
+
+  // Keep the latest qualified evidence-season trait scores identical to
+  // the main Fantasy Skill Profile.
+  for (const row of timeline) {
+    if (Number(row.season) !== evidenceSeason) continue;
+    if (Number.isFinite(Number(profile.miss_bats))) row.miss_bats = Number(profile.miss_bats);
+    if (Number.isFinite(Number(profile.command))) row.command = Number(profile.command);
+    if (Number.isFinite(Number(profile.run_prevention))) row.run_prevention = Number(profile.run_prevention);
+    if (Number.isFinite(Number(profile.contact_management))) row.contact_management = Number(profile.contact_management);
+    if (Number.isFinite(Number(profile.workload))) row.workload = Number(profile.workload);
+  }
+
+  const previous = timeline.length >= 2 ? timeline[timeline.length - 2] : null;
+  const latest = timeline.length ? timeline[timeline.length - 1] : null;
+  const keys = ["miss_bats", "command", "run_prevention", "contact_management", "workload"];
+  const traitDeltas = {};
+
+  if (previous && latest) {
+    for (const key of keys) {
+      const now = Number(latest[key]);
+      const before = Number(previous[key]);
+      if (Number.isFinite(now) && Number.isFinite(before)) traitDeltas[key] = now - before;
+    }
+  }
+
+  const values = Object.values(traitDeltas).filter((v) => Number.isFinite(Number(v))).map(Number);
+  const overallDelta = values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+
+  let trendKey = "NO_QUALIFIED_HISTORY";
+  if (timeline.length === 1) trendKey = "BASELINE_ONLY";
+  if (timeline.length >= 2) {
+    trendKey = overallDelta >= 3 ? "TRENDING_UP" : overallDelta <= -3 ? "TRENDING_DOWN" : "STEADY";
+  }
+
+  return {
+    ...original,
+    qualified_season_count: timeline.length,
+    stage_timeline: timeline,
+    latest_season: latest?.season ?? original.latest_season,
+    previous_season: previous?.season ?? null,
+    trait_deltas: traitDeltas,
+    overall_delta: overallDelta,
+    trend_key: trendKey
+  };
+}
+
 function trendTag(context) {
   const key = String(context?.trend_key || "");
   if (key === "TRENDING_UP") return { icon: "↗", label: "Trending Up", tone: "trend-up" };
@@ -243,7 +338,7 @@ function mlbTransitionCompact(player) {
       <div class="pitcher-mlb-transition-head">
         <div>
           <small>MLB TRANSITION</small>
-          <strong>${integer(mlb.season)} · ${escapeHtml(mlb.team || player.current_org || "MLB")}</strong>
+          <strong>${yearValue(mlb.season)} · ${escapeHtml(mlb.team || player.current_org || "MLB")}</strong>
         </div>
         <span>${escapeHtml(mlb.sample_label || "MLB Sample")}</span>
       </div>
@@ -260,8 +355,8 @@ function mlbTransitionCompact(player) {
       <div class="pitcher-mlb-stat-grid pitcher-mlb-stat-grid-secondary">
         ${statCell("G", integer(mlb.games))}
         ${statCell("GS", integer(mlb.starts))}
-        ${statCell("WAR", number2(mlb.war))}
-        ${statCell("K-BB%", `${number1(mlb.k_minus_bb_pct)}%`)}
+        ${statCell("WAR", number2(mlb.war), signedToneClass(mlb.war))}
+        ${statCell("K-BB%", `${number1(mlb.k_minus_bb_pct)}%`, mlbKbbToneClass(mlb.k_minus_bb_pct))}
         ${statCell("SwStr%", `${number1(mlb.swstr_pct)}%`)}
         ${statCell("SV+H", integer(savesHolds))}
       </div>
@@ -295,7 +390,7 @@ function developmentTraitCards(context) {
 }
 
 function developmentPanel(player) {
-  const context = player.development_context || {};
+  const context = normalizedDevelopmentContext(player);
   const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
   const count = Number(context.qualified_season_count) || 0;
   const tag = trendTag(context);
@@ -319,7 +414,7 @@ function developmentPanel(player) {
           <b class="pitcher-trend-tag ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
         </div>
         <div class="pitcher-development-year-row">
-          <strong>${integer(only.season)}</strong>
+          <strong>${yearValue(only.season)}</strong>
           <span>${escapeHtml(only.primary_level || only.highest_level || "—")} · ${number1(only.ip)} IP</span>
         </div>
         ${mlbTransitionCompact(player)}
@@ -339,7 +434,7 @@ function developmentPanel(player) {
       </div>
 
       <div class="pitcher-development-year-row">
-        <strong>${integer(context.previous_season)} → ${integer(context.latest_season)}</strong>
+        <strong>${yearValue(context.previous_season)} → ${yearValue(context.latest_season)}</strong>
         <span>40+ IP season comparison</span>
       </div>
 
@@ -366,7 +461,7 @@ function developmentSeasonCard(season, isCurrent) {
     <article class="pitcher-development-season ${isCurrent ? "current" : ""}">
       <div class="pitcher-development-season-head">
         <div>
-          <strong>${integer(season.season)}</strong>
+          <strong>${yearValue(season.season)}</strong>
           <span>${escapeHtml(season.primary_level || season.highest_level || "—")} · Age ${number1(season.age)}</span>
         </div>
         <b>${number1(season.ip)} IP</b>
@@ -404,7 +499,7 @@ function mlbTransitionDetails(player) {
       <div class="pitcher-development-detail-heading">
         <div>
           <h4>MLB Transition</h4>
-          <span>${integer(mlb.season)} · ${escapeHtml(mlb.team || player.current_org || "MLB")}</span>
+          <span>${yearValue(mlb.season)} · ${escapeHtml(mlb.team || player.current_org || "MLB")}</span>
         </div>
         <small>${escapeHtml(mlb.sample_label || "MLB Sample")}</small>
       </div>
@@ -416,9 +511,9 @@ function mlbTransitionDetails(player) {
         ${statCell("xFIP", number2(mlb.xfip))}
         ${statCell("K%", `${number1(mlb.k_pct)}%`)}
         ${statCell("BB%", `${number1(mlb.bb_pct)}%`)}
-        ${statCell("K-BB%", `${number1(mlb.k_minus_bb_pct)}%`)}
+        ${statCell("K-BB%", `${number1(mlb.k_minus_bb_pct)}%`, mlbKbbToneClass(mlb.k_minus_bb_pct))}
         ${statCell("SwStr%", `${number1(mlb.swstr_pct)}%`)}
-        ${statCell("WAR", number2(mlb.war))}
+        ${statCell("WAR", number2(mlb.war), signedToneClass(mlb.war))}
         ${statCell("G", integer(mlb.games))}
         ${statCell("GS", integer(mlb.starts))}
         ${statCell("SV+H", integer(savesHolds))}
@@ -432,7 +527,7 @@ function mlbTransitionDetails(player) {
 }
 
 function developmentDetailMarkup(player) {
-  const context = player.development_context || {};
+  const context = normalizedDevelopmentContext(player);
   const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
   const tag = trendTag(context);
 
@@ -451,7 +546,7 @@ function developmentDetailMarkup(player) {
           <div class="pitcher-development-detail-heading">
             <div>
               <h4>Year-over-year change</h4>
-              <span>${context.previous_season ? `${integer(context.previous_season)} → ${integer(context.latest_season)}` : "Baseline only"}</span>
+              <span>${context.previous_season ? `${yearValue(context.previous_season)} → ${yearValue(context.latest_season)}` : "Baseline only"}</span>
             </div>
             <small>40+ IP seasons</small>
           </div>
@@ -475,7 +570,7 @@ function developmentDetailMarkup(player) {
           <div class="pitcher-development-detail-heading">
             <div>
               <h4>Minor-league season profiles</h4>
-              <span>${integer(context.qualified_season_count)} qualified seasons</span>
+              <span>${qualifiedSeasonLabel(context.qualified_season_count)}</span>
             </div>
             <small>Age + level context</small>
           </div>
@@ -548,7 +643,6 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
         <span>Age ${number1(player.age)}</span>
         <span class="emphasis">${escapeHtml(confidenceLabel(player.ranking_confidence))}</span>
       </div>
-      ${player.confidence_reason ? `<p class="pitcher-confidence-note">${escapeHtml(player.confidence_reason)}</p>` : ""}
     </div>
 
     <section class="pitcher-profile-section">
@@ -576,10 +670,10 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
     <section class="pitcher-profile-section">
       <div class="pitcher-section-title">
         <h3>Current evidence</h3>
-        <span>${escapeHtml(e.source || "—")}</span>
+        <span>${escapeHtml(evidenceSourceLabel(e.source))}</span>
       </div>
       <div class="pitcher-evidence-grid">
-        ${statCell("Season", integer(e.season))}
+        ${statCell("Season", yearValue(e.season))}
         ${statCell("Level", e.level || player.current_level || "—")}
         ${statCell("IP", number1(e.ip))}
         ${statCell("Age", number1(e.age ?? player.age))}
@@ -597,7 +691,7 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
     <section class="pitcher-profile-section">
       <div class="pitcher-section-title">
         <h3>Development</h3>
-        <span>${integer(player.development_context?.qualified_season_count)} qualified seasons</span>
+        <span>${qualifiedSeasonLabel(normalizedDevelopmentContext(player).qualified_season_count)}</span>
       </div>
       ${developmentPanel(player)}
     </section>
