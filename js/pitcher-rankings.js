@@ -1,5 +1,5 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-import { createPitcherPopup } from "./pitcher-popup.js?v=26";
+import { createPitcherPopup } from "./pitcher-popup.js?v=28";
 
 const SUPABASE_URL = "https://pkgnjhkdqzfrsrjdsjcp.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__vES8c3cYqijmgHiqBlFZQ_m__qXdrA";
