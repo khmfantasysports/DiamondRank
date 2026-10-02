@@ -1328,3 +1328,341 @@ body[data-board-mode="pitchers"] .toolbar {
 .pitcher-development-score-grid .tone-emerald {
   border-color: color-mix(in srgb, var(--score-emerald) 22%, var(--border));
 }
+
+
+/* =========================================================
+   Pitcher popup v29
+   Hitter/pitcher presentation parity.
+   ========================================================= */
+
+/* Header and section typography match the hitter popup. */
+.pitcher-profile-head h2 {
+  font-size: clamp(30px, 6vw, 48px);
+  line-height: .98;
+  letter-spacing: -.04em;
+}
+
+.pitcher-profile-section {
+  margin-top: 14px;
+  padding-top: 14px;
+}
+
+.pitcher-section-title h3 {
+  font-size: 15px;
+  line-height: 1.05;
+}
+
+.pitcher-section-title span {
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+/* Rank/core cards: same emphasis hierarchy as hitters. */
+.pitcher-rank-card small,
+.pitcher-diamondscore-card > small {
+  font-size: 7.5px;
+  font-weight: 850;
+  letter-spacing: .07em;
+}
+
+.pitcher-score-ring-card.core > span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.pitcher-score-ring-card.trait > span {
+  font-weight: 650;
+}
+
+/* Development: same sparkline + trend-tag language as hitters. */
+.pitcher-development-trait {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+}
+
+.pitcher-development-sparkline {
+  width: 100%;
+  height: 24px;
+  margin: 3px 0 2px;
+  overflow: visible;
+}
+
+.pitcher-development-sparkline polyline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.pitcher-development-sparkline circle {
+  fill: currentColor;
+}
+
+.pitcher-development-trait.delta-up-strong,
+.pitcher-development-trait.delta-up {
+  color: var(--score-emerald);
+}
+
+.pitcher-development-trait.delta-neutral {
+  color: var(--score-gold);
+}
+
+.pitcher-development-trait.delta-down,
+.pitcher-development-trait.delta-down-strong {
+  color: var(--score-red);
+}
+
+.pitcher-development-trait small,
+.pitcher-development-trait span {
+  color: var(--muted);
+}
+
+.pitcher-development-trait strong {
+  color: currentColor;
+}
+
+.pitcher-trait-trend {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 18px;
+  padding: 3px 5px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 5.8px;
+  line-height: 1;
+}
+
+.pitcher-trait-trend.trend-up { color: var(--score-emerald); }
+.pitcher-trait-trend.trend-steady { color: var(--score-gold); }
+.pitcher-trait-trend.trend-down { color: var(--score-red); }
+
+.pitcher-development-trend-row em {
+  max-width: 55%;
+  color: var(--muted);
+  font-size: 6.5px;
+  line-height: 1.25;
+  text-align: right;
+}
+
+/* Swing & miss now mirrors hitter's large feature-card treatment. */
+.pitcher-miss-card {
+  --score-accent: var(--score-neutral);
+  padding: 11px;
+  border: 1px solid color-mix(in srgb, var(--score-accent) 28%, var(--border));
+  border-radius: 13px;
+  background: rgba(255,255,255,.012);
+}
+
+.pitcher-miss-card.tone-red { --score-accent: var(--score-red); }
+.pitcher-miss-card.tone-orange { --score-accent: var(--score-orange); }
+.pitcher-miss-card.tone-gold { --score-accent: var(--score-gold); }
+.pitcher-miss-card.tone-lime { --score-accent: var(--score-lime); }
+.pitcher-miss-card.tone-emerald { --score-accent: var(--score-emerald); }
+
+.pitcher-miss-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pitcher-miss-head small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.pitcher-miss-head strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--score-accent);
+  font-size: 26px;
+  line-height: 1;
+}
+
+.pitcher-miss-head > span {
+  color: var(--score-accent);
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.pitcher-miss-meter {
+  --miss: 50%;
+  height: 8px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--score-accent) 13%, transparent);
+}
+
+.pitcher-miss-meter i {
+  display: block;
+  width: var(--miss);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--score-accent);
+}
+
+.pitcher-miss-scale {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  color: var(--muted-2);
+  font-size: 7px;
+}
+
+.pitcher-miss-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.pitcher-miss-facts > div {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255,255,255,.008);
+}
+
+.pitcher-miss-facts small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 6.5px;
+  text-transform: uppercase;
+}
+
+.pitcher-miss-facts strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+}
+
+.pitcher-miss-facts span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 6.5px;
+}
+
+.pitcher-miss-card > p {
+  margin: 8px 1px 0;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.45;
+}
+
+/* 5-year definitions match hitter expandable definitions. */
+.pitcher-outcome-definitions {
+  margin-top: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255,255,255,.008);
+}
+
+.pitcher-outcome-definitions summary {
+  position: relative;
+  padding: 8px 24px 8px 9px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--text);
+  font-size: 7.5px;
+  font-weight: 800;
+}
+
+.pitcher-outcome-definitions summary::-webkit-details-marker {
+  display: none;
+}
+
+.pitcher-outcome-definitions summary::after {
+  content: "+";
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  transform: translateY(-50%);
+  color: var(--muted-2);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pitcher-outcome-definitions[open] summary::after {
+  content: "−";
+}
+
+.pitcher-outcome-definitions > div {
+  padding: 0 10px 9px;
+}
+
+.pitcher-outcome-definitions p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.4;
+}
+
+.pitcher-outcome-definitions b {
+  color: var(--text);
+}
+
+/* Methodology tiles use the same + / − affordance as hitters. */
+.pitcher-method-card summary {
+  position: relative;
+  padding-right: 20px;
+}
+
+.pitcher-method-card summary::after {
+  content: "+";
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  transform: translateY(-50%);
+  color: var(--muted-2);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pitcher-method-card[open] summary::after {
+  content: "−";
+}
+
+@media (max-width: 640px) {
+  .pitcher-development-trend-row em {
+    max-width: 52%;
+    font-size: 6px;
+  }
+
+  .pitcher-development-sparkline {
+    height: 21px;
+  }
+
+  .pitcher-trait-trend {
+    padding: 3px 4px;
+    font-size: 5.4px;
+  }
+
+  .pitcher-miss-head strong {
+    font-size: 24px;
+  }
+
+  .pitcher-miss-head > span {
+    font-size: 7px;
+  }
+
+  .pitcher-method-card summary {
+    min-height: 42px;
+    padding: 7px 18px 7px 7px;
+    font-size: 7.7px;
+  }
+
+  .pitcher-method-card p {
+    font-size: 8.5px;
+  }
+}
