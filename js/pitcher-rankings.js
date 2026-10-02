@@ -1,4 +1,5 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { createPitcherPopup } from "./pitcher-popup.js?v=26";
 
 const SUPABASE_URL = "https://pkgnjhkdqzfrsrjdsjcp.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__vES8c3cYqijmgHiqBlFZQ_m__qXdrA";
@@ -8,6 +9,8 @@ const PAGE_SIZE = 50;
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
 });
+
+const pitcherPopup = createPitcherPopup({ supabase });
 
 const LIST_FIELDS = [
   "player_id",
@@ -225,7 +228,7 @@ function renderBoard() {
   }
 
   el.board.innerHTML = visibleRows.map((row) => `
-    <article class="player-row pitcher-row" data-player-id="${escapeHtml(row.player_id)}">
+    <button class="player-row pitcher-row" type="button" data-player-id="${escapeHtml(row.player_id)}" aria-label="Open ${escapeHtml(row.full_name)} pitcher profile">
       <div class="rank-box"><small>#</small><span class="rank-number">${integer(row.overall_rank)}</span></div>
       <div class="player-main">
         <div class="player-name">${escapeHtml(row.full_name)}</div>
@@ -240,8 +243,8 @@ function renderBoard() {
       <div class="score-cell primary ${scoreToneClass(row.overall_score)}"><strong>${number1(row.overall_score)}</strong><span>Overall</span></div>
       <div class="score-cell opportunity ${scoreToneClass(row.opportunity_score)}"><strong>${number1(row.opportunity_score)}</strong><span>Opportunity</span></div>
       <div class="score-cell fantasy ${scoreToneClass(row.fantasy_profile_score)}"><strong>${number1(row.fantasy_profile_score)}</strong><span>Fantasy</span></div>
-      <div class="row-status">Profile<br>coming next</div>
-    </article>
+      <div class="row-chevron" aria-hidden="true">›</div>
+    </button>
   `).join("");
 
   el.more.hidden = state.visible >= state.filtered.length;
@@ -293,5 +296,11 @@ el.more.addEventListener("click", () => {
 });
 
 el.retry.addEventListener("click", loadRankings);
+
+
+el.board.addEventListener("click", (event) => {
+  const row = event.target.closest("[data-player-id]");
+  if (row) pitcherPopup.open(row.dataset.playerId);
+});
 
 loadRankings();
