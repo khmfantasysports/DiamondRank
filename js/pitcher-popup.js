@@ -331,12 +331,42 @@ function normalizedDevelopmentContext(player) {
 }
 
 function trendTag(context) {
-  const key = String(context?.trend_key || "");
-  if (key === "TRENDING_UP") return { icon: "↗", label: "Trending Up", tone: "trend-up" };
-  if (key === "TRENDING_DOWN") return { icon: "↘", label: "Trending Down", tone: "trend-down" };
-  if (key === "STEADY") return { icon: "→", label: "Steady", tone: "trend-steady" };
-  if (key === "BASELINE_ONLY") return { icon: "•", label: "Baseline Only", tone: "trend-baseline" };
-  return { icon: "•", label: "Limited History", tone: "trend-baseline" };
+  const timeline = Array.isArray(context?.stage_timeline) ? context.stage_timeline : [];
+  if (timeline.length < 2) {
+    return { icon: "•", label: "Baseline", tone: "trend-baseline" };
+  }
+
+  const deltas = context?.trait_deltas || {};
+  const values = [
+    deltas.miss_bats,
+    deltas.command,
+    deltas.run_prevention,
+    deltas.contact_management,
+    deltas.workload
+  ].filter((value) => Number.isFinite(Number(value)));
+
+  const trends = values.map(developmentTrendFromDelta);
+  const positive = trends.filter((trend) => trend === "UP").length;
+  const negative = trends.filter((trend) => trend === "DOWN").length;
+  const stable = trends.filter((trend) => trend === "STABLE").length;
+
+  if (positive >= 3 && negative <= 1) {
+    return { icon: "↗", label: "Up", tone: "trend-up" };
+  }
+  if (negative >= 3 && positive <= 1) {
+    return { icon: "↘", label: "Down", tone: "trend-down" };
+  }
+  if (stable >= 3 && positive <= 1 && negative <= 2) {
+    return { icon: "→", label: "Stable", tone: "trend-stable" };
+  }
+  if (positive > negative + 1) {
+    return { icon: "↗", label: "Up", tone: "trend-up" };
+  }
+  if (negative > positive + 1) {
+    return { icon: "↘", label: "Down", tone: "trend-down" };
+  }
+
+  return { icon: "↕", label: "Mixed", tone: "trend-mixed" };
 }
 
 function mlbTransitionCompact(player) {
