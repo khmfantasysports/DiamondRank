@@ -75,15 +75,6 @@ function contextToneClass(value) {
   return "tone-red";
 }
 
-function deltaToneClass(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return "delta-neutral";
-  if (n >= 5) return "delta-up-strong";
-  if (n >= 1.5) return "delta-up";
-  if (n <= -5) return "delta-down-strong";
-  if (n <= -1.5) return "delta-down";
-  return "delta-neutral";
-}
 
 function signedToneClass(value) {
   const n = Number(value);
@@ -334,98 +325,6 @@ function fiveYearPanel(player) {
 }
 
 
-function normalizedDevelopmentContext(player) {
-  const original = player.development_context || {};
-  const profile = player.fantasy_skill_profile || {};
-  const evidenceSeason = Number(player.current_evidence?.season);
-
-  const timeline = (Array.isArray(original.stage_timeline) ? original.stage_timeline : [])
-    .map((row) => ({ ...row }))
-    .sort((a, b) => Number(a.season) - Number(b.season));
-
-  // Keep the latest qualified evidence-season trait scores identical to
-  // the main Fantasy Skill Profile.
-  for (const row of timeline) {
-    if (Number(row.season) !== evidenceSeason) continue;
-    if (Number.isFinite(Number(profile.miss_bats))) row.miss_bats = Number(profile.miss_bats);
-    if (Number.isFinite(Number(profile.command))) row.command = Number(profile.command);
-    if (Number.isFinite(Number(profile.run_prevention))) row.run_prevention = Number(profile.run_prevention);
-    if (Number.isFinite(Number(profile.contact_management))) row.contact_management = Number(profile.contact_management);
-    if (Number.isFinite(Number(profile.workload))) row.workload = Number(profile.workload);
-  }
-
-  const previous = timeline.length >= 2 ? timeline[timeline.length - 2] : null;
-  const latest = timeline.length ? timeline[timeline.length - 1] : null;
-  const keys = ["miss_bats", "command", "run_prevention", "contact_management", "workload"];
-  const traitDeltas = {};
-
-  if (previous && latest) {
-    for (const key of keys) {
-      const now = Number(latest[key]);
-      const before = Number(previous[key]);
-      if (Number.isFinite(now) && Number.isFinite(before)) traitDeltas[key] = now - before;
-    }
-  }
-
-  const values = Object.values(traitDeltas).filter((v) => Number.isFinite(Number(v))).map(Number);
-  const overallDelta = values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
-
-  let trendKey = "NO_QUALIFIED_HISTORY";
-  if (timeline.length === 1) trendKey = "BASELINE_ONLY";
-  if (timeline.length >= 2) {
-    trendKey = overallDelta >= 3 ? "TRENDING_UP" : overallDelta <= -3 ? "TRENDING_DOWN" : "STEADY";
-  }
-
-  return {
-    ...original,
-    qualified_season_count: timeline.length,
-    stage_timeline: timeline,
-    latest_season: latest?.season ?? original.latest_season,
-    previous_season: previous?.season ?? null,
-    trait_deltas: traitDeltas,
-    overall_delta: overallDelta,
-    trend_key: trendKey
-  };
-}
-
-function trendTag(context) {
-  const timeline = Array.isArray(context?.stage_timeline) ? context.stage_timeline : [];
-  if (timeline.length < 2) {
-    return { icon: "•", label: "Baseline", tone: "trend-baseline" };
-  }
-
-  const deltas = context?.trait_deltas || {};
-  const values = [
-    deltas.miss_bats,
-    deltas.command,
-    deltas.run_prevention,
-    deltas.contact_management,
-    deltas.workload
-  ].filter((value) => Number.isFinite(Number(value)));
-
-  const trends = values.map(developmentTrendFromDelta);
-  const positive = trends.filter((trend) => trend === "UP").length;
-  const negative = trends.filter((trend) => trend === "DOWN").length;
-  const stable = trends.filter((trend) => trend === "STABLE").length;
-
-  if (positive >= 3 && negative <= 1) {
-    return { icon: "↗", label: "Up", tone: "trend-up" };
-  }
-  if (negative >= 3 && positive <= 1) {
-    return { icon: "↘", label: "Down", tone: "trend-down" };
-  }
-  if (stable >= 3 && positive <= 1 && negative <= 2) {
-    return { icon: "→", label: "Stable", tone: "trend-stable" };
-  }
-  if (positive > negative + 1) {
-    return { icon: "↗", label: "Up", tone: "trend-up" };
-  }
-  if (negative > positive + 1) {
-    return { icon: "↘", label: "Down", tone: "trend-down" };
-  }
-
-  return { icon: "↕", label: "Mixed", tone: "trend-mixed" };
-}
 
 function mlbTransitionCompact(player) {
   const mlb = player.mlb_transition || {};
@@ -467,20 +366,6 @@ function mlbTransitionCompact(player) {
 }
 
 
-function developmentTrendFromDelta(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return "STABLE";
-  if (n >= 1.5) return "UP";
-  if (n <= -1.5) return "DOWN";
-  return "STABLE";
-}
-
-function developmentTrendTag(value) {
-  const trend = developmentTrendFromDelta(value);
-  if (trend === "UP") return { icon: "↗", label: "Up", tone: "trend-up" };
-  if (trend === "DOWN") return { icon: "↘", label: "Down", tone: "trend-down" };
-  return { icon: "→", label: "Stable", tone: "trend-steady" };
-}
 
 function developmentSparkline(timeline, key) {
   const rows = (Array.isArray(timeline) ? timeline : [])
@@ -520,50 +405,29 @@ function developmentSparkline(timeline, key) {
   `;
 }
 
-function developmentSummary(context) {
-  const deltas = context?.trait_deltas || {};
-  const values = [
-    deltas.miss_bats,
-    deltas.command,
-    deltas.run_prevention,
-    deltas.contact_management,
-    deltas.workload
-  ].filter((value) => Number.isFinite(Number(value)));
-
-  let improving = 0;
-  let stable = 0;
-  let declining = 0;
-
-  for (const value of values) {
-    const trend = developmentTrendFromDelta(value);
-    if (trend === "UP") improving += 1;
-    else if (trend === "DOWN") declining += 1;
-    else stable += 1;
-  }
-
-  return `${improving} improving · ${stable} stable · ${declining} declining`;
-}
 
 function developmentTraitCards(context) {
-  const d = context.trait_deltas || {};
   const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
+  const trends = context.trait_trends || {};
+  const deltas = context.trait_deltas || {};
   const traits = [
-    ["Miss Bats", "miss_bats", d.miss_bats],
-    ["Command", "command", d.command],
-    ["Run Prevention", "run_prevention", d.run_prevention],
-    ["Contact Mgmt", "contact_management", d.contact_management],
-    ["Workload", "workload", d.workload]
+    ["Miss Bats", "miss_bats"],
+    ["Command", "command"],
+    ["Run Prevention", "run_prevention"],
+    ["Contact Mgmt", "contact_management"],
+    ["Workload", "workload"]
   ];
 
   return `
     <div class="pitcher-development-traits">
-      ${traits.map(([label, key, value]) => {
-        const tag = developmentTrendTag(value);
+      ${traits.map(([label, key]) => {
+        const trend = trends[key] || {};
+        const value = trend.delta ?? deltas[key];
         return `
-          <div class="pitcher-development-trait ${deltaToneClass(value)}">
+          <div class="pitcher-development-trait ${escapeHtml(trend.delta_tone || "delta-neutral")}">
             <small>${escapeHtml(label)}</small>
             ${developmentSparkline(timeline, key)}
-            <b class="pitcher-trait-trend ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
+            <b class="pitcher-trait-trend ${escapeHtml(trend.tone || "trend-baseline")}">${escapeHtml(trend.icon || "→")} ${escapeHtml(trend.label || "Stable")}</b>
             <strong>${signed1(value)}</strong>
             <span>year over year</span>
           </div>
@@ -574,10 +438,14 @@ function developmentTraitCards(context) {
 }
 
 function developmentPanel(player) {
-  const context = normalizedDevelopmentContext(player);
+  const context = player.development_context || {};
   const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
   const count = Number(context.qualified_season_count) || 0;
-  const tag = trendTag(context);
+  const tag = {
+    icon: context.trend_icon || "•",
+    label: context.trend_label || "Baseline",
+    tone: context.trend_tone || "trend-baseline"
+  };
 
   if (!count) {
     return `
@@ -614,7 +482,7 @@ function developmentPanel(player) {
       <div class="pitcher-development-trend-row">
         <span>Trend</span>
         <b class="pitcher-trend-tag ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
-        <em>${escapeHtml(developmentSummary(context))}</em>
+        <em>${escapeHtml(context.trend_summary || "")}</em>
       </div>
 
       <div class="pitcher-development-year-row">
@@ -711,9 +579,13 @@ function mlbTransitionDetails(player) {
 }
 
 function developmentDetailMarkup(player) {
-  const context = normalizedDevelopmentContext(player);
+  const context = player.development_context || {};
   const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
-  const tag = trendTag(context);
+  const tag = {
+    icon: context.trend_icon || "•",
+    label: context.trend_label || "Baseline",
+    tone: context.trend_tone || "trend-baseline"
+  };
 
   return `
     <div class="pitcher-development-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="pitcherDevelopmentTitle">
@@ -875,7 +747,7 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
     <section class="pitcher-profile-section">
       <div class="pitcher-section-title">
         <h3>Development</h3>
-        <span>${qualifiedSeasonLabel(normalizedDevelopmentContext(player).qualified_season_count)}</span>
+        <span>${qualifiedSeasonLabel(player.development_context?.qualified_season_count)}</span>
       </div>
       ${developmentPanel(player)}
     </section>
