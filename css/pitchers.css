@@ -1230,6 +1230,15 @@ body[data-board-mode="pitchers"] .toolbar {
   .pitcher-development-trait { padding: 6px 2px; }
   .pitcher-development-trait strong { font-size: 10px; }
 
+  .pitcher-batted-ball-card { padding: 8px; }
+  .pitcher-batted-ball-grid { gap: 4px; }
+  .pitcher-batted-ball-item { padding: 7px 4px; }
+  .pitcher-batted-ball-head strong { font-size: 15px; }
+  .pitcher-batted-ball-label { font-size: 6.2px; }
+  .pitcher-batted-ball-scale { font-size: 6px; }
+  .pitcher-batted-ball-scale b { font-size: 7px; }
+  .pitcher-batted-ball-peers { font-size: 5.5px; }
+
   .pitcher-mlb-stat-grid,
   .pitcher-development-raw-grid {
     gap: 3px;
@@ -1445,6 +1454,140 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 6.5px;
   line-height: 1.25;
   text-align: right;
+}
+
+/* Batted-ball profile: raw shape + direction-only peer context. */
+.pitcher-batted-ball-card {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: rgba(255,255,255,.012);
+}
+
+.pitcher-batted-ball-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--muted-2);
+  font-size: 7px;
+}
+
+.pitcher-batted-ball-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 6px;
+}
+
+.pitcher-batted-ball-item {
+  min-width: 0;
+  padding: 9px 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: rgba(255,255,255,.01);
+}
+
+.pitcher-batted-ball-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.pitcher-batted-ball-head small {
+  color: var(--muted-2);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .07em;
+}
+
+.pitcher-batted-ball-head strong {
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.pitcher-batted-ball-label {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.pitcher-batted-ball-track {
+  --dot: 50%;
+  position: relative;
+  height: 18px;
+  margin: 8px 1px 2px;
+}
+
+.pitcher-batted-ball-track::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 8px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(159,179,166,.14) 0%,
+    rgba(159,179,166,.30) 50%,
+    rgba(159,179,166,.14) 100%
+  );
+}
+
+.pitcher-batted-ball-mid {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 50%;
+  width: 1px;
+  background: rgba(243,247,244,.28);
+}
+
+.pitcher-batted-ball-dot {
+  position: absolute;
+  left: var(--dot);
+  top: 4px;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--green-bright);
+  box-shadow: 0 0 0 3px rgba(89,209,140,.12);
+}
+
+.pitcher-batted-ball-scale {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  color: var(--muted-2);
+  font-size: 7px;
+}
+
+.pitcher-batted-ball-scale span:first-child { text-align: left; }
+.pitcher-batted-ball-scale span:last-child { text-align: right; }
+
+.pitcher-batted-ball-scale b {
+  color: var(--green-bright);
+  font-size: 8px;
+}
+
+.pitcher-batted-ball-peers {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted-2);
+  font-size: 6px;
+  text-align: center;
+}
+
+.pitcher-batted-ball-card > p {
+  margin: 8px 1px 0;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.45;
 }
 
 /* Swing & miss now mirrors hitter's large feature-card treatment. */
