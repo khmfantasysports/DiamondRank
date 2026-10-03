@@ -248,7 +248,7 @@ body[data-board-mode="pitchers"] .toolbar {
 }
 
 .pitcher-stat-grid {
-  grid-template-columns: repeat(6, minmax(0,1fr));
+  grid-template-columns: repeat(5, minmax(0,1fr));
   margin-top: 6px;
 }
 
@@ -1481,12 +1481,20 @@ body[data-board-mode="pitchers"] .toolbar {
 }
 
 .pitcher-batted-ball-item {
+  --shape-accent: var(--score-neutral);
   min-width: 0;
   padding: 9px 7px 8px;
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--shape-accent) 24%, var(--border));
   border-radius: 11px;
-  background: rgba(255,255,255,.01);
+  background: color-mix(in srgb, var(--shape-accent) 3%, rgba(255,255,255,.01));
 }
+
+.pitcher-batted-ball-item.tone-red { --shape-accent: var(--score-red); }
+.pitcher-batted-ball-item.tone-orange { --shape-accent: var(--score-orange); }
+.pitcher-batted-ball-item.tone-gold { --shape-accent: var(--score-gold); }
+.pitcher-batted-ball-item.tone-lime { --shape-accent: var(--score-lime); }
+.pitcher-batted-ball-item.tone-emerald { --shape-accent: var(--score-emerald); }
+.pitcher-batted-ball-item.tone-neutral { --shape-accent: var(--score-neutral); }
 
 .pitcher-batted-ball-head {
   display: flex;
@@ -1503,7 +1511,7 @@ body[data-board-mode="pitchers"] .toolbar {
 }
 
 .pitcher-batted-ball-head strong {
-  color: var(--text);
+  color: var(--shape-accent);
   font-size: 18px;
   line-height: 1;
 }
@@ -1555,8 +1563,8 @@ body[data-board-mode="pitchers"] .toolbar {
   height: 10px;
   margin-left: -5px;
   border-radius: 50%;
-  background: var(--green-bright);
-  box-shadow: 0 0 0 3px rgba(89,209,140,.12);
+  background: var(--shape-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--shape-accent) 16%, transparent);
 }
 
 .pitcher-batted-ball-scale {
@@ -1571,7 +1579,7 @@ body[data-board-mode="pitchers"] .toolbar {
 .pitcher-batted-ball-scale span:last-child { text-align: right; }
 
 .pitcher-batted-ball-scale b {
-  color: var(--green-bright);
+  color: var(--shape-accent);
   font-size: 8px;
 }
 
