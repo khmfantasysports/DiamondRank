@@ -175,6 +175,65 @@ function contextMeters(player) {
   `;
 }
 
+function battedBallProfile(player) {
+  const profile = player.batted_ball_profile || {};
+  const items = Array.isArray(profile.shape)
+    ? profile.shape.filter((item) => item?.pct != null && Number.isFinite(Number(item.pct)))
+    : [];
+
+  if (!items.length) {
+    return `<div class="pitcher-empty">No tracked batted-ball profile is available for the selected evidence season.</div>`;
+  }
+
+  const coverage = Number(profile.tracking_coverage_pct);
+  const coverageLabel = Number.isFinite(coverage) ? `${number1(coverage)}% tracked` : "Tracking coverage —";
+  const seasonLabel = yearValue(profile.season);
+  const levelLabel = profile.level || player.current_level || "—";
+  const ipLabel = Number.isFinite(Number(profile.ip)) ? `${number1(profile.ip)} IP` : "IP —";
+
+  return `
+    <div class="pitcher-batted-ball-card">
+      <div class="pitcher-batted-ball-meta">
+        <span>${escapeHtml(seasonLabel)} · ${escapeHtml(levelLabel)} · ${escapeHtml(ipLabel)}</span>
+        <span>${escapeHtml(coverageLabel)}</span>
+      </div>
+
+      <div class="pitcher-batted-ball-grid">
+        ${items.map((item) => {
+          const percentile = Number(item.peer_percentile);
+          const hasPercentile = Number.isFinite(percentile);
+          const dot = hasPercentile ? clamp(percentile, 5, 95) : 50;
+          return `
+            <article class="pitcher-batted-ball-item"
+              role="img"
+              aria-label="${escapeHtml(item.label || item.key || "Batted-ball rate")}: ${number1(item.pct)} percent${hasPercentile ? `, ${number1(percentile)} peer percentile` : ""}">
+              <div class="pitcher-batted-ball-head">
+                <small>${escapeHtml(item.key || "—")}</small>
+                <strong>${number1(item.pct)}%</strong>
+              </div>
+              <span class="pitcher-batted-ball-label">${escapeHtml(item.label || "Batted-ball rate")}</span>
+              <div class="pitcher-batted-ball-track" style="--dot:${dot}%">
+                <i class="pitcher-batted-ball-mid"></i>
+                <i class="pitcher-batted-ball-dot"></i>
+              </div>
+              <div class="pitcher-batted-ball-scale">
+                <span>Lower</span>
+                <b>${hasPercentile ? `${integer(percentile)} pct` : "—"}</b>
+                <span>Higher</span>
+              </div>
+              <small class="pitcher-batted-ball-peers">${item.peer_count ? `${integer(item.peer_count)} qualified peers` : "Peer context unavailable"}</small>
+            </article>
+          `;
+        }).join("")}
+      </div>
+
+      <p>
+        Peer percentile compares the rate with same-season, same-level pitchers who reached 40+ IP. Higher or lower describes batted-ball tendency, not overall quality. Untracked values remain missing rather than being treated as zero.
+      </p>
+    </div>
+  `;
+}
+
 function outcomeTone(label) {
   const key = String(label || "").toLowerCase();
   if (key.includes("impact") || key.includes("top end") || key.includes("high leverage") || key.includes("mid rotation")) return "outcome-impact";
@@ -723,6 +782,7 @@ function readingGuide() {
     ["Current Evidence", "The season and level selected by the pitcher evidence rules. Raw rates are displayed from that evidence season."],
     ["Development", "Year-to-year change uses qualified 40+ IP MiLB seasons. MLB performance is shown separately as transition evidence."],
     ["Context Profile", "Centered age-and-level context meters. Left is below context, right is above context; the raw stat is shown under each meter."],
+    ["Batted-Ball Profile", "Ground-ball, fly-ball and line-drive rates from the selected evidence season. Peer percentiles compare rate, not quality, against same-season and same-level pitchers with 40+ IP. Untracked values stay missing."],
     ["Comparables", "The six closest historical matches. Match % is profile similarity, not a probability of the same career result."],
     ["5-Year Outcomes", "Observed MLB outcomes across all 30 historical comparables during the five seasons after their anchor season."]
   ];
@@ -828,6 +888,14 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
         <span>Left = below • right = above</span>
       </div>
       ${contextMeters(player)}
+    </section>
+
+    <section class="pitcher-profile-section">
+      <div class="pitcher-section-title">
+        <h3>Batted-ball profile</h3>
+        <span>Same season + level peers</span>
+      </div>
+      ${battedBallProfile(player)}
     </section>
 
     <section class="pitcher-profile-section">
