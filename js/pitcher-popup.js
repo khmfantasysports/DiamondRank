@@ -203,7 +203,7 @@ function battedBallProfile(player) {
           const hasPercentile = Number.isFinite(percentile);
           const dot = hasPercentile ? clamp(percentile, 5, 95) : 50;
           return `
-            <article class="pitcher-batted-ball-item"
+            <article class="pitcher-batted-ball-item ${hasPercentile ? contextToneClass(percentile) : "tone-neutral"}"
               role="img"
               aria-label="${escapeHtml(item.label || item.key || "Batted-ball rate")}: ${number1(item.pct)} percent${hasPercentile ? `, ${number1(percentile)} peer percentile` : ""}">
               <div class="pitcher-batted-ball-head">
@@ -866,7 +866,6 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
       <div class="pitcher-stat-grid">
         ${statCell("K%", `${number1(e.k_pct)}%`)}
         ${statCell("BB%", `${number1(e.bb_pct)}%`)}
-        ${statCell("K-BB%", `${number1(e.k_minus_bb_pct)}%`)}
         ${statCell("ERA", number2(e.era))}
         ${statCell("WHIP", number2(e.whip))}
         ${statCell("xFIP", number2(e.xfip))}
