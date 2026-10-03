@@ -22,8 +22,8 @@ const MODE_CONFIG = {
     poolLabel: "Current pitcher pool",
     searchPlaceholder: "Pitcher, org, level…",
     boardHeading: "Pitcher Rankings",
-    stylesheet: "./css/pitchers.css?v=31",
-    module: "./pitcher-rankings.js?v=31"
+    stylesheet: "./css/pitchers.css?v=32",
+    module: "./pitcher-rankings.js?v=32"
   }
 };
 
