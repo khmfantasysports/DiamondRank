@@ -23,7 +23,7 @@ const MODE_CONFIG = {
     searchPlaceholder: "Pitcher, org, level…",
     boardHeading: "Pitcher Rankings",
     stylesheet: "./css/pitchers.css?v=32",
-    module: "./pitcher-rankings.js?v=32"
+    module: "./pitcher-rankings.js?v=33"
   }
 };
 
