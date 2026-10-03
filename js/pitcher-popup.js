@@ -157,13 +157,12 @@ function contextMeter(label, percentile, rawLabel = "") {
 
 function contextMeters(player) {
   const c = player.context_profile || {};
-  const e = player.current_evidence || {};
   const items = [
-    ["K-BB", c.kbb_percentile, `${number1(e.k_minus_bb_pct)}%`],
-    ["xFIP", c.xfip_percentile, number2(e.xfip)],
-    ["HR Suppression", c.hr_suppression_percentile, "Peer context"],
-    ["Strike%", c.strike_percentile, `${number1(e.strike_pct)}%`],
-    ["GB%", c.gb_percentile, `${number1(e.gb_pct)}%`]
+    ["K%", c.k_percentile, `${number1(c.k_pct)}%`],
+    ["Walk Control", c.walk_control_percentile, `${number1(c.bb_pct)}% BB`],
+    ["xFIP", c.xfip_percentile, number2(c.xfip)],
+    ["HR Suppression", c.hr_suppression_percentile, `${number1(c.hr_pct)}% HR`],
+    ["Strike%", c.strike_percentile, `${number1(c.strike_pct)}%`]
   ].filter(([, value]) => Number.isFinite(Number(value)));
 
   if (!items.length) return `<div class="pitcher-empty">No context-relative pitching profile is available.</div>`;
@@ -781,7 +780,7 @@ function readingGuide() {
     ["Fantasy Profile", "Fantasy-minded underlying pitching profile built from miss bats, command, run prevention, contact management and workload."],
     ["Current Evidence", "The season and level selected by the pitcher evidence rules. Raw rates are displayed from that evidence season."],
     ["Development", "Year-to-year change uses qualified 40+ IP MiLB seasons. MLB performance is shown separately as transition evidence."],
-    ["Context Profile", "Centered age-and-level context meters. Left is below context, right is above context; the raw stat is shown under each meter."],
+    ["Context Profile", "Sample-aware season-and-level context for K%, walk control, xFIP, home-run suppression and strike rate. Farther right is stronger relative performance; the raw stat is shown underneath."],
     ["Batted-Ball Profile", "Ground-ball, fly-ball and line-drive rates from the selected evidence season. Peer percentiles compare rate, not quality, against same-season and same-level pitchers with 40+ IP. Untracked values stay missing."],
     ["Comparables", "The six closest historical matches. Match % is profile similarity, not a probability of the same career result."],
     ["5-Year Outcomes", "Observed MLB outcomes across all 30 historical comparables during the five seasons after their anchor season."]
