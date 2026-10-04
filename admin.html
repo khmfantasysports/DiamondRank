@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#07110d" />
-  <title>DiamondRank Importer</title>
+  <title>DiamondRank Importer V2</title>
   <meta name="robots" content="noindex,nofollow,noarchive" />
   <link rel="stylesheet" href="./css/diamondrank.css?v=31" />
   <style>
@@ -67,7 +67,7 @@
 
       <section class="admin-card" id="importCard" hidden>
         <div class="admin-card-head">
-          <div><span class="admin-kicker">Source update</span><h2>Import FanGraphs CSV</h2></div>
+          <div><span class="admin-kicker">Source update</span><h2>Import / manage source CSV</h2></div>
           <span class="status-pill neutral" id="importStatus">Ready</span>
         </div>
 
@@ -75,6 +75,9 @@
           <label>
             <span>Import source</span>
             <select id="sourceSelect">
+              <optgroup label="Player maintenance">
+                <option value="player_master">Player Master — export / edit / re-import</option>
+              </optgroup>
               <optgroup label="Routine in-season">
                 <option value="hitter_milb">Hitters — MiLB stats + SwStr</option>
                 <option value="hitter_mlb_seasons">Hitters — MLB seasons</option>
@@ -88,7 +91,7 @@
               </optgroup>
             </select>
           </label>
-          <label><span>FanGraphs CSV</span><input id="fileInput" type="file" accept=".csv,text/csv" /></label>
+          <label><span>CSV file</span><input id="fileInput" type="file" accept=".csv,text/csv" /></label>
         </div>
 
         <div class="source-note" id="sourceNote"></div>
@@ -106,6 +109,7 @@
         </div>
 
         <div class="action-row">
+          <button id="exportButton" class="ghost-action" type="button" hidden>Export current master</button>
           <button id="stageButton" class="primary-action" type="button" disabled>Stage & validate</button>
           <button id="activateButton" class="danger-action" type="button" disabled>Activate validated data</button>
           <button id="resetButton" class="ghost-action" type="button">Clear selection</button>
@@ -153,6 +157,15 @@ const ENDPOINTS = {
 const CHUNK_SIZE = 500;
 
 const SOURCES = {
+  player_master: {
+    project: "hitter",
+    note: "Canonical player maintenance. Export the current 2,988-row master, edit existing rows or add new players, then re-import. For a new player, leave player_id/player_slug blank and provide full_name, birth_date, fangraphs_id, mlb_mlbam_id and milb_minor_master_id. Omitted existing rows are preserved; use manual_status=inactive to remove a player from the active population.",
+    exportAction: "export_players_master",
+    resetAction: "reset_players_master",
+    loadAction: "load_players_master_chunk",
+    validateAction: "validate_players_master",
+    activateAction: "activate_players_master"
+  },
   hitter_milb: {
     project: "hitter",
     note: "Routine MiLB hitter export. Include SwStr% in this same FanGraphs file. Standard MiLB evidence and SwStr are staged together.",
@@ -226,6 +239,7 @@ const el = {
   source: document.getElementById("sourceSelect"),
   file: document.getElementById("fileInput"),
   sourceNote: document.getElementById("sourceNote"),
+  exportButton: document.getElementById("exportButton"),
   fileSummary: document.getElementById("fileSummary"),
   fileName: document.getElementById("fileName"),
   fileRows: document.getElementById("fileRows"),
@@ -370,7 +384,9 @@ async function renderSession(session) {
 }
 function sourceConfig() { return SOURCES[el.source.value]; }
 function renderSourceNote() {
-  el.sourceNote.textContent = sourceConfig().note;
+  const cfg = sourceConfig();
+  el.sourceNote.textContent = cfg.note;
+  el.exportButton.hidden = !cfg.exportAction;
   resetImportState({ keepFile: true });
 }
 function prettifyKey(key) {
@@ -416,9 +432,44 @@ async function uploadChunks(project, action, extra = {}) {
     setProgress((done / total) * 100, `Uploaded ${done.toLocaleString()} of ${total.toLocaleString()} rows`);
   }
 }
+async function exportCurrentPlayerMaster() {
+  const cfg = sourceConfig();
+  if (!cfg.exportAction) return;
+
+  el.exportButton.disabled = true;
+  setPill(el.importStatus, "Exporting…", "warning");
+  hideMessage(el.importMessage);
+
+  try {
+    const payload = await api("hitter", cfg.exportAction);
+    const rows = payload?.rows || [];
+    if (!rows.length) throw new Error("Player master export returned no rows.");
+
+    const csv = Papa.unparse(rows, { newline: "\r\n" });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `diamondrank-player-master-${date}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    setPill(el.importStatus, "Master exported", "pass");
+    showMessage(
+      el.importMessage,
+      `Exported ${rows.length.toLocaleString()} player rows. Edit that CSV, add new rows as needed, then re-import it here. Existing rows omitted from the CSV are preserved.`,
+      "pass"
+    );
+  } finally {
+    el.exportButton.disabled = false;
+  }
+}
 async function stageAndValidate() {
   const cfg = sourceConfig();
-  if (!state.file || !state.rows.length) throw new Error("Choose a non-empty FanGraphs CSV first.");
+  if (!state.file || !state.rows.length) throw new Error("Choose a non-empty CSV first.");
   el.stage.disabled = true;
   el.activate.disabled = true;
   el.completionCard.hidden = true;
@@ -470,7 +521,10 @@ async function stageAndValidate() {
 async function activateValidated() {
   const cfg = sourceConfig();
   if (!state.validation) throw new Error("Run staging and validation first.");
-  if (!window.confirm("Activate this validated source data? This changes source data only and will NOT start a ranking refresh.")) return;
+  const confirmText = cfg.exportAction
+    ? "Apply these validated Player Master edits/additions? Existing players omitted from this CSV will be preserved. No ranking refresh will start automatically."
+    : "Activate this validated source data? This changes source data only and will NOT start a ranking refresh.";
+  if (!window.confirm(confirmText)) return;
 
   el.activate.disabled = true;
   el.stage.disabled = true;
@@ -478,7 +532,7 @@ async function activateValidated() {
 
   let result;
   if (cfg.project === "hitter") {
-    result = await api("hitter", cfg.activateAction, { source_filename: state.file.name });
+    result = await api("hitter", cfg.activateAction, { source_filename: state.file?.name || null });
   } else {
     result = await api("pitcher", "activate_batch", { batch_id: state.batchId });
   }
@@ -486,7 +540,9 @@ async function activateValidated() {
   el.completionCard.hidden = false;
   setPill(el.importStatus, "Source activated", "pass");
   showMessage(el.importMessage,
-    "Source activation passed. Stop here until you deliberately start the documented DiamondRank refresh workflow.",
+    cfg.exportAction
+      ? "Player Master apply passed. Edits/additions are now in the canonical master. No ranking refresh was started automatically."
+      : "Source activation passed. Stop here until you deliberately start the documented DiamondRank refresh workflow.",
     "pass"
   );
   el.stage.disabled = false;
@@ -508,6 +564,13 @@ el.loginForm.addEventListener("submit", async (event) => {
 
 el.signOut.addEventListener("click", () => auth.auth.signOut());
 el.source.addEventListener("change", renderSourceNote);
+el.exportButton.addEventListener("click", async () => {
+  try { await exportCurrentPlayerMaster(); }
+  catch (error) {
+    setPill(el.importStatus, "Export failed", "fail");
+    showMessage(el.importMessage, error.message, "fail");
+  }
+});
 el.file.addEventListener("change", async () => {
   resetImportState({ keepFile: true });
   const file = el.file.files?.[0];
