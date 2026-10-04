@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#07110d" />
+  <title>DiamondRank Importer</title>
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <link rel="stylesheet" href="./css/diamondrank.css?v=31" />
+  <style>
+.admin-page{min-height:100vh;background:radial-gradient(circle at top left,rgba(34,197,94,.08),transparent 32rem),#07110d}
+.admin-shell{max-width:980px}.admin-hero{padding-bottom:14px}.admin-card{margin:14px 0;padding:18px;border:1px solid rgba(148,163,184,.18);border-radius:18px;background:rgba(8,20,15,.84);box-shadow:0 18px 50px rgba(0,0,0,.16)}
+.admin-card-head,.identity-row,.action-row,.progress-line{display:flex;align-items:center;justify-content:space-between;gap:12px}.admin-card-head{margin-bottom:16px}.admin-card h2{margin:3px 0 0;font-size:clamp(1.15rem,4vw,1.55rem)}
+.admin-kicker{color:#86efac;font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.admin-copy,.source-note{color:#b8c5bd;line-height:1.55}.admin-form,.admin-grid{display:grid;gap:12px}.admin-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.admin-form label,.admin-grid label{display:grid;gap:6px;color:#cbd5cf;font-size:.82rem;font-weight:700}.admin-form input,.admin-grid input,.admin-grid select{width:100%;min-height:44px;border:1px solid rgba(148,163,184,.24);border-radius:11px;background:#0b1812;color:#eef7f1;padding:10px 12px;font:inherit}
+.primary-action,.danger-action,.ghost-action{min-height:42px;border-radius:11px;padding:9px 14px;font:inherit;font-weight:800;cursor:pointer}.primary-action{border:1px solid rgba(74,222,128,.38);background:rgba(34,197,94,.16);color:#dcfce7}.danger-action{border:1px solid rgba(251,146,60,.4);background:rgba(249,115,22,.14);color:#ffedd5}.ghost-action{border:1px solid rgba(148,163,184,.22);background:rgba(148,163,184,.07);color:#d8e1db}button:disabled{opacity:.42;cursor:not-allowed}
+.status-pill{border-radius:999px;padding:5px 9px;font-size:.72rem;font-weight:900;white-space:nowrap}.status-pill.neutral{background:rgba(148,163,184,.12);color:#cbd5e1}.status-pill.pass{background:rgba(34,197,94,.14);color:#bbf7d0}.status-pill.fail{background:rgba(239,68,68,.13);color:#fecaca}.status-pill.warning{background:rgba(245,158,11,.14);color:#fde68a}
+.admin-message{margin-top:12px;padding:11px 12px;border-radius:11px;background:rgba(148,163,184,.08);color:#d8e1db;line-height:1.45;white-space:pre-wrap}.admin-message.pass{background:rgba(34,197,94,.1);color:#dcfce7}.admin-message.warning{background:rgba(245,158,11,.1);color:#fde68a}.admin-message.fail{background:rgba(239,68,68,.1);color:#fecaca}
+.file-summary,.qa-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.file-summary>div,.qa-item{min-width:0;padding:10px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(255,255,255,.025)}.file-summary small,.qa-item small,.identity-row small{display:block;color:#8fa098;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}.file-summary strong,.qa-item strong,.identity-row strong{display:block;margin-top:4px;color:#eef7f1;overflow-wrap:anywhere}
+.progress-wrap{margin-top:14px}progress{width:100%;height:9px;margin-top:7px}.action-row{justify-content:flex-start;flex-wrap:wrap;margin-top:16px}.json-details{margin-top:12px;color:#cbd5cf}.json-details summary{cursor:pointer;font-weight:800}.json-details pre{max-height:360px;overflow:auto;padding:12px;border-radius:10px;background:#04100a;color:#c6f6d5;font-size:.76rem;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:720px){.admin-grid.two,.file-summary,.qa-grid{grid-template-columns:1fr 1fr}.admin-card{padding:14px}.admin-card-head{align-items:flex-start}}@media(max-width:460px){.admin-grid.two,.file-summary,.qa-grid{grid-template-columns:1fr}.identity-row{align-items:flex-start;flex-direction:column}}
+
+  </style>
+</head>
+<body class="admin-page">
+  <div class="site-shell admin-shell">
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="DiamondRank home">
+        <span class="brand-mark" aria-hidden="true">◆</span>
+        <span><strong>DiamondRank</strong><small>Private Importer</small></span>
+      </a>
+      <div class="header-status" id="adminHeaderStatus">Locked</div>
+    </header>
+
+    <main>
+      <section class="hero admin-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">PRIVATE OPERATIONS</p>
+          <h1>FanGraphs Data Importer</h1>
+          <p class="hero-text">Stage → validate → activate. Ranking refreshes and public publication remain separate.</p>
+        </div>
+      </section>
+
+      <section class="admin-card" id="authCard">
+        <div class="admin-card-head">
+          <div><span class="admin-kicker">Access</span><h2>Admin sign-in</h2></div>
+          <span class="status-pill neutral" id="authStatus">Signed out</span>
+        </div>
+        <div id="signedOutPanel">
+          <p class="admin-copy">Sign in with the email address registered as a DiamondRank import administrator.</p>
+          <form id="loginForm" class="admin-form">
+            <label><span>Email</span><input id="emailInput" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
+            <button class="primary-action" type="submit">Send sign-in link</button>
+          </form>
+          <div class="admin-message" id="loginMessage" hidden></div>
+        </div>
+        <div id="signedInPanel" hidden>
+          <div class="identity-row">
+            <div><small>Signed in</small><strong id="signedInEmail">—</strong></div>
+            <button id="signOutButton" class="ghost-action" type="button">Sign out</button>
+          </div>
+          <div class="admin-message warning" id="approvalMessage" hidden>
+            Your login is valid, but this account has not been approved for imports yet.
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-card" id="importCard" hidden>
+        <div class="admin-card-head">
+          <div><span class="admin-kicker">Source update</span><h2>Import FanGraphs CSV</h2></div>
+          <span class="status-pill neutral" id="importStatus">Ready</span>
+        </div>
+
+        <div class="admin-grid two">
+          <label>
+            <span>Import source</span>
+            <select id="sourceSelect">
+              <optgroup label="Routine in-season">
+                <option value="hitter_milb">Hitters — MiLB stats + SwStr</option>
+                <option value="hitter_mlb_seasons">Hitters — MLB seasons</option>
+                <option value="pitcher_milb_current">Pitchers — MiLB 2021–2026</option>
+                <option value="pitcher_mlb_seasons">Pitchers — MLB seasons</option>
+                <option value="pitcher_mlb_career">Pitchers — MLB career totals</option>
+              </optgroup>
+              <optgroup label="Maintenance">
+                <option value="pitcher_board">Pitchers — FanGraphs Board scouting</option>
+                <option value="pitcher_milb_history">Pitchers — MiLB 2010–2019 history</option>
+              </optgroup>
+            </select>
+          </label>
+          <label><span>FanGraphs CSV</span><input id="fileInput" type="file" accept=".csv,text/csv" /></label>
+        </div>
+
+        <div class="source-note" id="sourceNote"></div>
+
+        <div class="file-summary" id="fileSummary" hidden>
+          <div><small>File</small><strong id="fileName">—</strong></div>
+          <div><small>Rows</small><strong id="fileRows">—</strong></div>
+          <div><small>Columns</small><strong id="fileColumns">—</strong></div>
+          <div><small>SHA-256</small><strong id="fileHash">—</strong></div>
+        </div>
+
+        <div class="progress-wrap" id="progressWrap" hidden>
+          <div class="progress-line"><span id="progressLabel">Uploading…</span><strong id="progressValue">0%</strong></div>
+          <progress id="uploadProgress" value="0" max="100"></progress>
+        </div>
+
+        <div class="action-row">
+          <button id="stageButton" class="primary-action" type="button" disabled>Stage & validate</button>
+          <button id="activateButton" class="danger-action" type="button" disabled>Activate validated data</button>
+          <button id="resetButton" class="ghost-action" type="button">Clear selection</button>
+        </div>
+        <div class="admin-message" id="importMessage" hidden></div>
+      </section>
+
+      <section class="admin-card" id="validationCard" hidden>
+        <div class="admin-card-head">
+          <div><span class="admin-kicker">Preflight</span><h2>Validation result</h2></div>
+          <span class="status-pill neutral" id="validationStatus">Not run</span>
+        </div>
+        <div class="qa-grid" id="qaGrid"></div>
+        <details class="json-details"><summary>Full validation response</summary><pre id="validationJson"></pre></details>
+      </section>
+
+      <section class="admin-card" id="completionCard" hidden>
+        <div class="admin-card-head">
+          <div><span class="admin-kicker">Source activation</span><h2>Data activated</h2></div>
+          <span class="status-pill pass">PASS</span>
+        </div>
+        <p class="admin-copy">
+          The source data is current. <strong>No ranking refresh was started automatically.</strong>
+          Continue with the documented DiamondRank refresh workflow, run QA, then publish only after the refresh passes.
+        </p>
+        <details class="json-details"><summary>Activation response</summary><pre id="activationJson"></pre></details>
+      </section>
+    </main>
+
+    <footer>
+      <span>DiamondRank private operations</span>
+      <span>Source import is intentionally separate from model refresh and publication.</span>
+    </footer>
+  </div>
+  <script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import Papa from "https://cdn.jsdelivr.net/npm/papaparse@5.5.3/+esm";
+
+const AUTH_URL = "https://uxvuehmighuqqejowxoq.supabase.co";
+const AUTH_PUBLISHABLE_KEY = "sb_publishable_mQiGDDJ7o5vbF5RYSnl0-g_tRiJRi06";
+const ENDPOINTS = {
+  hitter: `${AUTH_URL}/functions/v1/diamondrank-import-hitters`,
+  pitcher: "https://pkgnjhkdqzfrsrjdsjcp.supabase.co/functions/v1/diamondrank-import-pitchers"
+};
+const CHUNK_SIZE = 500;
+
+const SOURCES = {
+  hitter_milb: {
+    project: "hitter",
+    note: "Routine MiLB hitter export. Include SwStr% in this same FanGraphs file. Standard MiLB evidence and SwStr are staged together.",
+    resetAction: "reset_hitter_milb",
+    loadAction: "load_hitter_milb_chunk",
+    validateAction: "validate_hitter_milb",
+    activateAction: "activate_hitter_milb"
+  },
+  hitter_mlb_seasons: {
+    project: "hitter",
+    note: "FanGraphs MLB season-by-season hitter export. The existing MLB audit runs before the unified apply.",
+    resetAction: "reset_hitter_mlb_seasons",
+    loadAction: "load_hitter_mlb_seasons_chunk",
+    validateAction: "validate_hitter_mlb_seasons",
+    activateAction: "activate_hitter_mlb_seasons"
+  },
+  pitcher_milb_current: {
+    project: "pitcher",
+    sourceKey: "fangraphs_milb_pitching_2021_2026",
+    note: "Routine MiLB pitcher export covering 2021–2026. The previous current batch remains recoverable."
+  },
+  pitcher_mlb_seasons: {
+    project: "pitcher",
+    sourceKey: "fangraphs_mlb_pitching_seasons",
+    note: "FanGraphs MLB pitcher season-by-season export. Versioned batch; activation does not refresh rankings."
+  },
+  pitcher_mlb_career: {
+    project: "pitcher",
+    sourceKey: "fangraphs_mlb_pitching_career",
+    note: "FanGraphs MLB pitcher career totals export. Versioned batch; activation does not refresh rankings."
+  },
+  pitcher_board: {
+    project: "pitcher",
+    sourceKey: "fangraphs_board_pitchers",
+    note: "Maintenance source. Update only when FanGraphs Board scouting changes."
+  },
+  pitcher_milb_history: {
+    project: "pitcher",
+    sourceKey: "fangraphs_milb_pitching_2010_2019",
+    note: "Historical maintenance source. Do not re-import during ordinary weekly/biweekly updates unless the historical file changed."
+  }
+};
+
+const auth = createClient(AUTH_URL, AUTH_PUBLISHABLE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+
+const state = {
+  session: null,
+  approved: false,
+  rows: [],
+  columns: [],
+  file: null,
+  fileHash: null,
+  validation: null,
+  batchId: null
+};
+
+const el = {
+  headerStatus: document.getElementById("adminHeaderStatus"),
+  authStatus: document.getElementById("authStatus"),
+  signedOut: document.getElementById("signedOutPanel"),
+  signedIn: document.getElementById("signedInPanel"),
+  signedInEmail: document.getElementById("signedInEmail"),
+  approvalMessage: document.getElementById("approvalMessage"),
+  loginForm: document.getElementById("loginForm"),
+  email: document.getElementById("emailInput"),
+  loginMessage: document.getElementById("loginMessage"),
+  signOut: document.getElementById("signOutButton"),
+  importCard: document.getElementById("importCard"),
+  source: document.getElementById("sourceSelect"),
+  file: document.getElementById("fileInput"),
+  sourceNote: document.getElementById("sourceNote"),
+  fileSummary: document.getElementById("fileSummary"),
+  fileName: document.getElementById("fileName"),
+  fileRows: document.getElementById("fileRows"),
+  fileColumns: document.getElementById("fileColumns"),
+  fileHash: document.getElementById("fileHash"),
+  progressWrap: document.getElementById("progressWrap"),
+  progressLabel: document.getElementById("progressLabel"),
+  progressValue: document.getElementById("progressValue"),
+  progress: document.getElementById("uploadProgress"),
+  stage: document.getElementById("stageButton"),
+  activate: document.getElementById("activateButton"),
+  reset: document.getElementById("resetButton"),
+  importStatus: document.getElementById("importStatus"),
+  importMessage: document.getElementById("importMessage"),
+  validationCard: document.getElementById("validationCard"),
+  validationStatus: document.getElementById("validationStatus"),
+  qaGrid: document.getElementById("qaGrid"),
+  validationJson: document.getElementById("validationJson"),
+  completionCard: document.getElementById("completionCard"),
+  activationJson: document.getElementById("activationJson")
+};
+
+function setPill(node, text, tone = "neutral") {
+  node.textContent = text;
+  node.className = `status-pill ${tone}`;
+}
+function showMessage(node, text, tone = "") {
+  node.hidden = false;
+  node.className = `admin-message ${tone}`.trim();
+  node.textContent = text;
+}
+function hideMessage(node) {
+  node.hidden = true;
+  node.textContent = "";
+}
+function setProgress(percent, label) {
+  const n = Math.max(0, Math.min(100, Math.round(percent)));
+  el.progress.value = n;
+  el.progressValue.textContent = `${n}%`;
+  el.progressLabel.textContent = label || "Uploading…";
+  el.progressWrap.hidden = !label;
+}
+function resetImportState({ keepFile = false } = {}) {
+  state.validation = null;
+  state.batchId = null;
+  el.activate.disabled = true;
+  el.validationCard.hidden = true;
+  el.completionCard.hidden = true;
+  hideMessage(el.importMessage);
+  setPill(el.importStatus, "Ready");
+  if (!keepFile) {
+    state.rows = [];
+    state.columns = [];
+    state.file = null;
+    state.fileHash = null;
+    el.file.value = "";
+    el.fileSummary.hidden = true;
+    el.stage.disabled = true;
+  }
+  setProgress(0, "");
+}
+async function hashFile(file) {
+  const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+function parseCsv(file) {
+  return new Promise((resolve, reject) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: "greedy",
+      dynamicTyping: false,
+      transformHeader: (h) => h.replace(/^\uFEFF/, "").trim(),
+      complete: (result) => {
+        if (result.errors?.length) {
+          reject(new Error(result.errors.slice(0, 3).map((x) => x.message).join("; ")));
+          return;
+        }
+        const columns = result.meta.fields || [];
+        const rows = result.data.filter((row) =>
+          Object.values(row).some((value) => String(value ?? "").trim() !== "")
+        );
+        resolve({ columns, rows });
+      },
+      error: reject
+    });
+  });
+}
+async function api(project, action, body = {}) {
+  if (!state.session?.access_token) throw new Error("Admin session is missing.");
+  const response = await fetch(ENDPOINTS[project], {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${state.session.access_token}`
+    },
+    body: JSON.stringify({ action, ...body })
+  });
+  let payload;
+  try { payload = await response.json(); }
+  catch { payload = { ok: false, error: `HTTP ${response.status}` }; }
+  if (!response.ok || payload?.ok === false) {
+    throw new Error(payload?.error || payload?.message || `Request failed (${response.status}).`);
+  }
+  return payload;
+}
+async function checkApproval() {
+  const [hitter, pitcher] = await Promise.allSettled([
+    api("hitter", "status"),
+    api("pitcher", "status")
+  ]);
+  const hitterOk = hitter.status === "fulfilled" && hitter.value?.authorized === true;
+  const pitcherOk = pitcher.status === "fulfilled" && pitcher.value?.authorized === true;
+  state.approved = hitterOk && pitcherOk;
+  if (state.approved) {
+    setPill(el.authStatus, "Approved", "pass");
+    el.headerStatus.textContent = "Admin ready";
+    el.approvalMessage.hidden = true;
+    el.importCard.hidden = false;
+  } else {
+    setPill(el.authStatus, "Approval required", "warning");
+    el.headerStatus.textContent = "Signed in • locked";
+    el.approvalMessage.hidden = false;
+    el.importCard.hidden = true;
+  }
+}
+async function renderSession(session) {
+  state.session = session;
+  const signedIn = Boolean(session?.user);
+  el.signedOut.hidden = signedIn;
+  el.signedIn.hidden = !signedIn;
+  if (!signedIn) {
+    state.approved = false;
+    setPill(el.authStatus, "Signed out");
+    el.headerStatus.textContent = "Locked";
+    el.importCard.hidden = true;
+    resetImportState();
+    return;
+  }
+  el.signedInEmail.textContent = session.user.email || session.user.id;
+  setPill(el.authStatus, "Checking…");
+  await checkApproval();
+}
+function sourceConfig() { return SOURCES[el.source.value]; }
+function renderSourceNote() {
+  el.sourceNote.textContent = sourceConfig().note;
+  resetImportState({ keepFile: true });
+}
+function prettifyKey(key) {
+  return String(key).replaceAll("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+function flattenQa(value, prefix = "") {
+  const items = [];
+  if (!value || typeof value !== "object" || Array.isArray(value)) return items;
+  for (const [key, val] of Object.entries(value)) {
+    const name = prefix ? `${prefix} ${key}` : key;
+    if (val !== null && typeof val === "object" && !Array.isArray(val)) {
+      items.push(...flattenQa(val, name));
+    } else if (["string", "number", "boolean"].includes(typeof val) || val === null) {
+      items.push([name, val]);
+    }
+  }
+  return items;
+}
+function renderValidation(payload) {
+  state.validation = payload;
+  const pass = payload?.ok === true || payload?.validation?.ok === true || payload?.ready_to_apply === true;
+  setPill(el.validationStatus, pass ? "PASS" : "BLOCKED", pass ? "pass" : "fail");
+  el.validationJson.textContent = JSON.stringify(payload, null, 2);
+  const qa = flattenQa(payload)
+    .filter(([key]) => !/next action|batch id|source key/i.test(key))
+    .slice(0, 16);
+  el.qaGrid.innerHTML = qa.map(([key, value]) => `
+    <div class="qa-item"><small>${prettifyKey(key)}</small><strong>${String(value ?? "—")}</strong></div>
+  `).join("");
+  el.validationCard.hidden = false;
+  el.activate.disabled = !pass;
+  return pass;
+}
+async function uploadChunks(project, action, extra = {}) {
+  const total = state.rows.length;
+  for (let start = 0; start < total; start += CHUNK_SIZE) {
+    const chunk = state.rows.slice(start, start + CHUNK_SIZE).map((row, index) => ({
+      _row: start + index + 1,
+      ...row
+    }));
+    await api(project, action, { ...extra, rows: chunk });
+    const done = Math.min(total, start + chunk.length);
+    setProgress((done / total) * 100, `Uploaded ${done.toLocaleString()} of ${total.toLocaleString()} rows`);
+  }
+}
+async function stageAndValidate() {
+  const cfg = sourceConfig();
+  if (!state.file || !state.rows.length) throw new Error("Choose a non-empty FanGraphs CSV first.");
+  el.stage.disabled = true;
+  el.activate.disabled = true;
+  el.completionCard.hidden = true;
+  hideMessage(el.importMessage);
+  setPill(el.importStatus, "Staging…", "warning");
+
+  if (cfg.project === "hitter") {
+    await api("hitter", cfg.resetAction);
+    await uploadChunks("hitter", cfg.loadAction);
+    const validation = await api("hitter", cfg.validateAction);
+    const pass = renderValidation(validation);
+    setPill(el.importStatus, pass ? "Preflight PASS" : "Preflight blocked", pass ? "pass" : "fail");
+    showMessage(el.importMessage,
+      pass ? "Staging is complete and validation passed. Review QA before activating."
+           : "The source remains staged but is blocked. Fix the reported issue before activation.",
+      pass ? "pass" : "fail"
+    );
+  } else {
+    const begin = await api("pitcher", "begin_batch", {
+      source_key: cfg.sourceKey,
+      source_filename: state.file.name,
+      source_sha256: state.fileHash,
+      expected_rows: state.rows.length,
+      source_columns: state.columns
+    });
+    if (begin.duplicate_file && begin.is_current) {
+      state.batchId = begin.batch_id;
+      const validation = await api("pitcher", "validate_batch", { batch_id: state.batchId });
+      const pass = renderValidation(validation);
+      setPill(el.importStatus, "Already current", pass ? "pass" : "warning");
+      showMessage(el.importMessage, "This exact file hash is already current. No duplicate batch was created.", "pass");
+      el.activate.disabled = true;
+      el.stage.disabled = false;
+      return;
+    }
+    state.batchId = begin.batch_id;
+    await uploadChunks("pitcher", "load_chunk", { batch_id: state.batchId, source_key: cfg.sourceKey });
+    const validation = await api("pitcher", "validate_batch", { batch_id: state.batchId });
+    const pass = renderValidation(validation);
+    setPill(el.importStatus, pass ? "Preflight PASS" : "Preflight blocked", pass ? "pass" : "fail");
+    showMessage(el.importMessage,
+      pass ? "The new batch is staged and validated. The existing current batch remains active until Activate."
+           : "The staged batch is blocked. The existing current batch remains unchanged.",
+      pass ? "pass" : "fail"
+    );
+  }
+  el.stage.disabled = false;
+}
+async function activateValidated() {
+  const cfg = sourceConfig();
+  if (!state.validation) throw new Error("Run staging and validation first.");
+  if (!window.confirm("Activate this validated source data? This changes source data only and will NOT start a ranking refresh.")) return;
+
+  el.activate.disabled = true;
+  el.stage.disabled = true;
+  setPill(el.importStatus, "Activating…", "warning");
+
+  let result;
+  if (cfg.project === "hitter") {
+    result = await api("hitter", cfg.activateAction, { source_filename: state.file.name });
+  } else {
+    result = await api("pitcher", "activate_batch", { batch_id: state.batchId });
+  }
+  el.activationJson.textContent = JSON.stringify(result, null, 2);
+  el.completionCard.hidden = false;
+  setPill(el.importStatus, "Source activated", "pass");
+  showMessage(el.importMessage,
+    "Source activation passed. Stop here until you deliberately start the documented DiamondRank refresh workflow.",
+    "pass"
+  );
+  el.stage.disabled = false;
+}
+
+el.loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  hideMessage(el.loginMessage);
+  const email = el.email.value.trim();
+  if (!email) return;
+  const redirect = new URL("./admin.html", window.location.href).href;
+  const { error } = await auth.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: redirect, shouldCreateUser: true }
+  });
+  if (error) return showMessage(el.loginMessage, error.message, "fail");
+  showMessage(el.loginMessage, "Sign-in link sent. Open it in this browser to continue.", "pass");
+});
+
+el.signOut.addEventListener("click", () => auth.auth.signOut());
+el.source.addEventListener("change", renderSourceNote);
+el.file.addEventListener("change", async () => {
+  resetImportState({ keepFile: true });
+  const file = el.file.files?.[0];
+  if (!file) return;
+  setPill(el.importStatus, "Reading file…", "warning");
+  try {
+    const [{ columns, rows }, hash] = await Promise.all([parseCsv(file), hashFile(file)]);
+    state.file = file;
+    state.columns = columns;
+    state.rows = rows;
+    state.fileHash = hash;
+    el.fileName.textContent = file.name;
+    el.fileRows.textContent = rows.length.toLocaleString();
+    el.fileColumns.textContent = columns.length.toLocaleString();
+    el.fileHash.textContent = `${hash.slice(0, 12)}…`;
+    el.fileSummary.hidden = false;
+    el.stage.disabled = !state.approved || rows.length === 0;
+    setPill(el.importStatus, rows.length ? "File ready" : "Empty file", rows.length ? "pass" : "fail");
+  } catch (error) {
+    showMessage(el.importMessage, `CSV parse failed: ${error.message}`, "fail");
+    setPill(el.importStatus, "File blocked", "fail");
+  }
+});
+el.stage.addEventListener("click", async () => {
+  try { await stageAndValidate(); }
+  catch (error) {
+    setPill(el.importStatus, "Blocked", "fail");
+    showMessage(el.importMessage, error.message, "fail");
+    el.stage.disabled = false;
+    el.activate.disabled = true;
+  } finally { setProgress(0, ""); }
+});
+el.activate.addEventListener("click", async () => {
+  try { await activateValidated(); }
+  catch (error) {
+    setPill(el.importStatus, "Activation failed", "fail");
+    showMessage(el.importMessage, error.message, "fail");
+    el.stage.disabled = false;
+  }
+});
+el.reset.addEventListener("click", () => resetImportState());
+
+auth.auth.onAuthStateChange((_event, session) => {
+  queueMicrotask(() => renderSession(session).catch((error) => {
+    setPill(el.authStatus, "Auth error", "fail");
+    showMessage(el.loginMessage, error.message, "fail");
+  }));
+});
+
+const { data: { session } } = await auth.auth.getSession();
+await renderSession(session);
+renderSourceNote();
+
+  </script>
+</body>
+</html>
