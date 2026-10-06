@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#07110d" />
-  <title>DiamondRank Prospect Rankings</title>
-  <meta name="description" content="DiamondRank prospect rankings built from historical opportunity, fantasy profile, scouting context and comparable evidence." />
-  <link rel="stylesheet" href="./css/diamondrank.css?v=31" />
+  <title>DiamondRank Prospect Intelligence</title>
+  <meta name="description" content="Fantasy baseball prospect intelligence built from current performance, development context and historical outcomes." />
+  <link rel="stylesheet" href="./css/diamondrank.css?v=32" />
 </head>
-<body>
+<body class="home-page">
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="./" aria-label="DiamondRank home">
@@ -18,135 +18,188 @@
           <small>Prospect Intelligence</small>
         </span>
       </a>
-      <div class="header-status" id="headerStatus">Current board</div>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="active" href="./">Home</a>
+        <a href="./rankings.html?mode=hitters">Rankings</a>
+      </nav>
     </header>
 
     <main>
-      <section class="hero leaderboard-hero">
-        <div class="hero-copy">
-          <p class="eyebrow" id="heroEyebrow">CURRENT HITTER BOARD</p>
-          <h1 id="heroTitle">DiamondRank Hitter Rankings</h1>
-          <p class="hero-text" id="heroText">Short-term prospect value • current skill shape • historical context</p>
+      <section class="home-hero">
+        <div class="home-hero-copy">
+          <p class="eyebrow">FANTASY BASEBALL PROSPECT INTELLIGENCE</p>
+          <h1>Rank the prospect.<br />Understand the path.</h1>
+          <p class="home-hero-text">
+            DiamondRank combines current performance, age and level context, historical
+            comparables and fantasy-relevant skill evidence to rank hitters and pitchers
+            on one understandable scale.
+          </p>
+
+          <div class="home-hero-actions">
+            <a class="primary-action" href="./rankings.html?mode=hitters">Explore Hitter Rankings</a>
+            <a class="secondary-action" href="./rankings.html?mode=pitchers">Explore Pitcher Rankings</a>
+          </div>
         </div>
 
-        <div class="hero-summary-grid" aria-label="Leaderboard status">
-          <div class="hero-summary-card">
-            <small>Players Ranked</small>
-            <strong id="heroCount">—</strong>
-            <span id="heroPoolLabel">Current hitter pool</span>
+        <div class="home-status-grid" aria-label="Current DiamondRank boards">
+          <div class="home-status-card">
+            <small>Hitters Ranked</small>
+            <strong id="homeHitterCount">—</strong>
+            <span id="homeHitterUpdated">Loading current board…</span>
           </div>
-          <div class="hero-summary-card">
-            <small>Last Updated</small>
-            <strong id="heroUpdated">—</strong>
-            <span>Latest board refresh</span>
+          <div class="home-status-card">
+            <small>Pitchers Ranked</small>
+            <strong id="homePitcherCount">—</strong>
+            <span id="homePitcherUpdated">Loading current board…</span>
           </div>
         </div>
       </section>
 
-      <nav class="board-mode-switch" aria-label="Ranking type">
-        <a class="board-mode-button" href="./?mode=hitters" data-board-mode="hitters">Hitters</a>
-        <a class="board-mode-button" href="./?mode=pitchers" data-board-mode="pitchers">Pitchers</a>
-      </nav>
-
-      <section class="toolbar" id="leaderboardFilters" aria-label="Leaderboard filters">
-        <label class="search-field">
-          <span>Search</span>
-          <input id="searchInput" type="search" autocomplete="off" placeholder="Player, org, position…" />
-        </label>
-
-        <label class="sort-field">
-          <span>Sort</span>
-          <select id="sortSelect">
-            <option value="rank">Overall Rank</option>
-            <option value="opportunity">Opportunity</option>
-            <option value="fantasy">Fantasy Profile</option>
-          </select>
-        </label>
-
-        <button id="mobileFilterToggle" class="filter-toggle" type="button" aria-expanded="false" aria-controls="leaderboardFilters">
-          Filters
-          <span id="activeFilterCount" hidden>0</span>
-        </button>
-
-        <label class="secondary-filter position-filter">
-          <span>Position</span>
-          <select id="positionFilter">
-            <option value="">All positions</option>
-          </select>
-        </label>
-
-        <label class="secondary-filter">
-          <span>Organization</span>
-          <select id="orgFilter">
-            <option value="">All orgs</option>
-          </select>
-        </label>
-
-        <label class="secondary-filter">
-          <span>Level</span>
-          <select id="levelFilter">
-            <option value="">All levels</option>
-          </select>
-        </label>
-
-        <button id="clearFilters" class="ghost-button secondary-filter" type="button">Clear filters</button>
-      </section>
-
-      <section class="board-panel" aria-labelledby="boardHeading">
-        <div class="board-head board-head-compact">
-          <div class="board-head-title">
-            <span class="board-eyebrow">Player Rankings</span>
-            <h2 id="boardHeading">Hitter Rankings</h2>
+      <section class="home-score-section" aria-labelledby="scoreHeading">
+        <div class="home-section-head">
+          <div>
+            <span class="home-section-eyebrow">THE THREE SCORES</span>
+            <h2 id="scoreHeading">Three questions. Three different answers.</h2>
           </div>
-          <div class="board-result-summary">
-            <span>Matching Players</span>
-            <strong id="resultCount">—</strong>
-          </div>
+          <p>
+            The scores are designed to work together. No single number is meant to describe
+            everything about a prospect.
+          </p>
         </div>
 
-        <div id="errorState" class="state-card error-state" hidden>
-          <strong>Couldn’t load DiamondRank.</strong>
-          <span id="errorMessage">Please retry.</span>
-          <button id="retryButton" type="button">Retry</button>
-        </div>
+        <div class="home-score-grid">
+          <article class="home-score-card home-score-card-primary">
+            <span class="home-score-kicker">OVERALL</span>
+            <h3>DiamondScore</h3>
+            <p>
+              Overall fantasy prospect strength. It combines path quality and fantasy skill,
+              with supporting evidence such as prior performance, MLB results and scouting
+              context when available.
+            </p>
+          </article>
 
-        <div id="loadingState" class="loading-list" aria-label="Loading rankings">
-          <div class="skeleton-row"></div>
-          <div class="skeleton-row"></div>
-          <div class="skeleton-row"></div>
-          <div class="skeleton-row"></div>
-          <div class="skeleton-row"></div>
-          <div class="skeleton-row"></div>
-        </div>
+          <article class="home-score-card">
+            <span class="home-score-kicker">PATH</span>
+            <h3>Opportunity</h3>
+            <p>
+              How favorable a player's historical path looks based on age, level, role and
+              peer-relative performance.
+            </p>
+            <small>
+              Not MLB readiness. Not a percentile of current prospects. Not a literal probability.
+            </small>
+          </article>
 
-        <div id="leaderboard" class="leaderboard" aria-live="polite"></div>
-
-        <div class="load-more-wrap">
-          <button id="loadMoreButton" class="load-more" type="button" hidden>Show more</button>
+          <article class="home-score-card">
+            <span class="home-score-kicker">SKILL</span>
+            <h3>Fantasy Profile</h3>
+            <p>
+              How strong the player's fantasy-relevant underlying skills look. Hitter and
+              pitcher traits are evaluated separately using the evidence that matters for each.
+            </p>
+          </article>
         </div>
       </section>
 
-      <section class="method-note">
-        <p><strong>Score scale:</strong> 0.0–99.9. Higher means stronger relative standing within the evaluated pool. DiamondRank scores describe relative evidence; they are not probabilities or guarantees.</p>
+      <section class="home-context-grid">
+        <article class="home-context-card">
+          <span class="home-section-eyebrow">ONE BOARD ACROSS LEVELS</span>
+          <h2>A-ball and Triple-A belong on the same scale.</h2>
+          <p>
+            Performance is evaluated in context. A young player succeeding in A-ball can
+            legitimately carry a stronger Opportunity score than an older player in Triple-A.
+            Age relative to level is meaningful development evidence, not something DiamondRank
+            removes by creating separate level-specific score scales.
+          </p>
+        </article>
+
+        <article class="home-context-card">
+          <span class="home-section-eyebrow">CURRENT EVIDENCE LEADS</span>
+          <h2>Recent performance matters most.</h2>
+          <p>
+            DiamondRank starts with the current season. Smaller samples can be stabilized by
+            prior evidence, historical context and bounded scouting support rather than allowing
+            one brief stretch to completely redefine a player's profile.
+          </p>
+        </article>
+      </section>
+
+      <section class="home-flow" aria-labelledby="flowHeading">
+        <div class="home-section-head">
+          <div>
+            <span class="home-section-eyebrow">HOW DIAMONDRANK READS A PROSPECT</span>
+            <h2 id="flowHeading">Evidence becomes context before it becomes a rank.</h2>
+          </div>
+        </div>
+
+        <div class="home-flow-track" aria-label="DiamondRank evidence flow">
+          <span>Current performance</span>
+          <i>→</i>
+          <span>Peer context</span>
+          <i>→</i>
+          <span>Prior evidence</span>
+          <i>→</i>
+          <span>Historical comparables</span>
+          <i>→</i>
+          <span>DiamondScore</span>
+        </div>
+      </section>
+
+      <section class="home-preview-section" aria-labelledby="previewHeading">
+        <div class="home-section-head">
+          <div>
+            <span class="home-section-eyebrow">CURRENT LEADERS</span>
+            <h2 id="previewHeading">See the model, not just the methodology.</h2>
+          </div>
+          <p>Live Top-5 previews from the current public boards.</p>
+        </div>
+
+        <div class="home-preview-grid">
+          <article class="home-preview-card">
+            <div class="home-preview-head">
+              <div>
+                <span class="home-section-eyebrow">HITTERS</span>
+                <h3>Top 5 Hitters</h3>
+              </div>
+              <a href="./rankings.html?mode=hitters">Full rankings →</a>
+            </div>
+            <div id="homeHitterPreview" class="home-preview-list" aria-live="polite">
+              <div class="home-preview-loading">Loading hitter rankings…</div>
+            </div>
+          </article>
+
+          <article class="home-preview-card">
+            <div class="home-preview-head">
+              <div>
+                <span class="home-section-eyebrow">PITCHERS</span>
+                <h3>Top 5 Pitchers</h3>
+              </div>
+              <a href="./rankings.html?mode=pitchers">Full rankings →</a>
+            </div>
+            <div id="homePitcherPreview" class="home-preview-list" aria-live="polite">
+              <div class="home-preview-loading">Loading pitcher rankings…</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="home-interpretation-note">
+        <strong>How to read the numbers</strong>
+        <p>
+          DiamondRank scores use a 0.0–99.9 model scale. Higher means stronger evidence on
+          that dimension. Scores are not guarantees, MLB-readiness grades or percentile ranks
+          of the current prospect population.
+        </p>
       </section>
     </main>
 
     <footer>
       <span>DiamondRank</span>
-      <span>Historical evidence • Current profile • Comparable context</span>
+      <span>Current evidence • Development context • Historical outcomes</span>
     </footer>
   </div>
 
-  <dialog id="playerDialog" class="player-dialog" aria-labelledby="dialogPlayerName">
-    <div class="dialog-shell">
-      <div class="dialog-control-bar">
-        <button id="dialogClose" class="dialog-close" type="button" aria-label="Close player details">×</button>
-      </div>
-      <div id="dialogLoading" class="dialog-loading">Loading player profile…</div>
-      <div id="dialogContent" hidden></div>
-    </div>
-  </dialog>
-
-  <script type="module" src="./js/diamondrank.js?v=35"></script>
+  <script type="module" src="./js/home.js?v=1"></script>
 </body>
 </html>
