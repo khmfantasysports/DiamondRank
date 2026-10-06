@@ -728,3 +728,33 @@
     font-size: clamp(7px, 1.95vw, 8px);
   }
 }
+
+/* =========================================================
+   Home polish v4
+   ========================================================= */
+
+.home-hero-copy,
+.home-section-title > p,
+.home-score-card p,
+.home-score-card span,
+.home-context-card p,
+.home-model-note,
+.home-scale-note,
+.home-preview-player small,
+.home-preview-score small,
+.home-board-status small {
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .home-v2 .home-header {
+    box-sizing: border-box;
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding-left: max(18px, env(safe-area-inset-left));
+    padding-right: max(18px, env(safe-area-inset-right));
+    border-radius: 0;
+  }
+}
