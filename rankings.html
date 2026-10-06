@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#07110d" />
+  <title>DiamondRank Prospect Rankings</title>
+  <meta name="description" content="DiamondRank hitter and pitcher prospect rankings." />
+  <link rel="stylesheet" href="./css/diamondrank.css?v=32" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="DiamondRank home">
+        <span class="brand-mark" aria-hidden="true">◆</span>
+        <span>
+          <strong>DiamondRank</strong>
+          <small>Prospect Intelligence</small>
+        </span>
+      </a>
+
+      <div class="header-right">
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="./">Home</a>
+          <a class="active" href="./rankings.html?mode=hitters">Rankings</a>
+        </nav>
+        <div class="header-status" id="headerStatus">Current board</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero leaderboard-hero">
+        <div class="hero-copy">
+          <p class="eyebrow" id="heroEyebrow">CURRENT HITTER BOARD</p>
+          <h1 id="heroTitle">DiamondRank Hitter Rankings</h1>
+          <p class="hero-text" id="heroText">Short-term prospect value • current skill shape • historical context</p>
+        </div>
+
+        <div class="hero-summary-grid" aria-label="Leaderboard status">
+          <div class="hero-summary-card">
+            <small>Players Ranked</small>
+            <strong id="heroCount">—</strong>
+            <span id="heroPoolLabel">Current hitter pool</span>
+          </div>
+          <div class="hero-summary-card">
+            <small>Last Updated</small>
+            <strong id="heroUpdated">—</strong>
+            <span>Latest board refresh</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="board-mode-switch" aria-label="Ranking type">
+        <a class="board-mode-button" href="./rankings.html?mode=hitters" data-board-mode="hitters">Hitters</a>
+        <a class="board-mode-button" href="./rankings.html?mode=pitchers" data-board-mode="pitchers">Pitchers</a>
+      </nav>
+
+      <div class="rankings-context-note">
+        <strong>Scores work across levels.</strong>
+        <span>
+          Opportunity reflects historical path quality using age, level, role and peer-relative
+          performance. It is not an MLB-readiness grade or a percentile of current prospects.
+        </span>
+        <a href="./#scoreHeading">How DiamondRank works</a>
+      </div>
+
+      <section class="toolbar" id="leaderboardFilters" aria-label="Leaderboard filters">
+        <label class="search-field">
+          <span>Search</span>
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Player, org, position…" />
+        </label>
+
+        <label class="sort-field">
+          <span>Sort</span>
+          <select id="sortSelect">
+            <option value="rank">Overall Rank</option>
+            <option value="opportunity">Opportunity</option>
+            <option value="fantasy">Fantasy Profile</option>
+          </select>
+        </label>
+
+        <button id="mobileFilterToggle" class="filter-toggle" type="button" aria-expanded="false" aria-controls="leaderboardFilters">
+          Filters
+          <span id="activeFilterCount" hidden>0</span>
+        </button>
+
+        <label class="secondary-filter position-filter">
+          <span>Position</span>
+          <select id="positionFilter">
+            <option value="">All positions</option>
+          </select>
+        </label>
+
+        <label class="secondary-filter">
+          <span>Organization</span>
+          <select id="orgFilter">
+            <option value="">All orgs</option>
+          </select>
+        </label>
+
+        <label class="secondary-filter">
+          <span>Level</span>
+          <select id="levelFilter">
+            <option value="">All levels</option>
+          </select>
+        </label>
+
+        <button id="clearFilters" class="ghost-button secondary-filter" type="button">Clear filters</button>
+      </section>
+
+      <section class="board-panel" aria-labelledby="boardHeading">
+        <div class="board-head board-head-compact">
+          <div class="board-head-title">
+            <span class="board-eyebrow">Player Rankings</span>
+            <h2 id="boardHeading">Hitter Rankings</h2>
+          </div>
+          <div class="board-result-summary">
+            <span>Matching Players</span>
+            <strong id="resultCount">—</strong>
+          </div>
+        </div>
+
+        <div id="errorState" class="state-card error-state" hidden>
+          <strong>Couldn’t load DiamondRank.</strong>
+          <span id="errorMessage">Please retry.</span>
+          <button id="retryButton" type="button">Retry</button>
+        </div>
+
+        <div id="loadingState" class="loading-list" aria-label="Loading rankings">
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+        </div>
+
+        <div id="leaderboard" class="leaderboard" aria-live="polite"></div>
+
+        <div class="load-more-wrap">
+          <button id="loadMoreButton" class="load-more" type="button" hidden>Show more</button>
+        </div>
+      </section>
+
+      <section class="method-note">
+        <p>
+          <strong>Score scale:</strong> 0.0–99.9. Higher means a stronger model score on that
+          dimension. Scores are not percentile ranks, MLB-readiness grades, literal probabilities
+          or guarantees.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <span>DiamondRank</span>
+      <span>Current evidence • Development context • Historical outcomes</span>
+    </footer>
+  </div>
+
+  <dialog id="playerDialog" class="player-dialog" aria-labelledby="dialogPlayerName">
+    <div class="dialog-shell">
+      <div class="dialog-control-bar">
+        <button id="dialogClose" class="dialog-close" type="button" aria-label="Close player details">×</button>
+      </div>
+      <div id="dialogLoading" class="dialog-loading">Loading player profile…</div>
+      <div id="dialogContent" hidden></div>
+    </div>
+  </dialog>
+
+  <script type="module" src="./js/diamondrank.js?v=35"></script>
+</body>
+</html>
