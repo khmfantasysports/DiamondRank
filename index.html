@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#07110d" />
   <title>DiamondRank Prospect Intelligence</title>
-  <meta name="description" content="Fantasy baseball prospect intelligence built from current performance, development context and historical outcomes." />
+  <meta name="description" content="Fantasy baseball prospect rankings built from current performance, development context and historical outcomes." />
+
   <link rel="stylesheet" href="./css/diamondrank.css?v=33" />
+  <link rel="stylesheet" href="./css/home.css?v=2" />
 </head>
-<body class="home-page">
+<body class="home-v2">
   <div class="site-shell">
-    <header class="site-header">
+    <header class="site-header home-header">
       <a class="brand" href="./" aria-label="DiamondRank home">
         <span class="brand-mark" aria-hidden="true">◆</span>
         <span>
@@ -19,177 +21,152 @@
         </span>
       </a>
 
-      <nav class="site-nav" aria-label="Primary navigation">
+      <nav class="home-nav" aria-label="Primary navigation">
         <a class="active" href="./">Home</a>
         <a href="./rankings.html?mode=hitters">Rankings</a>
       </nav>
     </header>
 
-    <main>
-      <section class="home-hero">
-        <div class="home-hero-copy">
-          <p class="eyebrow">FANTASY BASEBALL PROSPECT INTELLIGENCE</p>
-          <h1>Rank the prospect.<br />Understand the path.</h1>
-          <p class="home-hero-text">
-            DiamondRank combines current performance, age and level context, historical
-            comparables and fantasy-relevant skill evidence to rank hitters and pitchers
-            on one understandable scale.
-          </p>
+    <main class="home-main">
+      <section class="home-hero-card">
+        <p class="home-eyebrow">FANTASY BASEBALL PROSPECT INTELLIGENCE</p>
 
-          <div class="home-hero-actions">
-            <a class="primary-action" href="./rankings.html?mode=hitters">Explore Hitter Rankings</a>
-            <a class="secondary-action" href="./rankings.html?mode=pitchers">Explore Pitcher Rankings</a>
-          </div>
+        <h1>Rank the prospect.<br><span>Understand the path.</span></h1>
+
+        <p class="home-hero-copy">
+          One fantasy prospect board built from current performance,
+          age and level context, historical comparables and underlying skill.
+        </p>
+
+        <div class="home-primary-actions">
+          <a class="home-action home-action-primary" href="./rankings.html?mode=hitters">
+            Hitter Rankings
+          </a>
+          <a class="home-action home-action-secondary" href="./rankings.html?mode=pitchers">
+            Pitcher Rankings
+          </a>
         </div>
 
-        <div class="home-status-grid" aria-label="Current DiamondRank boards">
-          <div class="home-status-card">
-            <small>Hitters Ranked</small>
+        <div class="home-board-status">
+          <div>
+            <span>Hitters</span>
             <strong id="homeHitterCount">—</strong>
-            <span id="homeHitterUpdated">Loading current board…</span>
+            <small id="homeHitterUpdated">Loading…</small>
           </div>
-          <div class="home-status-card">
-            <small>Pitchers Ranked</small>
+          <div>
+            <span>Pitchers</span>
             <strong id="homePitcherCount">—</strong>
-            <span id="homePitcherUpdated">Loading current board…</span>
+            <small id="homePitcherUpdated">Loading…</small>
           </div>
         </div>
       </section>
 
-      <section class="home-score-section" aria-labelledby="scoreHeading">
-        <div class="home-section-head">
-          <div>
-            <span class="home-section-eyebrow">THE THREE SCORES</span>
-            <h2 id="scoreHeading">Three questions. Three different answers.</h2>
-          </div>
-          <p>
-            The scores are designed to work together. No single number is meant to describe
-            everything about a prospect.
-          </p>
+      <section class="home-section home-score-section" aria-labelledby="scoreHeading">
+        <div class="home-section-title">
+          <span>HOW TO READ DIAMONDRANK</span>
+          <h2 id="scoreHeading">Three scores. Three jobs.</h2>
+          <p>The scores work together rather than trying to make one number explain everything.</p>
         </div>
 
-        <div class="home-score-grid">
-          <article class="home-score-card home-score-card-primary">
-            <span class="home-score-kicker">OVERALL</span>
-            <h3>DiamondScore</h3>
-            <p>
-              Overall fantasy prospect strength. It combines path quality and fantasy skill,
-              with supporting evidence such as prior performance, MLB results and scouting
-              context when available.
-            </p>
+        <div class="home-score-cards">
+          <article class="home-score-card home-score-overall">
+            <div class="home-score-symbol">◆</div>
+            <div>
+              <small>OVERALL</small>
+              <h3>DiamondScore</h3>
+              <p>Overall fantasy prospect strength, combining path quality and fantasy skill.</p>
+            </div>
           </article>
 
           <article class="home-score-card">
-            <span class="home-score-kicker">PATH</span>
-            <h3>Opportunity</h3>
-            <p>
-              How favorable a player's historical path looks based on age, level, role and
-              peer-relative performance.
-            </p>
-            <small>
-              Not MLB readiness. Not a percentile of current prospects. Not a literal probability.
-            </small>
+            <div class="home-score-symbol">↗</div>
+            <div>
+              <small>PATH</small>
+              <h3>Opportunity</h3>
+              <p>Historical path quality for a player’s age, level, role and peer-relative performance.</p>
+              <span>Not MLB readiness. Not a current-prospect percentile.</span>
+            </div>
           </article>
 
           <article class="home-score-card">
-            <span class="home-score-kicker">SKILL</span>
-            <h3>Fantasy Profile</h3>
-            <p>
-              How strong the player's fantasy-relevant underlying skills look. Hitter and
-              pitcher traits are evaluated separately using the evidence that matters for each.
-            </p>
+            <div class="home-score-symbol">◎</div>
+            <div>
+              <small>SKILL</small>
+              <h3>Fantasy Profile</h3>
+              <p>Strength of the underlying fantasy-relevant hitter or pitcher skill set.</p>
+            </div>
           </article>
         </div>
       </section>
 
-      <section class="home-context-grid">
-        <article class="home-context-card">
-          <span class="home-section-eyebrow">ONE BOARD ACROSS LEVELS</span>
-          <h2>A-ball and Triple-A belong on the same scale.</h2>
+      <section class="home-context-card">
+        <div class="home-context-icon">A→AAA</div>
+        <div>
+          <span>WHY LEVELS SHARE ONE BOARD</span>
+          <h2>A young A-ball player can rank above an older Triple-A player.</h2>
           <p>
-            Performance is evaluated in context. A young player succeeding in A-ball can
-            legitimately carry a stronger Opportunity score than an older player in Triple-A.
-            Age relative to level is meaningful development evidence, not something DiamondRank
-            removes by creating separate level-specific score scales.
+            That is intentional. Performance is evaluated against appropriate peers,
+            while age relative to level is itself meaningful development evidence.
+            DiamondRank does not create separate score scales for each minor-league level.
           </p>
-        </article>
-
-        <article class="home-context-card">
-          <span class="home-section-eyebrow">CURRENT EVIDENCE LEADS</span>
-          <h2>Recent performance matters most.</h2>
-          <p>
-            DiamondRank starts with the current season. Smaller samples can be stabilized by
-            prior evidence, historical context and bounded scouting support rather than allowing
-            one brief stretch to completely redefine a player's profile.
-          </p>
-        </article>
+        </div>
       </section>
 
-      <section class="home-flow" aria-labelledby="flowHeading">
-        <div class="home-section-head">
+      <section class="home-section home-model-section">
+        <div class="home-section-title">
+          <span>HOW THE MODEL READS A PLAYER</span>
+          <h2>Evidence first. Context second. Rank last.</h2>
+        </div>
+
+        <div class="home-model-flow">
+          <div><b>01</b><span>Current evidence</span></div>
+          <i>→</i>
+          <div><b>02</b><span>Peer context</span></div>
+          <i>→</i>
+          <div><b>03</b><span>Prior evidence</span></div>
+          <i>→</i>
+          <div><b>04</b><span>Historical comps</span></div>
+          <i>→</i>
+          <div><b>05</b><span>DiamondScore</span></div>
+        </div>
+
+        <p class="home-model-note">
+          Current-season evidence leads. Smaller samples can be stabilized by prior evidence,
+          while MLB results and scouting context provide bounded support when available.
+        </p>
+      </section>
+
+      <section class="home-section home-leaders-section" aria-labelledby="leadersHeading">
+        <div class="home-section-title home-leaders-heading">
           <div>
-            <span class="home-section-eyebrow">HOW DIAMONDRANK READS A PROSPECT</span>
-            <h2 id="flowHeading">Evidence becomes context before it becomes a rank.</h2>
+            <span>CURRENT LEADERS</span>
+            <h2 id="leadersHeading">Top 5 right now</h2>
+          </div>
+
+          <div class="home-preview-toggle" role="tablist" aria-label="Leaderboard preview">
+            <button type="button" class="active" data-preview-mode="hitters" role="tab" aria-selected="true">
+              Hitters
+            </button>
+            <button type="button" data-preview-mode="pitchers" role="tab" aria-selected="false">
+              Pitchers
+            </button>
           </div>
         </div>
 
-        <div class="home-flow-track" aria-label="DiamondRank evidence flow">
-          <span>Current performance</span>
-          <i>→</i>
-          <span>Peer context</span>
-          <i>→</i>
-          <span>Prior evidence</span>
-          <i>→</i>
-          <span>Historical comparables</span>
-          <i>→</i>
-          <span>DiamondScore</span>
+        <div id="homePreviewList" class="home-preview-list" aria-live="polite">
+          <div class="home-preview-loading">Loading current rankings…</div>
         </div>
+
+        <a id="homePreviewLink" class="home-full-rankings-link" href="./rankings.html?mode=hitters">
+          View full hitter rankings <span>→</span>
+        </a>
       </section>
 
-      <section class="home-preview-section" aria-labelledby="previewHeading">
-        <div class="home-section-head">
-          <div>
-            <span class="home-section-eyebrow">CURRENT LEADERS</span>
-            <h2 id="previewHeading">See the model, not just the methodology.</h2>
-          </div>
-          <p>Live Top-5 previews from the current public boards.</p>
-        </div>
-
-        <div class="home-preview-grid">
-          <article class="home-preview-card">
-            <div class="home-preview-head">
-              <div>
-                <span class="home-section-eyebrow">HITTERS</span>
-                <h3>Top 5 Hitters</h3>
-              </div>
-              <a href="./rankings.html?mode=hitters">Full rankings →</a>
-            </div>
-            <div id="homeHitterPreview" class="home-preview-list" aria-live="polite">
-              <div class="home-preview-loading">Loading hitter rankings…</div>
-            </div>
-          </article>
-
-          <article class="home-preview-card">
-            <div class="home-preview-head">
-              <div>
-                <span class="home-section-eyebrow">PITCHERS</span>
-                <h3>Top 5 Pitchers</h3>
-              </div>
-              <a href="./rankings.html?mode=pitchers">Full rankings →</a>
-            </div>
-            <div id="homePitcherPreview" class="home-preview-list" aria-live="polite">
-              <div class="home-preview-loading">Loading pitcher rankings…</div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="home-interpretation-note">
-        <strong>How to read the numbers</strong>
+      <section class="home-scale-note">
+        <strong>0.0–99.9 model scale</strong>
         <p>
-          DiamondRank scores use a 0.0–99.9 model scale. Higher means stronger evidence on
-          that dimension. Scores are not guarantees, MLB-readiness grades or percentile ranks
-          of the current prospect population.
+          Higher means stronger evidence on that dimension.
+          Scores are not guarantees, MLB-readiness grades or percentile ranks of the current prospect pool.
         </p>
       </section>
     </main>
@@ -200,6 +177,6 @@
     </footer>
   </div>
 
-  <script type="module" src="./js/home.js?v=1"></script>
+  <script type="module" src="./js/home.js?v=2"></script>
 </body>
 </html>
