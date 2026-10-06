@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#07110d" />
   <title>DiamondRank Prospect Rankings</title>
-  <meta name="description" content="DiamondRank hitter and pitcher prospect rankings." />
+  <meta name="description" content="DiamondRank hitter and pitcher fantasy prospect rankings." />
+
   <link rel="stylesheet" href="./css/diamondrank.css?v=33" />
+  <link rel="stylesheet" href="./css/rankings.css?v=2" />
 </head>
-<body>
+<body class="rankings-v2">
   <div class="site-shell">
-    <header class="site-header">
+    <header class="site-header rankings-header">
       <a class="brand" href="./" aria-label="DiamondRank home">
         <span class="brand-mark" aria-hidden="true">◆</span>
         <span>
@@ -19,8 +21,8 @@
         </span>
       </a>
 
-      <div class="header-right">
-        <nav class="site-nav" aria-label="Primary navigation">
+      <div class="rankings-header-right">
+        <nav class="rankings-nav" aria-label="Primary navigation">
           <a href="./">Home</a>
           <a class="active" href="./rankings.html?mode=hitters">Rankings</a>
         </nav>
@@ -29,11 +31,11 @@
     </header>
 
     <main>
-      <section class="hero leaderboard-hero">
+      <section class="hero leaderboard-hero rankings-hero">
         <div class="hero-copy">
           <p class="eyebrow" id="heroEyebrow">CURRENT HITTER BOARD</p>
           <h1 id="heroTitle">DiamondRank Hitter Rankings</h1>
-          <p class="hero-text" id="heroText">Short-term prospect value • current skill shape • historical context</p>
+          <p class="hero-text" id="heroText">Current performance • historical context • fantasy skill</p>
         </div>
 
         <div class="hero-summary-grid" aria-label="Leaderboard status">
@@ -55,14 +57,21 @@
         <a class="board-mode-button" href="./rankings.html?mode=pitchers" data-board-mode="pitchers">Pitchers</a>
       </nav>
 
-      <div class="rankings-context-note">
-        <strong>Scores work across levels.</strong>
-        <span>
-          Opportunity reflects historical path quality using age, level, role and peer-relative
-          performance. It is not an MLB-readiness grade or a percentile of current prospects.
-        </span>
-        <a href="./#scoreHeading">How DiamondRank works</a>
-      </div>
+      <details class="rankings-score-note">
+        <summary>
+          <span><strong>How scores work</strong> · Opportunity is historical path quality, not MLB readiness</span>
+          <b>+</b>
+        </summary>
+        <div>
+          <p>
+            <strong>DiamondScore</strong> is overall fantasy prospect strength.
+            <strong>Opportunity</strong> reflects age, level, role and peer-relative performance
+            through historical outcomes.
+            <strong>Fantasy Profile</strong> measures underlying fantasy-relevant skill.
+          </p>
+          <a href="./#scoreHeading">Read the full explanation →</a>
+        </div>
+      </details>
 
       <section class="toolbar" id="leaderboardFilters" aria-label="Leaderboard filters">
         <label class="search-field">
@@ -144,9 +153,8 @@
 
       <section class="method-note">
         <p>
-          <strong>Score scale:</strong> 0.0–99.9. Higher means a stronger model score on that
-          dimension. Scores are not percentile ranks, MLB-readiness grades, literal probabilities
-          or guarantees.
+          <strong>0.0–99.9 model scale.</strong>
+          Higher means stronger evidence on that dimension. Scores are not guarantees or MLB-readiness grades.
         </p>
       </section>
     </main>
