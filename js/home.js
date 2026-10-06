@@ -2,24 +2,31 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const SOURCES = {
   hitters: {
+    label: "hitter",
     url: "https://uxvuehmighuqqejowxoq.supabase.co",
     key: "sb_publishable_mQiGDDJ7o5vbF5RYSnl0-g_tRiJRi06",
     view: "diamondrank_current_hitters_v1",
     countEl: "homeHitterCount",
     updatedEl: "homeHitterUpdated",
-    previewEl: "homeHitterPreview",
     rankingsUrl: "./rankings.html?mode=hitters"
   },
   pitchers: {
+    label: "pitcher",
     url: "https://pkgnjhkdqzfrsrjdsjcp.supabase.co",
     key: "sb_publishable__vES8c3cYqijmgHiqBlFZQ_m__qXdrA",
     view: "diamondrank_current_pitchers_v1",
     countEl: "homePitcherCount",
     updatedEl: "homePitcherUpdated",
-    previewEl: "homePitcherPreview",
     rankingsUrl: "./rankings.html?mode=pitchers"
   }
 };
+
+const boardData = {
+  hitters: [],
+  pitchers: []
+};
+
+let previewMode = "hitters";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -36,13 +43,13 @@ function number1(value) {
 }
 
 function formatShortDate(value) {
-  if (!value) return "Update unavailable";
+  if (!value) return "Current";
   const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "Update unavailable";
-  return `Updated ${new Intl.DateTimeFormat(undefined, {
+  if (Number.isNaN(d.getTime())) return "Current";
+  return new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "numeric"
-  }).format(d)}`;
+  }).format(d);
 }
 
 function scoreToneClass(value) {
@@ -55,13 +62,32 @@ function scoreToneClass(value) {
   return "tone-red";
 }
 
-function renderPreview(rows, rankingsUrl) {
-  if (!rows.length) {
-    return `<div class="home-preview-loading">No current rankings available.</div>`;
+function renderPreview() {
+  const list = document.getElementById("homePreviewList");
+  const link = document.getElementById("homePreviewLink");
+  const source = SOURCES[previewMode];
+  const rows = boardData[previewMode];
+
+  for (const button of document.querySelectorAll("[data-preview-mode]")) {
+    const active = button.dataset.previewMode === previewMode;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", active ? "true" : "false");
   }
 
-  return rows.map((row) => `
-    <a class="home-preview-row" href="${rankingsUrl}">
+  if (link) {
+    link.href = source.rankingsUrl;
+    link.innerHTML = `View full ${source.label} rankings <span>→</span>`;
+  }
+
+  if (!list) return;
+
+  if (!rows.length) {
+    list.innerHTML = `<div class="home-preview-loading">Preview unavailable.</div>`;
+    return;
+  }
+
+  list.innerHTML = rows.map((row) => `
+    <a class="home-preview-row" href="${source.rankingsUrl}">
       <span class="home-preview-rank">#${escapeHtml(row.overall_rank)}</span>
       <span class="home-preview-player">
         <strong>${escapeHtml(row.full_name)}</strong>
@@ -75,7 +101,8 @@ function renderPreview(rows, rankingsUrl) {
   `).join("");
 }
 
-async function loadBoard(source) {
+async function loadBoard(mode) {
+  const source = SOURCES[mode];
   const client = createClient(source.url, source.key, {
     auth: {
       persistSession: false,
@@ -86,7 +113,6 @@ async function loadBoard(source) {
 
   const countNode = document.getElementById(source.countEl);
   const updatedNode = document.getElementById(source.updatedEl);
-  const previewNode = document.getElementById(source.previewEl);
 
   try {
     const { data, error, count } = await client
@@ -100,31 +126,36 @@ async function loadBoard(source) {
 
     if (error) throw error;
 
-    const rows = data || [];
-    const latest = rows.reduce((max, row) => {
-      const time = row.data_updated_at ? new Date(row.data_updated_at).getTime() : 0;
-      return time > max ? time : max;
+    boardData[mode] = data || [];
+
+    const latest = boardData[mode].reduce((max, row) => {
+      const t = row.data_updated_at ? new Date(row.data_updated_at).getTime() : 0;
+      return t > max ? t : max;
     }, 0);
 
     if (countNode) countNode.textContent = Number.isFinite(count) ? count.toLocaleString() : "—";
-    if (updatedNode) updatedNode.textContent = latest ? formatShortDate(latest) : "Current board";
-    if (previewNode) previewNode.innerHTML = renderPreview(rows, source.rankingsUrl);
+    if (updatedNode) updatedNode.textContent = latest ? formatShortDate(latest) : "Current";
+
+    if (previewMode === mode) renderPreview();
   } catch (error) {
-    console.error("DiamondRank home preview failed", error);
+    console.error(`DiamondRank ${mode} home preview failed`, error);
     if (countNode) countNode.textContent = "—";
-    if (updatedNode) updatedNode.textContent = "Board unavailable";
-    if (previewNode) {
-      previewNode.innerHTML = `
-        <div class="home-preview-error">
-          Couldn’t load this preview.
-          <a href="${source.rankingsUrl}">Open rankings →</a>
-        </div>
-      `;
-    }
+    if (updatedNode) updatedNode.textContent = "Unavailable";
+    boardData[mode] = [];
+    if (previewMode === mode) renderPreview();
   }
 }
 
+for (const button of document.querySelectorAll("[data-preview-mode]")) {
+  button.addEventListener("click", () => {
+    previewMode = button.dataset.previewMode === "pitchers" ? "pitchers" : "hitters";
+    renderPreview();
+  });
+}
+
 await Promise.all([
-  loadBoard(SOURCES.hitters),
-  loadBoard(SOURCES.pitchers)
+  loadBoard("hitters"),
+  loadBoard("pitchers")
 ]);
+
+renderPreview();
