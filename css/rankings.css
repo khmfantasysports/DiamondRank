@@ -135,3 +135,20 @@
     font-size: 7.5px;
   }
 }
+
+/* =========================================================
+   Rankings header polish v3
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .rankings-v2 .rankings-header {
+    box-sizing: border-box;
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding-left: max(18px, env(safe-area-inset-left));
+    padding-right: max(18px, env(safe-area-inset-right));
+    border-radius: 0;
+  }
+}
