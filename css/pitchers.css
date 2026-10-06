@@ -1904,3 +1904,59 @@ body[data-board-mode="pitchers"] .toolbar {
     text-align: left;
   }
 }
+
+/* =========================================================
+   Pitcher popup typography polish v31
+   Slightly stronger secondary copy for mobile readability.
+   Keeps names, scores and primary headings unchanged.
+   ========================================================= */
+
+.pitcher-meta span,
+.pitcher-confidence-note,
+.pitcher-section-title span,
+.pitcher-score-ring-card > span,
+.pitcher-context-meter > small,
+.pitcher-comp-season,
+.pitcher-comp-stats small,
+.pitcher-five-year-head span,
+.pitcher-outcome-legend small,
+.pitcher-outcome-note,
+.pitcher-method-card p,
+.pitcher-empty,
+.context-meter > small,
+.pitcher-development-empty span,
+.pitcher-development-trend-row em,
+.pitcher-development-year-row span,
+.pitcher-development-trait small,
+.pitcher-development-trait span,
+.pitcher-mlb-transition-head > span,
+.pitcher-mlb-transition > p,
+.pitcher-development-detail-heading span,
+.pitcher-development-detail-heading small,
+.pitcher-development-detail-trend > span,
+.pitcher-development-season-head span,
+.pitcher-development-note,
+.pitcher-batted-ball-label,
+.pitcher-batted-ball-peers,
+.pitcher-batted-ball-card > p,
+.pitcher-miss-scale,
+.pitcher-miss-facts span,
+.pitcher-miss-card > p,
+.pitcher-outcome-definitions p {
+  font-weight: 500;
+}
+
+/* Tiny uppercase labels benefit from slightly more weight. */
+.pitcher-rank-card small,
+.pitcher-diamondscore-card > small,
+.pitcher-evidence-grid small,
+.pitcher-stat-grid small,
+.pitcher-outcome-medians small,
+.pitcher-comp-top,
+.pitcher-development-trend-row > span,
+.pitcher-mlb-transition-head small,
+.pitcher-batted-ball-head small,
+.pitcher-miss-head small,
+.pitcher-miss-facts small {
+  font-weight: 900;
+}
