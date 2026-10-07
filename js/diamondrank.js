@@ -7,23 +7,23 @@ const MODE_CONFIG = {
     bodyMode: "hitters",
     eyebrow: "CURRENT HITTER BOARD",
     title: "DiamondRank Hitter Rankings",
-    heroText: "Short-term prospect value • current skill shape • historical context",
+    heroText: "Current performance • age + level context • fantasy skill",
     poolLabel: "Current hitter pool",
     searchPlaceholder: "Player, org, position…",
     boardHeading: "Hitter Rankings",
     stylesheet: "./css/hitters.css?v=31",
-    module: "./hitter-rankings.js?v=31"
+    module: "./hitter-rankings.js?v=32"
   },
   pitchers: {
     bodyMode: "pitchers",
     eyebrow: "CURRENT PITCHER BOARD",
     title: "DiamondRank Pitcher Rankings",
-    heroText: "Short-term pitching value • current skill shape • historical context",
+    heroText: "Current performance • age + level context • fantasy skill",
     poolLabel: "Current pitcher pool",
     searchPlaceholder: "Pitcher, org, position, level…",
     boardHeading: "Pitcher Rankings",
     stylesheet: "./css/pitchers.css?v=35",
-    module: "./pitcher-rankings.js?v=36"
+    module: "./pitcher-rankings.js?v=37"
   }
 };
 
