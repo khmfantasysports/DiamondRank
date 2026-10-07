@@ -1960,3 +1960,331 @@ body[data-board-mode="pitchers"] .toolbar {
 .pitcher-miss-facts small {
   font-weight: 900;
 }
+
+/* =========================================================
+   DiamondRank profile header v1
+   Append this block to BOTH:
+   - css/hitters.css
+   - css/pitchers.css
+
+   Presentation only:
+   - no score/rank/confidence logic changes
+   - no Supabase contract changes
+   - no model changes
+   ========================================================= */
+
+/* Put identity first, metadata second, rank summary third. */
+.profile-head,
+.pitcher-profile-head {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-name-row {
+  order: 1;
+}
+
+.pitcher-profile-head > h2 {
+  order: 1;
+}
+
+.profile-meta.compact-meta,
+.pitcher-meta {
+  order: 2;
+}
+
+.rank-score-strip,
+.pitcher-rank-score-strip {
+  order: 3;
+}
+
+.profile-head > .warning {
+  order: 4;
+}
+
+/* Player name: still prominent, but less oversized. */
+.player-name-row h2,
+.pitcher-profile-head h2 {
+  margin: 0;
+  max-width: 100%;
+  font-size: clamp(30px, 5.4vw, 44px);
+  font-weight: 820;
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+
+/* Metadata becomes quiet inline identity text instead of five outlined pills. */
+.profile-meta.compact-meta,
+.pitcher-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin-top: 8px;
+}
+
+.profile-meta.compact-meta .chip,
+.pitcher-meta span {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.profile-meta.compact-meta .chip:not(.emphasis) + .chip:not(.emphasis)::before,
+.pitcher-meta span:not(.emphasis) + span:not(.emphasis)::before {
+  content: "·";
+  margin: 0 7px;
+  color: color-mix(in srgb, var(--gold) 46%, var(--muted-2));
+}
+
+/* Confidence remains the single status pill. */
+.profile-meta.compact-meta .chip.emphasis,
+.pitcher-meta .emphasis {
+  margin-left: 10px;
+  padding: 4px 8px;
+  border: 1px solid rgba(130,231,173,.26);
+  border-radius: 999px;
+  background: rgba(89,209,140,.045);
+  color: var(--green-bright);
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1.1;
+}
+
+/* One summary surface instead of three separate dashboard boxes. */
+.rank-score-strip,
+.pitcher-rank-score-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 13px;
+  overflow: hidden;
+  border: 1px solid rgba(216,189,113,.18);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(216,189,113,.018), rgba(255,255,255,.008));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.025),
+    0 10px 28px rgba(0,0,0,.08);
+}
+
+.rank-summary-card,
+.diamondscore-card,
+.pitcher-rank-card,
+.pitcher-diamondscore-card {
+  min-width: 0;
+  min-height: 94px;
+  padding: 11px 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: center;
+}
+
+.rank-summary-card,
+.pitcher-rank-card {
+  display: grid;
+  align-content: center;
+}
+
+.rank-summary-card:nth-child(2),
+.diamondscore-card,
+.pitcher-rank-card:nth-child(2),
+.pitcher-diamondscore-card {
+  border-left: 1px solid rgba(216,189,113,.11);
+}
+
+/* Sand is used only as a quiet brand accent, not as another score colour. */
+.rank-summary-card small,
+.diamondscore-card > small,
+.pitcher-rank-card small,
+.pitcher-diamondscore-card > small {
+  display: block;
+  color: color-mix(in srgb, var(--gold) 42%, var(--muted-2));
+  font-size: 7.25px;
+  font-weight: 850;
+  letter-spacing: .095em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.rank-summary-card strong,
+.pitcher-rank-card strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--text);
+  font-size: 28px;
+  font-weight: 840;
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+
+.rank-summary-card span,
+.pitcher-rank-card span {
+  display: block;
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.15;
+}
+
+/* DiamondScore stays the accent, but no longer looks like a separate card. */
+.diamondscore-card,
+.pitcher-diamondscore-card {
+  --score-accent: var(--score-neutral);
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+
+.diamondscore-card.tone-red,
+.pitcher-diamondscore-card.tone-red { --score-accent: var(--score-red); }
+
+.diamondscore-card.tone-orange,
+.pitcher-diamondscore-card.tone-orange { --score-accent: var(--score-orange); }
+
+.diamondscore-card.tone-gold,
+.pitcher-diamondscore-card.tone-gold { --score-accent: var(--score-gold); }
+
+.diamondscore-card.tone-lime,
+.pitcher-diamondscore-card.tone-lime { --score-accent: var(--score-lime); }
+
+.diamondscore-card.tone-emerald,
+.pitcher-diamondscore-card.tone-emerald { --score-accent: var(--score-emerald); }
+
+.diamondscore-ring,
+.pitcher-diamondscore-ring {
+  --meter: 0;
+  width: 60px;
+  aspect-ratio: 1;
+  margin-top: 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, #0a1711 61%, transparent 62%),
+    conic-gradient(
+      var(--score-accent) calc(var(--meter) * 1%),
+      color-mix(in srgb, var(--score-accent) 12%, transparent) 0
+    );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--score-accent) 18%, transparent),
+    0 0 18px color-mix(in srgb, var(--score-accent) 5%, transparent);
+}
+
+.diamondscore-ring strong,
+.pitcher-diamondscore-ring strong {
+  color: var(--score-accent);
+  font-size: 18px;
+  font-weight: 820;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+/* Remove browser-blue focus treatment from the modal close button,
+   while retaining a deliberate accessible focus state. */
+.dialog-close {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dialog-close:focus {
+  outline: none;
+}
+
+.dialog-close:focus-visible {
+  border-color: rgba(130,231,173,.5);
+  outline: 2px solid rgba(130,231,173,.62);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(216,189,113,.10);
+}
+
+/* Mobile: keep all three summary values across without crowding. */
+@media (max-width: 640px) {
+  .player-name-row h2,
+  .pitcher-profile-head h2 {
+    font-size: 32px;
+  }
+
+  .profile-meta.compact-meta,
+  .pitcher-meta {
+    margin-top: 7px;
+  }
+
+  .profile-meta.compact-meta .chip,
+  .pitcher-meta span {
+    font-size: 9.5px;
+  }
+
+  .profile-meta.compact-meta .chip:not(.emphasis) + .chip:not(.emphasis)::before,
+  .pitcher-meta span:not(.emphasis) + span:not(.emphasis)::before {
+    margin: 0 6px;
+  }
+
+  .profile-meta.compact-meta .chip.emphasis,
+  .pitcher-meta .emphasis {
+    margin-left: 8px;
+    padding: 4px 7px;
+    font-size: 8.5px;
+  }
+
+  .rank-score-strip,
+  .pitcher-rank-score-strip {
+    margin-top: 11px;
+    border-radius: 14px;
+  }
+
+  .rank-summary-card,
+  .diamondscore-card,
+  .pitcher-rank-card,
+  .pitcher-diamondscore-card {
+    min-height: 84px;
+    padding: 9px 5px;
+  }
+
+  .rank-summary-card small,
+  .diamondscore-card > small,
+  .pitcher-rank-card small,
+  .pitcher-diamondscore-card > small {
+    font-size: 6.7px;
+    letter-spacing: .075em;
+  }
+
+  .rank-summary-card strong,
+  .pitcher-rank-card strong {
+    margin-top: 4px;
+    font-size: 24px;
+  }
+
+  .rank-summary-card span,
+  .pitcher-rank-card span {
+    margin-top: 4px;
+    font-size: 7px;
+  }
+
+  .diamondscore-ring,
+  .pitcher-diamondscore-ring {
+    width: 54px;
+    margin-top: 5px;
+  }
+
+  .diamondscore-ring strong,
+  .pitcher-diamondscore-ring strong {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 390px) {
+  .profile-meta.compact-meta .chip.emphasis,
+  .pitcher-meta .emphasis {
+    margin-left: 0;
+    margin-top: 5px;
+  }
+}
