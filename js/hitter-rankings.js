@@ -490,7 +490,6 @@ function contactTypeCell(shortLabel, label, value, z, tone = "") {
   `;
 }
 
-
 function compactSwStr(player) {
   const percentile = clamp(player.swstr_contact_percentile, 0, 99.9);
   const tone = scoreToneClass(percentile);
@@ -532,7 +531,6 @@ function compactSwStr(player) {
     </div>
   `;
 }
-
 
 function outcomeToneClass(label) {
   const key = String(label || "").toLowerCase();
@@ -657,7 +655,6 @@ function compCards(player) {
     `;
   }).join("");
 }
-
 
 function signed1(value) {
   const n = Number(value);
@@ -793,7 +790,6 @@ function developmentSummaryFromAnnual(annual) {
   };
 }
 
-
 function publicDevelopmentTrend(summary) {
   const label = String(summary?.label || "").toLowerCase();
 
@@ -866,7 +862,6 @@ function developmentSparkline(rows, key) {
     </svg>
   `;
 }
-
 
 function signedValueToneClass(value) {
   const n = Number(value);
@@ -1277,26 +1272,20 @@ function closeDevelopmentDetails() {
   el.dialog?.classList.remove("development-detail-active");
 }
 
-
 function explanationDetails(player) {
-  const exp = player.plain_language_explanations || {};
   const compCount = Number(player.comparable_context?.displayed_comparables) || 6;
-  const comparableExplanation =
-    `Historical Comparables shows the ${compCount} closest refined-position profiles from the historical database. ` +
-    `Each comp has its own Match %, derived from adjusted statistical distance; higher values mean a closer profile match. ` +
-    `Match % is a similarity score, not a probability of MLB success or a prediction of who the player will become.`;
 
   const items = [
-    ["DiamondScore", exp.overall],
-    ["Opportunity", exp.opportunity],
-    ["Fantasy Profile", exp.fantasy_profile],
-    ["Current Evidence", exp.current_evidence],
-    ["Development", exp.development],
-    ["Hitting Shape", exp.hitting_shape],
-    ["Comparables", comparableExplanation],
-    ["5-Year Outcomes", exp.comparable_selection],
-    ["Swing & Miss", exp.swstr]
-  ].filter(([, value]) => value);
+    ["DiamondScore", "Overall fantasy prospect score. It combines Opportunity and Fantasy Profile to rank the player against the current prospect pool."],
+    ["Opportunity", "How strong the player’s current path looks compared with similar historical players, using age, level and performance context. It is not MLB readiness or a probability."],
+    ["Fantasy Profile", "How strong the player’s fantasy-relevant skills are for their age and level."],
+    ["Current Evidence", "The current-season stat line used most heavily in the player’s profile."],
+    ["Development", "How the player’s age-and-level-adjusted traits changed from the previous qualified season."],
+    ["Batted-Ball Shape", "How the player is putting the ball in play, with ground-ball, line-drive and fly-ball context."],
+    ["Comparables", `The ${compCount} closest historical player profiles. Match % measures similarity, not future outcome.`],
+    ["5-Year Outcomes", "What happened in MLB over the next five seasons for the broader comparable group."],
+    ["Swing & Miss", "Swinging-strike evidence that adds bat-to-ball context. Smaller samples are flagged."]
+  ];
 
   return items.map(([label, text]) => `
     <details class="method-card">
@@ -1305,7 +1294,6 @@ function explanationDetails(player) {
     </details>
   `).join("");
 }
-
 
 async function openPlayer(playerId) {
   el.dialogContent.innerHTML = "";
@@ -1447,7 +1435,6 @@ function renderPlayer(player) {
     .querySelector("[data-development-open]")
     ?.addEventListener("click", () => openDevelopmentDetails(player));
 }
-
 
 if (el.filterToggle && el.toolbar) {
   el.filterToggle.addEventListener("click", () => {
