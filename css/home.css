@@ -758,3 +758,312 @@
     border-radius: 0;
   }
 }
+
+/* =========================================================
+   Home context explainer v5
+   Replaces the two large cross-level/model cards with one
+   compact visual explanation.
+   ========================================================= */
+
+.home-context-explainer {
+  display: grid;
+  gap: 0;
+}
+
+.home-level-visual {
+  display: grid;
+  grid-template-columns: minmax(118px, .65fr) minmax(210px, 1.7fr) minmax(118px, .65fr);
+  gap: 9px;
+  align-items: stretch;
+  margin-top: 11px;
+}
+
+.home-level-side,
+.home-level-center {
+  min-width: 0;
+  border: 1px solid var(--home-line);
+  border-radius: 13px;
+  background: rgba(5, 15, 10, .28);
+}
+
+.home-level-side {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  min-height: 82px;
+  padding: 10px;
+  text-align: center;
+}
+
+.home-level-side strong {
+  display: grid;
+  min-width: 42px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(89, 209, 140, .24);
+  border-radius: 9px;
+  color: var(--home-accent);
+  background: rgba(89, 209, 140, .07);
+  font-size: 13px;
+  letter-spacing: .04em;
+}
+
+.home-level-side span {
+  margin-top: 6px;
+  color: var(--home-text);
+  font-size: 8.5px;
+  font-weight: 800;
+}
+
+.home-level-side small {
+  margin-top: 2px;
+  color: var(--home-muted-2);
+  font-size: 6.8px;
+  font-weight: 600;
+}
+
+.home-level-center {
+  position: relative;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  min-height: 82px;
+  padding: 10px 14px;
+  text-align: center;
+  border-color: rgba(89, 209, 140, .28);
+  background:
+    linear-gradient(135deg, rgba(89, 209, 140, .055), rgba(5, 15, 10, .28));
+}
+
+.home-level-center::before,
+.home-level-center::after {
+  position: absolute;
+  top: 50%;
+  color: var(--home-accent);
+  font-size: 12px;
+  font-weight: 900;
+  transform: translateY(-50%);
+}
+
+.home-level-center::before {
+  content: "→";
+  left: -8px;
+}
+
+.home-level-center::after {
+  content: "←";
+  right: -8px;
+}
+
+.home-level-center span {
+  color: var(--home-muted);
+  font-size: 7.5px;
+  font-weight: 650;
+}
+
+.home-level-center b {
+  margin-top: 4px;
+  color: var(--home-accent);
+  font-size: 12px;
+  letter-spacing: -.01em;
+}
+
+.home-level-note {
+  margin: 9px 1px 0;
+  color: var(--home-muted);
+  font-size: 8.8px;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.home-model-divider {
+  height: 1px;
+  margin: 13px 0;
+  background: rgba(177, 224, 197, .09);
+}
+
+.home-model-compact {
+  display: grid;
+  grid-template-columns: minmax(220px, .85fr) minmax(340px, 1.15fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.home-model-copy > span {
+  display: block;
+  color: var(--home-accent);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.home-model-copy h3 {
+  margin: 3px 0 0;
+  color: var(--home-text);
+  font-size: clamp(14px, 1.8vw, 18px);
+  letter-spacing: -.025em;
+}
+
+.home-model-copy p {
+  margin: 5px 0 0;
+  color: var(--home-muted-2);
+  font-size: 8px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.home-model-path {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-model-path::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: rgba(89, 209, 140, .22);
+}
+
+.home-model-path li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  min-width: 0;
+  text-align: center;
+}
+
+.home-model-path b {
+  z-index: 1;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid rgba(89, 209, 140, .28);
+  border-radius: 50%;
+  color: var(--home-accent);
+  background: #0b1d15;
+  font-size: 8px;
+}
+
+.home-model-path span {
+  color: var(--home-text);
+  font-size: 7.5px;
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .home-level-visual {
+    grid-template-columns: 74px minmax(0, 1fr) 74px;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .home-level-side,
+  .home-level-center {
+    min-height: 68px;
+    border-radius: 10px;
+  }
+
+  .home-level-side {
+    padding: 7px 4px;
+  }
+
+  .home-level-side strong {
+    min-width: 36px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 10px;
+  }
+
+  .home-level-side span {
+    margin-top: 4px;
+    font-size: 6.7px;
+    line-height: 1.15;
+  }
+
+  .home-level-side small {
+    font-size: 5.8px;
+    line-height: 1.2;
+  }
+
+  .home-level-center {
+    padding: 7px 6px;
+  }
+
+  .home-level-center::before,
+  .home-level-center::after {
+    font-size: 9px;
+  }
+
+  .home-level-center::before {
+    left: -6px;
+  }
+
+  .home-level-center::after {
+    right: -6px;
+  }
+
+  .home-level-center span {
+    font-size: 5.9px;
+    line-height: 1.25;
+  }
+
+  .home-level-center b {
+    margin-top: 3px;
+    font-size: 8.2px;
+    line-height: 1.2;
+  }
+
+  .home-level-note {
+    margin-top: 7px;
+    font-size: 7.4px;
+    line-height: 1.4;
+  }
+
+  .home-model-divider {
+    margin: 10px 0;
+  }
+
+  .home-model-compact {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .home-model-copy > span {
+    font-size: 6.5px;
+  }
+
+  .home-model-copy h3 {
+    font-size: 14.5px;
+  }
+
+  .home-model-copy p {
+    margin-top: 3px;
+    font-size: 7.2px;
+  }
+
+  .home-model-path::before {
+    top: 13px;
+  }
+
+  .home-model-path b {
+    width: 26px;
+    height: 26px;
+    font-size: 7px;
+  }
+
+  .home-model-path span {
+    font-size: 6.8px;
+  }
+}
