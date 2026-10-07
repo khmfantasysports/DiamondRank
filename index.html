@@ -8,7 +8,7 @@
   <meta name="description" content="Fantasy baseball prospect rankings built from current performance, development context and historical outcomes." />
 
   <link rel="stylesheet" href="./css/diamondrank.css?v=34" />
-  <link rel="stylesheet" href="./css/home.css?v=4" />
+  <link rel="stylesheet" href="./css/home.css?v=5" />
 </head>
 <body class="home-v2">
   <div class="site-shell">
@@ -101,41 +101,56 @@
         </div>
       </section>
 
-      <section class="home-context-card">
-        <div class="home-context-icon">A→AAA</div>
-        <div>
-          <span>WHY LEVELS SHARE ONE BOARD</span>
-          <h2>A young A-ball player can rank above an older Triple-A player.</h2>
-          <p>
-            That is intentional. Performance is evaluated against appropriate peers,
-            while age relative to level is itself meaningful development evidence.
-            DiamondRank does not create separate score scales for each minor-league level.
-          </p>
-        </div>
-      </section>
-
-      <section class="home-section home-model-section" aria-labelledby="modelHeading">
+      <section class="home-section home-context-explainer" aria-labelledby="contextHeading">
         <div class="home-section-title">
-          <span>HOW THE MODEL READS A PLAYER</span>
-          <h2 id="modelHeading">Evidence first. Context second. Rank last.</h2>
+          <span>HOW DIAMONDRANK COMPARES PLAYERS</span>
+          <h2 id="contextHeading">Different levels. One ranking language.</h2>
         </div>
 
-        <div class="home-model-flow">
-          <div><b>01</b><span><em>Current</em><u>Current evidence</u></span></div>
-          <i>→</i>
-          <div><b>02</b><span><em>Context</em><u>Peer context</u></span></div>
-          <i>→</i>
-          <div><b>03</b><span><em>History</em><u>Prior evidence</u></span></div>
-          <i>→</i>
-          <div><b>04</b><span><em>Comps</em><u>Historical comps</u></span></div>
-          <i>→</i>
-          <div><b>05</b><span><em>Rank</em><u>DiamondScore</u></span></div>
+        <div class="home-level-visual" aria-label="Cross-level context example">
+          <div class="home-level-side">
+            <strong>A</strong>
+            <span>Young for level</span>
+            <small>Performance vs peers</small>
+          </div>
+
+          <div class="home-level-center">
+            <span>Age + level + role + performance</span>
+            <b>Shared Opportunity scale</b>
+          </div>
+
+          <div class="home-level-side">
+            <strong>AAA</strong>
+            <span>Older / more advanced</span>
+            <small>Performance vs peers</small>
+          </div>
         </div>
 
-        <p class="home-model-note">
-          Current-season evidence leads. Smaller samples can be stabilized by prior evidence,
-          while MLB results and scouting context provide bounded support when available.
+        <p class="home-level-note">
+          A young A-ball player can legitimately rank above an older Triple-A player.
+          DiamondRank evaluates performance in context instead of creating separate score scales for each level.
         </p>
+
+        <div class="home-model-divider"></div>
+
+        <div class="home-model-compact">
+          <div class="home-model-copy">
+            <span>HOW A RANK IS BUILT</span>
+            <h3>Evidence first. Context before rank.</h3>
+            <p>
+              Current-season evidence leads. Prior evidence can stabilize smaller samples,
+              while MLB results and scouting provide bounded support when available.
+            </p>
+          </div>
+
+          <ol class="home-model-path" aria-label="DiamondRank model process">
+            <li><b>1</b><span>Current</span></li>
+            <li><b>2</b><span>Context</span></li>
+            <li><b>3</b><span>History</span></li>
+            <li><b>4</b><span>Comps</span></li>
+            <li><b>5</b><span>Rank</span></li>
+          </ol>
+        </div>
       </section>
 
       <section class="home-section home-leaders-section" aria-labelledby="leadersHeading">
@@ -201,7 +216,7 @@
           <div>
             <span>Understand</span>
             <a href="./#scoreHeading">How scores work</a>
-            <a href="./#modelHeading">How the model works</a>
+            <a href="./#contextHeading">How the model works</a>
           </div>
         </nav>
       </div>
