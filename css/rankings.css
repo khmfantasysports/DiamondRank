@@ -152,3 +152,15 @@
     border-radius: 0;
   }
 }
+
+/* Tan accent is explanatory/decorative only; score colours stay semantic. */
+.rankings-score-note {
+  border-color: var(--tan-line);
+  background:
+    linear-gradient(135deg, rgba(200,170,120,.045), rgba(13,28,21,.68));
+}
+
+.rankings-score-note summary strong,
+.rankings-score-note a {
+  color: var(--tan-bright);
+}
