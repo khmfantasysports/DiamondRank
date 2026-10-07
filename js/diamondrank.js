@@ -20,10 +20,10 @@ const MODE_CONFIG = {
     title: "DiamondRank Pitcher Rankings",
     heroText: "Short-term pitching value • current skill shape • historical context",
     poolLabel: "Current pitcher pool",
-    searchPlaceholder: "Pitcher, org, level…",
+    searchPlaceholder: "Pitcher, org, position, level…",
     boardHeading: "Pitcher Rankings",
     stylesheet: "./css/pitchers.css?v=35",
-    module: "./pitcher-rankings.js?v=35"
+    module: "./pitcher-rankings.js?v=36"
   }
 };
 
