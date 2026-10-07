@@ -873,3 +873,189 @@ footer { display:flex; justify-content:space-between; gap:20px; padding:22px 0 3
     margin-top: 2px;
   }
 }
+/* =========================================================
+   DiamondRank shared site footer v1
+   Add to the bottom of css/diamondrank.css
+   ========================================================= */
+
+.site-footer {
+  margin-top: clamp(26px, 4vw, 46px);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(89,209,140,.07), transparent 18rem),
+    rgba(7,17,13,.92);
+  color: var(--muted);
+}
+
+.site-footer-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr);
+  gap: clamp(24px, 5vw, 70px);
+  padding: clamp(22px, 3.2vw, 36px);
+}
+
+.site-footer-brand {
+  max-width: 560px;
+}
+
+.site-footer-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--text);
+}
+
+.site-footer-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(89,209,140,.30);
+  border-radius: 12px;
+  color: var(--green-bright);
+  background: rgba(89,209,140,.075);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.site-footer-brand-link strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -.025em;
+}
+
+.site-footer-brand-link small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted-2);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.site-footer-brand p {
+  max-width: 510px;
+  margin: 13px 0 0;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.site-footer-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.site-footer-links > div {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+}
+
+.site-footer-links span {
+  margin-bottom: 2px;
+  color: var(--green-bright);
+  font-size: 7.5px;
+  font-weight: 900;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.site-footer-links a {
+  width: fit-content;
+  color: var(--muted);
+  font-size: 9.5px;
+  font-weight: 650;
+  line-height: 1.3;
+  transition: color .15s ease;
+}
+
+.site-footer-links a:hover,
+.site-footer-links a:focus-visible {
+  color: var(--text);
+}
+
+.site-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 44px;
+  padding: 10px clamp(22px, 3.2vw, 36px);
+  border-top: 1px solid rgba(177,224,197,.09);
+  color: var(--muted-2);
+  background: rgba(255,255,255,.008);
+  font-size: 8px;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .site-footer {
+    box-sizing: border-box;
+    width: 100vw;
+    max-width: none;
+    margin-top: 24px;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .site-footer-main {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding:
+      20px
+      max(18px, env(safe-area-inset-right))
+      18px
+      max(18px, env(safe-area-inset-left));
+  }
+
+  .site-footer-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    font-size: 17px;
+  }
+
+  .site-footer-brand-link strong {
+    font-size: 16px;
+  }
+
+  .site-footer-brand p {
+    margin-top: 10px;
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+  .site-footer-links {
+    gap: 14px;
+  }
+
+  .site-footer-links a {
+    font-size: 8.5px;
+  }
+
+  .site-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    min-height: 0;
+    padding:
+      11px
+      max(18px, env(safe-area-inset-right))
+      max(15px, env(safe-area-inset-bottom))
+      max(18px, env(safe-area-inset-left));
+    font-size: 7px;
+    line-height: 1.35;
+  }
+}
