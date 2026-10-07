@@ -75,7 +75,6 @@ function contextToneClass(value) {
   return "tone-red";
 }
 
-
 function signedToneClass(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return "signed-neutral";
@@ -324,8 +323,6 @@ function fiveYearPanel(player) {
   `;
 }
 
-
-
 function mlbTransitionCompact(player) {
   const mlb = player.mlb_transition || {};
   if (!mlb.has_mlb_evidence) return "";
@@ -365,8 +362,6 @@ function mlbTransitionCompact(player) {
   `;
 }
 
-
-
 function developmentSparkline(timeline, key) {
   const rows = (Array.isArray(timeline) ? timeline : [])
     .filter((row) => Number.isFinite(Number(row?.[key])));
@@ -404,7 +399,6 @@ function developmentSparkline(timeline, key) {
     </svg>
   `;
 }
-
 
 function developmentTraitCards(context) {
   const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
@@ -647,15 +641,15 @@ function developmentDetailMarkup(player) {
 
 function readingGuide() {
   const items = [
-    ["DiamondScore", "Overall DiamondRank score for the current pitcher board."],
-    ["Opportunity", "Historical-comparable opportunity signal from the 30 closest eligible pitcher profiles."],
-    ["Fantasy Profile", "Fantasy-minded underlying pitching profile built from miss bats, command, run prevention, contact management and workload."],
-    ["Current Evidence", "The season and level selected by the pitcher evidence rules. Raw rates are displayed from that evidence season."],
-    ["Development", "Year-to-year change uses qualified 40+ IP MiLB seasons. MLB performance is shown separately as transition evidence."],
-    ["Context Profile", "Sample-aware season-and-level context for K%, walk control, xFIP, home-run suppression and strike rate. Farther right is stronger relative performance; the raw stat is shown underneath."],
-    ["Batted-Ball Profile", "Ground-ball, fly-ball and line-drive rates from the selected evidence season. Peer percentiles compare rate, not quality, against same-season and same-level pitchers with 40+ IP. Untracked values stay missing."],
-    ["Comparables", "The six closest historical matches. Match % is profile similarity, not a probability of the same career result."],
-    ["5-Year Outcomes", "Observed MLB outcomes across all 30 historical comparables during the five seasons after their anchor season."]
+    ["DiamondScore", "Overall fantasy prospect score. It combines Opportunity and Fantasy Profile to rank the pitcher against the current prospect pool."],
+    ["Opportunity", "How strong the pitcher’s current path looks compared with similar historical pitchers. It is not MLB readiness or a probability."],
+    ["Fantasy Profile", "How strong the pitcher’s fantasy-relevant skill set is, using miss bats, command, run prevention, contact management and workload."],
+    ["Current Evidence", "The season and level used most heavily in the current profile."],
+    ["Development", "Year-to-year change across qualified 40+ IP MiLB seasons. MLB results are shown separately."],
+    ["Context Profile", "How the current evidence compares with pitchers at the same season and level. Farther right is stronger relative performance."],
+    ["Batted-Ball Profile", "Ground-ball, fly-ball and line-drive rates from the selected evidence season, compared with same-level peers when available."],
+    ["Comparables", "The six closest historical pitcher profiles. Match % measures similarity, not future outcome."],
+    ["5-Year Outcomes", "What happened in MLB over the next five seasons for the 30-player comparable group."]
   ];
 
   return items.map(([label, text]) => `
