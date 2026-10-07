@@ -1067,3 +1067,41 @@
     font-size: 6.8px;
   }
 }
+
+/* =========================================================
+   Home tan accent pass v1
+   ========================================================= */
+.home-v2 {
+  --home-tan: var(--tan-bright, #dec69b);
+}
+
+.home-hero-card {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(89, 209, 140, .13), transparent 20rem),
+    radial-gradient(circle at 8% 100%, rgba(200, 170, 120, .075), transparent 18rem),
+    linear-gradient(135deg, rgba(18, 39, 29, .98), rgba(9, 22, 16, .96));
+}
+
+.home-hero-card h1 span {
+  color: var(--home-tan);
+}
+
+.home-action-secondary {
+  color: var(--home-tan);
+  background: rgba(200, 170, 120, .045);
+  border-color: var(--tan-line);
+}
+
+.home-score-card:nth-child(2) .home-score-symbol {
+  color: var(--home-tan);
+  background: var(--tan-soft);
+  border-color: var(--tan-line);
+}
+
+.home-level-center {
+  border-color: var(--tan-line);
+}
+
+.home-level-center b {
+  color: var(--home-tan);
+}
