@@ -7,7 +7,7 @@
   <title>DiamondRank Prospect Rankings</title>
   <meta name="description" content="DiamondRank hitter and pitcher fantasy prospect rankings." />
 
-  <link rel="stylesheet" href="./css/diamondrank.css?v=33" />
+  <link rel="stylesheet" href="./css/diamondrank.css?v=34" />
   <link rel="stylesheet" href="./css/rankings.css?v=3" />
 </head>
 <body class="rankings-v2">
@@ -159,9 +159,43 @@
       </section>
     </main>
 
-    <footer>
-      <span>DiamondRank</span>
-      <span>Current evidence • Development context • Historical outcomes</span>
+    <footer class="site-footer">
+      <div class="site-footer-main">
+        <div class="site-footer-brand">
+          <a class="site-footer-brand-link" href="./" aria-label="DiamondRank home">
+            <span class="site-footer-mark" aria-hidden="true">◆</span>
+            <span>
+              <strong>DiamondRank</strong>
+              <small>Prospect Intelligence</small>
+            </span>
+          </a>
+
+          <p>
+            Fantasy baseball prospect rankings built from current evidence,
+            development context and historical outcomes.
+          </p>
+        </div>
+
+        <nav class="site-footer-links" aria-label="Footer navigation">
+          <div>
+            <span>Explore</span>
+            <a href="./">Home</a>
+            <a href="./rankings.html?mode=hitters">Hitter Rankings</a>
+            <a href="./rankings.html?mode=pitchers">Pitcher Rankings</a>
+          </div>
+
+          <div>
+            <span>Understand</span>
+            <a href="./#scoreHeading">How scores work</a>
+            <a href="./#modelHeading">How the model works</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="site-footer-bottom">
+        <span>DiamondRank · Fantasy baseball prospect intelligence</span>
+        <span>Scores are model estimates, not guarantees.</span>
+      </div>
     </footer>
   </div>
 
