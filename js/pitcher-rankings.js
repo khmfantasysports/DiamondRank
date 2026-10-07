@@ -93,6 +93,10 @@ function confidenceLabel(value) {
   return `${text.charAt(0).toUpperCase()}${text.slice(1)} confidence`;
 }
 
+function pitcherPosition(row) {
+  return row.primary_position || row.position_family || "P";
+}
+
 function scoreToneClass(value) {
   const score = Number(value);
   if (!Number.isFinite(score)) return "tone-neutral";
@@ -121,6 +125,7 @@ function setError(message) {
 }
 
 function populateSelect(select, values) {
+  if (!select) return;
   const current = select.value;
   const options = [...new Set(values.filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b)));
   select.querySelectorAll("option:not(:first-child)").forEach((option) => option.remove());
@@ -150,6 +155,7 @@ async function loadRankings() {
   state.rows = data || [];
   state.visible = PAGE_SIZE;
 
+  populateSelect(el.position, state.rows.map((row) => pitcherPosition(row)));
   populateSelect(el.org, state.rows.map((row) => row.current_org));
   populateSelect(el.level, state.rows.map((row) => row.current_level));
 
@@ -167,7 +173,7 @@ async function loadRankings() {
 }
 
 function activeFilterCount() {
-  return [el.org.value, el.level.value].filter(Boolean).length;
+  return [el.position?.value, el.org.value, el.level.value].filter(Boolean).length;
 }
 
 function updateFilterToggle() {
@@ -182,11 +188,13 @@ function applyFilters() {
   updateFilterToggle();
 
   const q = el.search.value.trim().toLowerCase();
+  const position = el.position?.value || "";
   const org = el.org.value;
   const level = el.level.value;
   const sort = el.sort.value;
 
   const filtered = state.rows.filter((row) => {
+    if (position && pitcherPosition(row) !== position) return false;
     if (org && row.current_org !== org) return false;
     if (level && row.current_level !== level) return false;
     if (!q) return true;
@@ -233,7 +241,7 @@ function renderBoard() {
       <div class="player-main">
         <div class="player-name">${escapeHtml(row.full_name)}</div>
         <div class="player-meta">
-          <span class="pitcher-role-label">P</span>
+          <span class="pitcher-role-label">${escapeHtml(pitcherPosition(row))}</span>
           <span>${escapeHtml(row.current_org || "FA")}</span>
           <span>${escapeHtml(row.current_level || "—")}</span>
           <span class="age-meta">Age ${number1(row.age)}</span>
@@ -267,7 +275,7 @@ el.sort.addEventListener("change", () => {
   applyFilters();
 });
 
-for (const control of [el.org, el.level]) {
+for (const control of [el.position, el.org, el.level].filter(Boolean)) {
   control.addEventListener("change", () => {
     state.visible = PAGE_SIZE;
     applyFilters();
@@ -281,6 +289,7 @@ for (const control of [el.org, el.level]) {
 
 el.clear.addEventListener("click", () => {
   el.search.value = "";
+  if (el.position) el.position.value = "";
   el.org.value = "";
   el.level.value = "";
   el.sort.value = "rank";
@@ -296,7 +305,6 @@ el.more.addEventListener("click", () => {
 });
 
 el.retry.addEventListener("click", loadRankings);
-
 
 el.board.addEventListener("click", (event) => {
   const row = event.target.closest("[data-player-id]");
