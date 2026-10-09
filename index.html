@@ -14,7 +14,7 @@
   <link rel="manifest" href="./site.webmanifest" />
 
   <link rel="stylesheet" href="./css/diamondrank.css?v=38" />
-  <link rel="stylesheet" href="./css/home.css?v=6" />
+  <link rel="stylesheet" href="./css/home.css?v=7" />
 </head>
 <body class="home-v2">
   <div class="site-shell">
@@ -45,26 +45,32 @@
           fantasy skill and historical player paths.
         </p>
 
-        <div class="home-primary-actions">
-          <a class="home-action home-action-primary" href="./rankings.html?mode=hitters">
-            Hitter Rankings
+        <div class="home-board-links" aria-label="Current DiamondRank boards">
+          <a class="home-board-link home-board-link-primary" href="./rankings.html?mode=hitters">
+            <span class="home-board-link-title">
+              Hitter Rankings
+              <b aria-hidden="true">→</b>
+            </span>
+            <span class="home-board-link-meta">
+              <strong id="homeHitterCount">—</strong>
+              <span>prospects</span>
+              <i aria-hidden="true">•</i>
+              <small id="homeHitterUpdated">Loading…</small>
+            </span>
           </a>
-          <a class="home-action home-action-secondary" href="./rankings.html?mode=pitchers">
-            Pitcher Rankings
-          </a>
-        </div>
 
-        <div class="home-board-status">
-          <div>
-            <span>Hitters</span>
-            <strong id="homeHitterCount">—</strong>
-            <small id="homeHitterUpdated">Loading…</small>
-          </div>
-          <div>
-            <span>Pitchers</span>
-            <strong id="homePitcherCount">—</strong>
-            <small id="homePitcherUpdated">Loading…</small>
-          </div>
+          <a class="home-board-link" href="./rankings.html?mode=pitchers">
+            <span class="home-board-link-title">
+              Pitcher Rankings
+              <b aria-hidden="true">→</b>
+            </span>
+            <span class="home-board-link-meta">
+              <strong id="homePitcherCount">—</strong>
+              <span>prospects</span>
+              <i aria-hidden="true">•</i>
+              <small id="homePitcherUpdated">Loading…</small>
+            </span>
+          </a>
         </div>
       </section>
 
@@ -72,7 +78,7 @@
         <div class="home-section-title">
           <span>HOW TO READ DIAMONDRANK</span>
           <h2 id="scoreHeading">Three scores. One ranking.</h2>
-          <p>DiamondScore ranks the player. Opportunity and Fantasy Profile show what is driving it.</p>
+          <p>DiamondScore is the rank. Opportunity and Fantasy Profile show the path and skill behind it.</p>
         </div>
 
         <div class="home-score-cards">
@@ -81,7 +87,7 @@
             <div>
               <small>OVERALL</small>
               <h3>DiamondScore</h3>
-              <p>Overall fantasy prospect score, combining Opportunity and Fantasy Profile.</p>
+              <p>Overall fantasy prospect score.</p>
             </div>
           </article>
 
@@ -90,8 +96,7 @@
             <div>
               <small>PATH</small>
               <h3>Opportunity</h3>
-              <p>How strong the player’s current path looks compared with similar historical players.</p>
-              <span>Uses age, level, role and performance context. Not MLB readiness or a probability.</span>
+              <p>Current path compared with similar historical players.</p>
             </div>
           </article>
 
@@ -100,10 +105,12 @@
             <div>
               <small>SKILL</small>
               <h3>Fantasy Profile</h3>
-              <p>How strong the player’s fantasy-relevant skill set is for their age and level.</p>
+              <p>Fantasy-relevant skill adjusted for age and level.</p>
             </div>
           </article>
         </div>
+
+        <p class="home-score-note">Opportunity adds context to the player’s path. It is not MLB readiness or a probability.</p>
       </section>
 
       <section class="home-section home-context-explainer" aria-labelledby="contextHeading">
