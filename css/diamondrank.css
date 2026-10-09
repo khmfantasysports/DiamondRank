@@ -1123,3 +1123,277 @@ body {
   height: 100%;
   object-fit: contain;
 }
+
+
+/* =========================================================
+   DiamondRank traditional footer v2
+   Compact brand + utility/legal links.
+   ========================================================= */
+.site-footer {
+  width: auto;
+  max-width: none;
+  margin: clamp(28px, 4vw, 44px) 0 0;
+  padding: 18px 0 0;
+  overflow: visible;
+  border: 0;
+  border-top: 1px solid var(--tan-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.site-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 2px 16px;
+}
+
+.site-footer-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  color: var(--text);
+}
+
+.site-footer-mark {
+  display: block;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.site-footer-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.site-footer-brand-link strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -.015em;
+}
+
+.site-footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.site-footer-links a {
+  width: auto;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.2;
+  transition: color .15s ease;
+}
+
+.site-footer-links a:hover,
+.site-footer-links a:focus-visible {
+  color: var(--tan-bright);
+}
+
+.site-footer-bottom {
+  display: flex;
+  min-height: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 2px max(18px, env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(177, 224, 197, .08);
+  color: var(--muted-2);
+  background: transparent;
+  font-size: 7.5px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   Legal pages
+   ========================================================= */
+.legal-main {
+  width: min(820px, 100%);
+  margin: 0 auto;
+  padding-top: clamp(22px, 4vw, 42px);
+}
+
+.legal-card {
+  padding: clamp(20px, 4vw, 34px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(11, 24, 18, .78);
+  box-shadow: var(--shadow);
+}
+
+.legal-eyebrow {
+  margin: 0 0 7px;
+  color: var(--tan-bright);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.legal-card h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(30px, 6vw, 48px);
+  line-height: 1;
+  letter-spacing: -.045em;
+}
+
+.legal-meta {
+  margin: 8px 0 0;
+  color: var(--muted-2);
+  font-size: 9px;
+}
+
+.legal-intro {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.legal-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(177, 224, 197, .09);
+}
+
+.legal-section h2 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 15px;
+  letter-spacing: -.02em;
+}
+
+.legal-section p,
+.legal-section li {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.legal-section p {
+  margin: 0 0 9px;
+}
+
+.legal-section p:last-child {
+  margin-bottom: 0;
+}
+
+.legal-section ul {
+  margin: 8px 0 0;
+  padding-left: 19px;
+}
+
+.legal-section a {
+  color: var(--tan-bright);
+  text-decoration: underline;
+  text-decoration-color: rgba(222, 198, 155, .35);
+  text-underline-offset: 2px;
+}
+
+.legal-section strong {
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .site-footer {
+    box-sizing: border-box;
+    width: auto;
+    max-width: none;
+    margin-top: 24px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-top: 15px;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 0;
+  }
+
+  .site-footer-row {
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 13px;
+  }
+
+  .site-footer-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+  }
+
+  .site-footer-brand-link strong {
+    font-size: 13px;
+  }
+
+  .site-footer-links {
+    max-width: 235px;
+    gap: 7px 12px;
+  }
+
+  .site-footer-links a {
+    font-size: 8px;
+  }
+
+  .site-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding:
+      10px
+      2px
+      max(16px, env(safe-area-inset-bottom));
+    font-size: 6.8px;
+  }
+
+  .legal-main {
+    padding-top: 16px;
+  }
+
+  .legal-card {
+    padding: 17px 14px;
+    border-radius: 16px;
+  }
+
+  .legal-card h1 {
+    font-size: 32px;
+  }
+
+  .legal-intro {
+    margin-top: 15px;
+    font-size: 9.5px;
+  }
+
+  .legal-section {
+    margin-top: 18px;
+    padding-top: 16px;
+  }
+
+  .legal-section h2 {
+    font-size: 13px;
+  }
+
+  .legal-section p,
+  .legal-section li {
+    font-size: 9px;
+  }
+}
