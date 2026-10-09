@@ -1101,3 +1101,25 @@ body {
 .site-footer-links span {
   color: var(--tan-bright);
 }
+
+
+/* =========================================================
+   DiamondRank DR logo asset v1
+   Uses the image asset for header/footer branding.
+   ========================================================= */
+.brand-mark,
+.site-footer-mark {
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.brand-mark img,
+.site-footer-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
