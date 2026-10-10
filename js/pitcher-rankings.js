@@ -1,5 +1,5 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-import { createPitcherPopup } from "./pitcher-popup.js?v=37";
+import { createPitcherPopup } from "./pitcher-popup.js?v=38";
 
 const SUPABASE_URL = "https://pkgnjhkdqzfrsrjdsjcp.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__vES8c3cYqijmgHiqBlFZQ_m__qXdrA";
@@ -88,9 +88,10 @@ function formatShortDate(value) {
 }
 
 function confidenceLabel(value) {
-  if (!value) return "Confidence —";
+  if (!value) return "Evidence confidence · —";
   const text = String(value).toLowerCase().replaceAll("_", " ");
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)} confidence`;
+  const label = `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
+  return `Evidence confidence · ${label}`;
 }
 
 function pitcherPosition(row) {
