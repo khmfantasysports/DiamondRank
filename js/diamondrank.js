@@ -12,8 +12,8 @@ const MODE_CONFIG = {
     poolLabel: "Current hitter pool",
     searchPlaceholder: "Player, org, position…",
     boardHeading: "Hitter Rankings",
-    stylesheet: "./css/hitters.css?v=33",
-    module: "./hitter-rankings.js?v=33"
+    stylesheet: "./css/hitters.css?v=34",
+    module: "./hitter-rankings.js?v=34"
   },
   pitchers: {
     bodyMode: "pitchers",
@@ -23,8 +23,8 @@ const MODE_CONFIG = {
     poolLabel: "Current pitcher pool",
     searchPlaceholder: "Pitcher, org, position, level…",
     boardHeading: "Pitcher Rankings",
-    stylesheet: "./css/pitchers.css?v=37",
-    module: "./pitcher-rankings.js?v=38"
+    stylesheet: "./css/pitchers.css?v=38",
+    module: "./pitcher-rankings.js?v=39"
   }
 };
 
