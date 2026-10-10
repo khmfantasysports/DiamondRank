@@ -12,8 +12,8 @@ const MODE_CONFIG = {
     poolLabel: "Current hitter pool",
     searchPlaceholder: "Player, org, position…",
     boardHeading: "Hitter Rankings",
-    stylesheet: "./css/hitters.css?v=34",
-    module: "./hitter-rankings.js?v=34"
+    stylesheet: "./css/hitters.css?v=35",
+    module: "./hitter-rankings.js?v=35"
   },
   pitchers: {
     bodyMode: "pitchers",
