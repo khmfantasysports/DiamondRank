@@ -663,6 +663,36 @@ function signed1(value) {
   return n > 0 ? `+${rounded}` : rounded;
 }
 
+function signedPoint1(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  const rounded = n.toFixed(1);
+  return n > 0 ? `+${rounded}` : rounded;
+}
+
+function zToPercentile(value) {
+  const z = Number(value);
+  if (!Number.isFinite(z)) return null;
+
+  const sign = z < 0 ? -1 : 1;
+  const x = Math.abs(z) / Math.sqrt(2);
+  const t = 1 / (1 + (0.3275911 * x));
+  const a1 = 0.254829592;
+  const a2 = -0.284496736;
+  const a3 = 1.421413741;
+  const a4 = -1.453152027;
+  const a5 = 1.061405429;
+
+  const erf = sign * (
+    1 -
+    (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) *
+    t *
+    Math.exp(-(x * x))
+  );
+
+  return clamp(50 * (1 + erf), 0.1, 99.9);
+}
+
 function developmentTrendFromDelta(delta) {
   const value = Number(delta);
   if (!Number.isFinite(value)) return "—";
@@ -863,6 +893,55 @@ function developmentSparkline(rows, key) {
   `;
 }
 
+function hitterDevelopmentTraitCards(annual) {
+  const rows = Array.isArray(annual) ? annual : [];
+  const latest = rows.length ? rows[rows.length - 1] : null;
+  const previous = rows.length >= 2 ? rows[rows.length - 2] : null;
+  const traits = [
+    ["Production", "production_z"],
+    ["Power", "power_z"],
+    ["Contact", "contact_z"],
+    ["Discipline", "discipline_z"],
+    ["Speed", "speed_z"]
+  ];
+
+  if (!latest) return "";
+
+  return `
+    <div class="development-trait-grid">
+      ${traits.map(([label, key]) => {
+        const currentPercentile = zToPercentile(latest[key]);
+        const previousPercentile = previous ? zToPercentile(previous[key]) : null;
+        const deltaZ = previous
+          ? Number(latest[key]) - Number(previous[key])
+          : null;
+        const deltaPoints =
+          Number.isFinite(currentPercentile) && Number.isFinite(previousPercentile)
+            ? currentPercentile - previousPercentile
+            : null;
+        const trend = previous ? developmentTrendFromDelta(deltaZ) : "Baseline";
+        const tag = previous
+          ? traitTrendTag(trend)
+          : { label: "Baseline", tone: "trend-baseline", icon: "•" };
+
+        return `
+          <div class="development-trait development-percentile-card ${scoreToneClass(currentPercentile)}">
+            <small>${escapeHtml(label)}</small>
+            ${developmentSparkline(rows, key)}
+            <strong class="development-current-percentile">${number1(currentPercentile)}</strong>
+            <span class="development-current-label">percentile</span>
+            <span class="trend-tag trait-trend-tag ${tag.tone}">
+              <b>${tag.icon}</b> ${escapeHtml(tag.label)}
+            </span>
+            <span class="development-delta">${previous ? `${signedPoint1(deltaPoints)} pts` : "Baseline"}</span>
+            <span class="development-delta-label">${previous ? "year over year" : "first qualified season"}</span>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
 function signedValueToneClass(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return "signed-neutral";
@@ -977,7 +1056,7 @@ function developmentPanel(player) {
   const stages = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
   const annual = annualDevelopmentSeries(stages);
 
-  if (!stages.length) {
+  if (!stages.length || !annual.length) {
     return `
       <div class="development-empty">
         <strong>Limited history</strong>
@@ -987,77 +1066,32 @@ function developmentPanel(player) {
     `;
   }
 
-  if (annual.length < 2) {
-    const latest = annual[annual.length - 1] || {};
-    return `
-      <div class="development-baseline">
-        <div class="development-baseline-copy">
-          <strong>Baseline only</strong>
-          <span>A second qualified season is needed before a year-to-year trend is shown.</span>
-        </div>
-        ${mlbTransitionCompact(player)}
-<button class="development-open-button" type="button" data-development-open>
-          View development details
-        </button>
-      </div>
-    `;
-  }
-
-  const previous = annual[annual.length - 2];
   const latest = annual[annual.length - 1];
+  const previous = annual.length >= 2 ? annual[annual.length - 2] : null;
   const summary = developmentSummaryFromAnnual(annual);
-
-  const traits = [
-    ["Production", "production_z"],
-    ["Power", "power_z"],
-    ["Contact", "contact_z"],
-    ["Discipline", "discipline_z"],
-    ["Speed", "speed_z"]
-  ];
+  const overallTrend = publicDevelopmentTrend(summary);
+  const trendNote = overallTrend.label === "Trending Down"
+    ? `Trend measures recent direction, not current strength. This player can still rank #${integer(player.overall_rank)} because DiamondScore compares the current profile with the prospect pool.`
+    : "";
 
   return `
     <div class="development-overview development-overview-compact">
-      ${(() => {
-        const overallTrend = publicDevelopmentTrend(summary);
-        const trendNote = overallTrend.label === "Trending Down"
-          ? `Trend measures recent direction, not current strength. This player can still rank #${integer(player.overall_rank)} because DiamondScore compares the current profile with the prospect pool.`
-          : "";
-        return `
-          <div class="development-trend-row">
-            <span class="trend-label">Trend</span>
-            <span class="trend-tag ${overallTrend.tone}">
-              <b>${overallTrend.icon}</b> ${escapeHtml(overallTrend.label)}
-            </span>
-            <span class="development-summary-detail">${escapeHtml(summary.detail)}</span>
-          </div>
-          ${trendNote ? `<div class="development-rank-note">${escapeHtml(trendNote)}</div>` : ""}
-        `;
-      })()}
+      <div class="development-trend-row">
+        <span class="trend-label">Trend</span>
+        <span class="trend-tag ${overallTrend.tone}">
+          <b>${overallTrend.icon}</b> ${escapeHtml(overallTrend.label)}
+        </span>
+        <span class="development-summary-detail">${escapeHtml(summary.detail)}</span>
+      </div>
+
+      ${trendNote ? `<div class="development-rank-note">${escapeHtml(trendNote)}</div>` : ""}
 
       <div class="development-year-row">
-        <strong>${yearValue(previous.season)} → ${yearValue(latest.season)}</strong>
-        <span>PA-weighted season comparison</span>
+        <strong>${previous ? `${yearValue(previous.season)} → ${yearValue(latest.season)}` : yearValue(latest.season)}</strong>
+        <span>${previous ? "PA-weighted season comparison" : "Current qualified baseline"}</span>
       </div>
 
-      <div class="development-trait-grid">
-        ${traits.map(([label, key]) => {
-          const delta = Number(latest[key]) - Number(previous[key]);
-          const trend = developmentTrendFromDelta(delta);
-          return `
-            <div class="development-trait ${developmentTrendTone(trend)}">
-              <small>${escapeHtml(label)}</small>
-              ${developmentSparkline(annual, key)}
-              ${(() => {
-                const tag = traitTrendTag(trend);
-                return `<span class="trend-tag trait-trend-tag ${tag.tone}"><b>${tag.icon}</b> ${escapeHtml(tag.label)}</span>`;
-              })()}
-              <span class="development-delta">${signed1(delta)}</span>
-              <span class="development-delta-label">year over year</span>
-            </div>
-          `;
-        }).join("")}
-      </div>
-
+      ${hitterDevelopmentTraitCards(annual)}
       ${mlbTransitionCompact(player)}
 
       <button class="development-open-button" type="button" data-development-open>
@@ -1104,51 +1138,21 @@ function developmentDetailMarkup(player) {
       </div>
 
       <div class="development-detail-body">
-        ${previous && latest ? `
-          <section class="development-detail-section">
-            <div class="development-detail-heading">
-              <div>
-                <h4>Year-over-year change</h4>
-                <span>${yearValue(previous.season)} → ${yearValue(latest.season)}</span>
-              </div>
-              <small>Age + level adjusted</small>
+        <section class="development-detail-section">
+          <div class="development-detail-heading">
+            <div>
+              <h4>Trait percentiles & change</h4>
+              <span>${previous && latest ? `${yearValue(previous.season)} → ${yearValue(latest.season)}` : latest ? `${yearValue(latest.season)} baseline` : "Baseline unavailable"}</span>
             </div>
+            <small>Age + level adjusted</small>
+          </div>
 
-            <div class="development-detail-change-grid">
-              ${traits.map(([label, key]) => {
-                const prev = Number(previous[key]);
-                const now = Number(latest[key]);
-                const delta = now - prev;
-                const trend = developmentTrendFromDelta(delta);
-                return `
-                  <div class="development-detail-change ${developmentTrendTone(trend)}">
-                    <small>${escapeHtml(label)}</small>
-                    <div class="development-value-shift">
-                      <span>${Number.isFinite(prev) ? prev.toFixed(2) : "—"}</span>
-                      <b>→</b>
-                      <strong>${Number.isFinite(now) ? now.toFixed(2) : "—"}</strong>
-                    </div>
-                    ${(() => {
-                      const tag = traitTrendTag(trend);
-                      return `
-                        <span class="trend-tag detail-trend-tag ${tag.tone}">
-                          <b>${tag.icon}</b> ${escapeHtml(tag.label)}
-                        </span>
-                        <em>${signed1(delta)}</em>
-                      `;
-                    })()}
-                  </div>
-                `;
-              }).join("")}
-            </div>
-          </section>
-        ` : `
-          <section class="development-detail-section">
+          ${latest ? hitterDevelopmentTraitCards(annual) : `
             <div class="development-detail-empty">
-              A second qualified season is needed before a year-over-year comparison is available.
+              No qualified minor-league season is available for a trait baseline.
             </div>
-          </section>
-        `}
+          `}
+        </section>
 
         ${mlbTransitionDetails(player)}
 
@@ -1181,12 +1185,16 @@ function developmentDetailMarkup(player) {
                 </div>
 
                 <div class="development-z-grid">
-                  ${traits.map(([label, key]) => `
-                    <div>
-                      <small>${escapeHtml(label)}</small>
-                      <strong class="${signedValueToneClass(season[key])}">${signed1(season[key])}</strong>
-                    </div>
-                  `).join("")}
+                  ${traits.map(([label, key]) => {
+                    const percentile = zToPercentile(season[key]);
+                    return `
+                      <div class="${scoreToneClass(percentile)}">
+                        <small>${escapeHtml(label)}</small>
+                        <strong>${number1(percentile)}</strong>
+                        <span>percentile</span>
+                      </div>
+                    `;
+                  }).join("")}
                 </div>
               </article>
             `).join("")}
@@ -1206,7 +1214,9 @@ function developmentDetailMarkup(player) {
             <table class="development-stage-table">
               <thead>
                 <tr>
-                  <th>Stage</th>
+                  <th>Year</th>
+                  <th>Level</th>
+                  <th>Age</th>
                   <th>PA</th>
                   <th>wRC+</th>
                   <th>ISO</th>
@@ -1216,12 +1226,11 @@ function developmentDetailMarkup(player) {
                 </tr>
               </thead>
               <tbody>
-                ${stages.map((stage, index) => `
-                  <tr class="${index === stages.length - 1 ? "current" : ""}">
-                    <td>
-                      <strong>${escapeHtml(stage.season || "—")} · ${escapeHtml(stage.level || "—")}</strong>
-                      <span>Age ${number1(stage.age)}</span>
-                    </td>
+                ${stages.map((stage) => `
+                  <tr>
+                    <td>${yearValue(stage.season)}</td>
+                    <td>${escapeHtml(stage.level || "—")}</td>
+                    <td>${number1(stage.age)}</td>
                     <td>${integer(stage.pa)}</td>
                     <td>${annualStatValue("wrc_plus", stage.wrc_plus)}</td>
                     <td>${annualStatValue("iso", stage.iso)}</td>
@@ -1234,10 +1243,6 @@ function developmentDetailMarkup(player) {
             </table>
           </div>
         </section>
-
-        <div class="development-detail-note">
-          Season comparisons combine qualified stops using plate-appearance weighting. Trait values are relative to the player's age and level context; they describe observed development rather than future performance.
-        </div>
       </div>
     </div>
   `;
