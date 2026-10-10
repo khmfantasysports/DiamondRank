@@ -1,19 +1,24 @@
 /* Pitcher-specific leaderboard/profile styling.
    Generic visual primitives belong in diamondrank.css. */
 
+
 body[data-board-mode="pitchers"] .position-filter {
   display: none;
 }
+
 
 body[data-board-mode="pitchers"] .toolbar {
   grid-template-columns: minmax(190px,1.5fr) repeat(3,minmax(120px,.8fr)) auto;
 }
 
+
 .pitcher-row .player-meta .pitcher-role-label {
   color: var(--muted-2);
 }
 
+
 /* ---------- Pitcher popup ---------- */
+
 
 .pitcher-profile-head h2 {
   margin: 0;
@@ -22,12 +27,14 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: -.04em;
 }
 
+
 .pitcher-rank-score-strip {
   display: grid;
   grid-template-columns: 1fr 1.15fr 1fr;
   gap: 8px;
   margin-top: 12px;
 }
+
 
 .pitcher-rank-card,
 .pitcher-diamondscore-card {
@@ -40,10 +47,12 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-rank-card {
   display: grid;
   align-content: center;
 }
+
 
 .pitcher-rank-card small,
 .pitcher-diamondscore-card > small {
@@ -55,6 +64,7 @@ body[data-board-mode="pitchers"] .toolbar {
   text-transform: uppercase;
 }
 
+
 .pitcher-rank-card strong {
   display: block;
   margin-top: 3px;
@@ -63,12 +73,14 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: -.04em;
 }
 
+
 .pitcher-rank-card span {
   display: block;
   margin-top: 4px;
   color: var(--muted);
   font-size: 8px;
 }
+
 
 .pitcher-diamondscore-card {
   --score-accent: var(--score-neutral);
@@ -78,11 +90,13 @@ body[data-board-mode="pitchers"] .toolbar {
   border-color: color-mix(in srgb, var(--score-accent) 28%, var(--border));
 }
 
+
 .pitcher-diamondscore-card.tone-red { --score-accent: var(--score-red); }
 .pitcher-diamondscore-card.tone-orange { --score-accent: var(--score-orange); }
 .pitcher-diamondscore-card.tone-gold { --score-accent: var(--score-gold); }
 .pitcher-diamondscore-card.tone-lime { --score-accent: var(--score-lime); }
 .pitcher-diamondscore-card.tone-emerald { --score-accent: var(--score-emerald); }
+
 
 .pitcher-diamondscore-ring {
   --meter: 0;
@@ -101,11 +115,13 @@ body[data-board-mode="pitchers"] .toolbar {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--score-accent) 20%, transparent);
 }
 
+
 .pitcher-diamondscore-ring strong {
   color: var(--score-accent);
   font-size: 18px;
   line-height: 1;
 }
+
 
 .pitcher-meta {
   display: flex;
@@ -113,6 +129,7 @@ body[data-board-mode="pitchers"] .toolbar {
   gap: 5px;
   margin-top: 10px;
 }
+
 
 .pitcher-meta span {
   padding: 5px 8px;
@@ -123,10 +140,12 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 10px;
 }
 
+
 .pitcher-meta .emphasis {
   color: var(--green-bright);
   border-color: rgba(89,209,140,.28);
 }
+
 
 .pitcher-confidence-note {
   margin: 7px 1px 0;
@@ -135,11 +154,13 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.4;
 }
 
+
 .pitcher-profile-section {
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px solid var(--border);
 }
+
 
 .pitcher-section-title {
   display: flex;
@@ -149,15 +170,18 @@ body[data-board-mode="pitchers"] .toolbar {
   margin-bottom: 9px;
 }
 
+
 .pitcher-section-title h3 {
   margin: 0;
   font-size: 15px;
 }
 
+
 .pitcher-section-title span {
   color: var(--muted-2);
   font-size: 8px;
 }
+
 
 .pitcher-core-grid {
   display: grid;
@@ -165,11 +189,13 @@ body[data-board-mode="pitchers"] .toolbar {
   gap: 8px;
 }
 
+
 .pitcher-trait-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0,1fr));
   gap: 5px;
 }
+
 
 .pitcher-score-ring-card {
   --score-accent: var(--score-neutral);
@@ -184,11 +210,13 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-score-ring-card.tone-red { --score-accent: var(--score-red); }
 .pitcher-score-ring-card.tone-orange { --score-accent: var(--score-orange); }
 .pitcher-score-ring-card.tone-gold { --score-accent: var(--score-gold); }
 .pitcher-score-ring-card.tone-lime { --score-accent: var(--score-lime); }
 .pitcher-score-ring-card.tone-emerald { --score-accent: var(--score-emerald); }
+
 
 .pitcher-score-ring-card > span {
   min-height: 19px;
@@ -198,6 +226,7 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 7px;
   line-height: 1.1;
 }
+
 
 .pitcher-score-ring {
   --meter: 0;
@@ -214,27 +243,33 @@ body[data-board-mode="pitchers"] .toolbar {
     );
 }
 
+
 .pitcher-score-ring strong {
   color: var(--score-accent);
   font-size: 14px;
 }
 
+
 .pitcher-score-ring-card.core {
   padding: 9px 6px 8px;
 }
+
 
 .pitcher-score-ring-card.core .pitcher-score-ring {
   width: 76px;
 }
 
+
 .pitcher-score-ring-card.core .pitcher-score-ring strong {
   font-size: 22px;
 }
+
 
 .pitcher-score-ring-card.core > span {
   min-height: 0;
   font-size: 9px;
 }
+
 
 .pitcher-evidence-grid,
 .pitcher-stat-grid,
@@ -243,14 +278,17 @@ body[data-board-mode="pitchers"] .toolbar {
   gap: 5px;
 }
 
+
 .pitcher-evidence-grid {
   grid-template-columns: repeat(4, minmax(0,1fr));
 }
+
 
 .pitcher-stat-grid {
   grid-template-columns: repeat(5, minmax(0,1fr));
   margin-top: 6px;
 }
+
 
 .pitcher-evidence-grid > div,
 .pitcher-stat-grid > div,
@@ -263,6 +301,7 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-evidence-grid small,
 .pitcher-stat-grid small,
 .pitcher-outcome-medians small {
@@ -274,6 +313,7 @@ body[data-board-mode="pitchers"] .toolbar {
   text-transform: uppercase;
 }
 
+
 .pitcher-evidence-grid strong,
 .pitcher-stat-grid strong,
 .pitcher-outcome-medians strong {
@@ -282,11 +322,13 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 11px;
 }
 
+
 .pitcher-context-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0,1fr));
   gap: 5px;
 }
+
 
 .pitcher-context-meter {
   --score-accent: var(--score-neutral);
@@ -297,11 +339,13 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.012);
 }
 
+
 .pitcher-context-meter.tone-red { --score-accent: var(--score-red); }
 .pitcher-context-meter.tone-orange { --score-accent: var(--score-orange); }
 .pitcher-context-meter.tone-gold { --score-accent: var(--score-gold); }
 .pitcher-context-meter.tone-lime { --score-accent: var(--score-lime); }
 .pitcher-context-meter.tone-emerald { --score-accent: var(--score-emerald); }
+
 
 .pitcher-context-head {
   display: flex;
@@ -310,16 +354,19 @@ body[data-board-mode="pitchers"] .toolbar {
   align-items: baseline;
 }
 
+
 .pitcher-context-head strong {
   font-size: 7px;
   line-height: 1.1;
 }
+
 
 .pitcher-context-head span {
   color: var(--score-accent);
   font-size: 10px;
   font-weight: 850;
 }
+
 
 .pitcher-context-track {
   --pct: 50%;
@@ -330,6 +377,7 @@ body[data-board-mode="pitchers"] .toolbar {
   background: color-mix(in srgb, var(--score-accent) 12%, transparent);
 }
 
+
 .pitcher-context-track i {
   display: block;
   width: var(--pct);
@@ -337,6 +385,7 @@ body[data-board-mode="pitchers"] .toolbar {
   border-radius: inherit;
   background: var(--score-accent);
 }
+
 
 .pitcher-context-meter > small {
   display: block;
@@ -349,6 +398,7 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-swstr-card {
   --score-accent: var(--score-neutral);
   display: grid;
@@ -359,11 +409,13 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.012);
 }
 
+
 .pitcher-swstr-card.tone-red { --score-accent: var(--score-red); }
 .pitcher-swstr-card.tone-orange { --score-accent: var(--score-orange); }
 .pitcher-swstr-card.tone-gold { --score-accent: var(--score-gold); }
 .pitcher-swstr-card.tone-lime { --score-accent: var(--score-lime); }
 .pitcher-swstr-card.tone-emerald { --score-accent: var(--score-emerald); }
+
 
 .pitcher-swstr-card > div {
   padding: 10px 7px;
@@ -371,9 +423,11 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-swstr-card > div:last-child {
   border-right: 0;
 }
+
 
 .pitcher-swstr-card small {
   display: block;
@@ -382,6 +436,7 @@ body[data-board-mode="pitchers"] .toolbar {
   text-transform: uppercase;
 }
 
+
 .pitcher-swstr-card strong {
   display: block;
   margin-top: 3px;
@@ -389,11 +444,13 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 18px;
 }
 
+
 .pitcher-comps {
   display: grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
   gap: 6px;
 }
+
 
 .pitcher-comp-card {
   min-width: 0;
@@ -403,12 +460,14 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.012);
 }
 
+
 .pitcher-comp-top {
   color: var(--green-bright);
   font-size: 7px;
   font-weight: 850;
   text-transform: uppercase;
 }
+
 
 .pitcher-comp-name {
   display: block;
@@ -418,11 +477,13 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.15;
 }
 
+
 .pitcher-comp-season {
   margin-top: 3px;
   color: var(--muted-2);
   font-size: 7px;
 }
+
 
 .pitcher-comp-role {
   display: inline-flex;
@@ -436,12 +497,14 @@ body[data-board-mode="pitchers"] .toolbar {
   text-transform: uppercase;
 }
 
+
 .outcome-none { color: var(--score-red); }
 .outcome-limited { color: var(--score-orange); }
 .outcome-depth { color: var(--score-gold); }
 .outcome-role { color: var(--score-lime); }
 .outcome-impact { color: var(--score-emerald); }
 .outcome-neutral { color: var(--score-neutral); }
+
 
 .pitcher-comp-stats {
   display: grid;
@@ -450,10 +513,12 @@ body[data-board-mode="pitchers"] .toolbar {
   margin-top: 7px;
 }
 
+
 .pitcher-comp-stats span {
   min-width: 0;
   text-align: center;
 }
+
 
 .pitcher-comp-stats small {
   display: block;
@@ -461,11 +526,13 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 5.5px;
 }
 
+
 .pitcher-comp-stats b {
   display: block;
   margin-top: 1px;
   font-size: 8px;
 }
+
 
 .pitcher-five-year-panel {
   margin-top: 9px;
@@ -475,6 +542,7 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.012);
 }
 
+
 .pitcher-five-year-head {
   display: flex;
   justify-content: space-between;
@@ -482,14 +550,17 @@ body[data-board-mode="pitchers"] .toolbar {
   gap: 8px;
 }
 
+
 .pitcher-five-year-head strong {
   font-size: 11px;
 }
+
 
 .pitcher-five-year-head span {
   color: var(--muted-2);
   font-size: 7px;
 }
+
 
 .pitcher-outcome-segments {
   display: flex;
@@ -500,17 +571,20 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.04);
 }
 
+
 .pitcher-outcome-segments i {
   display: block;
   min-width: 0;
   height: 100%;
 }
 
+
 .pitcher-outcome-segments .outcome-none { background: var(--score-red); }
 .pitcher-outcome-segments .outcome-limited { background: var(--score-orange); }
 .pitcher-outcome-segments .outcome-depth { background: var(--score-gold); }
 .pitcher-outcome-segments .outcome-role { background: var(--score-lime); }
 .pitcher-outcome-segments .outcome-impact { background: var(--score-emerald); }
+
 
 .pitcher-outcome-legend {
   display: grid;
@@ -519,10 +593,12 @@ body[data-board-mode="pitchers"] .toolbar {
   margin-top: 7px;
 }
 
+
 .pitcher-outcome-legend > div {
   min-width: 0;
   text-align: center;
 }
+
 
 .pitcher-outcome-legend > div > span {
   display: block;
@@ -533,6 +609,7 @@ body[data-board-mode="pitchers"] .toolbar {
   background: currentColor;
 }
 
+
 .pitcher-outcome-legend small {
   display: block;
   min-height: 18px;
@@ -541,6 +618,7 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.1;
 }
 
+
 .pitcher-outcome-legend strong {
   display: block;
   margin-top: 1px;
@@ -548,10 +626,12 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 9px;
 }
 
+
 .pitcher-outcome-medians {
   grid-template-columns: repeat(3, minmax(0,1fr));
   margin-top: 8px;
 }
+
 
 .pitcher-outcome-note {
   margin: 6px 0 0;
@@ -560,11 +640,13 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-method-grid {
   display: grid;
   grid-template-columns: repeat(3,minmax(0,1fr));
   gap: 5px;
 }
+
 
 .pitcher-method-card {
   min-width: 0;
@@ -574,9 +656,11 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.012);
 }
 
+
 .pitcher-method-card[open] {
   grid-column: 1 / -1;
 }
+
 
 .pitcher-method-card summary {
   min-height: 42px;
@@ -590,9 +674,11 @@ body[data-board-mode="pitchers"] .toolbar {
   list-style: none;
 }
 
+
 .pitcher-method-card summary::-webkit-details-marker {
   display: none;
 }
+
 
 .pitcher-method-card p {
   margin: 0;
@@ -602,6 +688,7 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.45;
 }
 
+
 .pitcher-empty {
   padding: 12px;
   border: 1px solid var(--border);
@@ -610,25 +697,30 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 10px;
 }
 
+
 @media (max-width: 900px) {
   body[data-board-mode="pitchers"] .toolbar {
     grid-template-columns: repeat(2,minmax(0,1fr));
   }
 }
 
+
 @media (max-width: 640px) {
   body[data-board-mode="pitchers"] .toolbar {
     grid-template-columns: repeat(2,minmax(0,1fr));
   }
 
+
   body[data-board-mode="pitchers"] .toolbar.filters-open .position-filter {
     display: none;
   }
+
 
   .pitcher-rank-score-strip {
     gap: 6px;
     margin-top: 10px;
   }
+
 
   .pitcher-rank-card,
   .pitcher-diamondscore-card {
@@ -636,76 +728,95 @@ body[data-board-mode="pitchers"] .toolbar {
     padding: 8px 5px;
   }
 
+
   .pitcher-rank-card strong {
     font-size: 24px;
   }
 
+
   .pitcher-diamondscore-ring {
     width: 55px;
   }
+
 
   .pitcher-trait-grid,
   .pitcher-context-grid {
     gap: 4px;
   }
 
+
   .pitcher-score-ring {
     width: 47px;
   }
+
 
   .pitcher-score-ring strong {
     font-size: 12px;
   }
 
+
   .pitcher-score-ring-card > span {
     font-size: 6.2px;
   }
+
 
   .pitcher-stat-grid {
     gap: 4px;
   }
 
+
   .pitcher-stat-grid > div {
     padding: 7px 2px;
   }
+
 
   .pitcher-stat-grid small {
     font-size: 6px;
   }
 
+
   .pitcher-stat-grid strong {
     font-size: 10px;
   }
 
+
   .pitcher-context-meter {
     padding: 7px 3px;
   }
+
 
   .pitcher-context-head strong,
   .pitcher-context-meter > small {
     font-size: 5.8px;
   }
 
+
   .pitcher-context-head span {
     font-size: 9px;
   }
+
 
   .pitcher-comps {
     gap: 5px;
   }
 
+
   .pitcher-comp-card {
     padding: 7px 6px;
   }
+
 
   .pitcher-comp-name {
     font-size: 9.5px;
   }
 
+
   .pitcher-comp-role {
     font-size: 5.5px;
   }
 }
+
+
 
 
 /* =========================================================
@@ -714,11 +825,13 @@ body[data-board-mode="pitchers"] .toolbar {
    + MLB transition evidence.
    ========================================================= */
 
+
 .context-meter-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px;
 }
+
 
 .context-meter {
   --score-accent: var(--score-neutral);
@@ -730,11 +843,13 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .context-meter.tone-red { --score-accent: var(--score-red); }
 .context-meter.tone-orange { --score-accent: var(--score-orange); }
 .context-meter.tone-gold { --score-accent: var(--score-gold); }
 .context-meter.tone-lime { --score-accent: var(--score-lime); }
 .context-meter.tone-emerald { --score-accent: var(--score-emerald); }
+
 
 .context-meter > strong {
   display: block;
@@ -744,12 +859,14 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.15;
 }
 
+
 .context-track {
   --dot: 50%;
   position: relative;
   height: 18px;
   margin: 7px 1px 2px;
 }
+
 
 .context-track::before {
   content: "";
@@ -770,6 +887,7 @@ body[data-board-mode="pitchers"] .toolbar {
     );
 }
 
+
 .context-mid {
   position: absolute;
   top: 3px;
@@ -778,6 +896,7 @@ body[data-board-mode="pitchers"] .toolbar {
   width: 1px;
   background: rgba(243,247,244,.35);
 }
+
 
 .context-dot {
   position: absolute;
@@ -791,6 +910,7 @@ body[data-board-mode="pitchers"] .toolbar {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--score-accent) 17%, transparent);
 }
 
+
 .context-scale {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -800,13 +920,16 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 8px;
 }
 
+
 .context-scale span:first-child { text-align: left; }
 .context-scale span:last-child { text-align: right; }
+
 
 .context-scale b {
   color: var(--score-accent);
   font-size: 9px;
 }
+
 
 .context-meter > small {
   display: block;
@@ -818,6 +941,7 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 8px;
 }
 
+
 .pitcher-development-overview,
 .pitcher-development-empty {
   padding: 9px;
@@ -826,10 +950,12 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.012);
 }
 
+
 .pitcher-development-empty {
   display: grid;
   gap: 3px;
 }
+
 
 .pitcher-development-empty strong { font-size: 10px; }
 .pitcher-development-empty span {
@@ -838,12 +964,14 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.35;
 }
 
+
 .pitcher-development-trend-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 7px;
 }
+
 
 .pitcher-development-trend-row > span {
   color: var(--muted-2);
@@ -853,12 +981,14 @@ body[data-board-mode="pitchers"] .toolbar {
   text-transform: uppercase;
 }
 
+
 .pitcher-development-trend-row em {
   margin-left: auto;
   color: var(--muted);
   font-size: 7px;
   font-style: normal;
 }
+
 
 .pitcher-trend-tag {
   display: inline-flex;
@@ -871,10 +1001,12 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1;
 }
 
+
 .pitcher-trend-tag.trend-up { color: var(--score-emerald); }
 .pitcher-trend-tag.trend-down { color: var(--score-red); }
 .pitcher-trend-tag.trend-steady { color: var(--score-gold); }
 .pitcher-trend-tag.trend-baseline { color: var(--muted); }
+
 
 .pitcher-development-year-row {
   display: flex;
@@ -886,11 +1018,13 @@ body[data-board-mode="pitchers"] .toolbar {
   border-top: 1px solid var(--border);
 }
 
+
 .pitcher-development-year-row strong { font-size: 11px; }
 .pitcher-development-year-row span {
   color: var(--muted-2);
   font-size: 7px;
 }
+
 
 .pitcher-development-traits {
   display: grid;
@@ -898,6 +1032,7 @@ body[data-board-mode="pitchers"] .toolbar {
   gap: 4px;
   margin-top: 7px;
 }
+
 
 .pitcher-development-trait {
   min-width: 0;
@@ -908,6 +1043,7 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-development-trait small {
   display: block;
   min-height: 17px;
@@ -916,11 +1052,13 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.1;
 }
 
+
 .pitcher-development-trait strong {
   display: block;
   margin-top: 3px;
   font-size: 11px;
 }
+
 
 .pitcher-development-trait span {
   display: block;
@@ -929,11 +1067,13 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 5.5px;
 }
 
+
 .delta-up-strong strong { color: var(--score-emerald); }
 .delta-up strong { color: var(--score-lime); }
 .delta-neutral strong { color: var(--muted); }
 .delta-down strong { color: var(--score-orange); }
 .delta-down-strong strong { color: var(--score-red); }
+
 
 .pitcher-development-open {
   width: 100%;
@@ -947,11 +1087,13 @@ body[data-board-mode="pitchers"] .toolbar {
   font-weight: 800;
 }
 
+
 .pitcher-mlb-transition {
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px solid var(--border);
 }
+
 
 .pitcher-mlb-transition-head {
   display: flex;
@@ -959,6 +1101,7 @@ body[data-board-mode="pitchers"] .toolbar {
   justify-content: space-between;
   gap: 8px;
 }
+
 
 .pitcher-mlb-transition-head small {
   display: block;
@@ -968,11 +1111,13 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: .09em;
 }
 
+
 .pitcher-mlb-transition-head strong {
   display: block;
   margin-top: 2px;
   font-size: 10px;
 }
+
 
 .pitcher-mlb-transition-head > span {
   padding: 4px 6px;
@@ -983,6 +1128,7 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 6.5px;
 }
 
+
 .pitcher-mlb-stat-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0,1fr));
@@ -990,7 +1136,9 @@ body[data-board-mode="pitchers"] .toolbar {
   margin-top: 7px;
 }
 
+
 .pitcher-mlb-stat-grid-secondary { margin-top: 4px; }
+
 
 .pitcher-mlb-stat-grid > div {
   min-width: 0;
@@ -1001,11 +1149,13 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-mlb-stat-grid small {
   display: block;
   color: var(--muted-2);
   font-size: 5.8px;
 }
+
 
 .pitcher-mlb-stat-grid strong {
   display: block;
@@ -1013,12 +1163,14 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 9px;
 }
 
+
 .pitcher-mlb-transition > p {
   margin: 6px 1px 0;
   color: var(--muted);
   font-size: 6.5px;
   line-height: 1.35;
 }
+
 
 .pitcher-development-detail-overlay {
   position: fixed;
@@ -1031,6 +1183,7 @@ body[data-board-mode="pitchers"] .toolbar {
   backdrop-filter: blur(5px);
 }
 
+
 .pitcher-development-detail-sheet {
   width: min(760px, 100%);
   max-height: min(88dvh, 900px);
@@ -1041,6 +1194,7 @@ body[data-board-mode="pitchers"] .toolbar {
   background: #081711;
   box-shadow: 0 28px 80px rgba(0,0,0,.55);
 }
+
 
 .pitcher-development-detail-sticky {
   position: sticky;
@@ -1056,6 +1210,7 @@ body[data-board-mode="pitchers"] .toolbar {
   backdrop-filter: blur(8px);
 }
 
+
 .pitcher-development-detail-sticky small {
   display: block;
   color: var(--green-bright);
@@ -1064,12 +1219,14 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: .13em;
 }
 
+
 .pitcher-development-detail-sticky h3 {
   margin: 3px 0 0;
   font-size: 23px;
   line-height: 1;
   letter-spacing: -.035em;
 }
+
 
 .pitcher-development-detail-close {
   width: 40px;
@@ -1083,13 +1240,16 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1;
 }
 
+
 .pitcher-development-detail-body { padding: 14px 16px 18px; }
+
 
 .pitcher-development-detail-section + .pitcher-development-detail-section {
   margin-top: 17px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
 }
+
 
 .pitcher-development-detail-heading {
   display: flex;
@@ -1099,10 +1259,12 @@ body[data-board-mode="pitchers"] .toolbar {
   margin-bottom: 8px;
 }
 
+
 .pitcher-development-detail-heading h4 {
   margin: 0;
   font-size: 13px;
 }
+
 
 .pitcher-development-detail-heading span,
 .pitcher-development-detail-heading small {
@@ -1112,6 +1274,7 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 7px;
 }
 
+
 .pitcher-development-detail-trend {
   display: flex;
   align-items: center;
@@ -1119,15 +1282,18 @@ body[data-board-mode="pitchers"] .toolbar {
   margin-bottom: 8px;
 }
 
+
 .pitcher-development-detail-trend > span {
   color: var(--muted);
   font-size: 8px;
 }
 
+
 .pitcher-development-season-list {
   display: grid;
   gap: 7px;
 }
+
 
 .pitcher-development-season {
   padding: 9px;
@@ -1136,9 +1302,11 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.01);
 }
 
+
 .pitcher-development-season.current {
   border-color: rgba(89,209,140,.28);
 }
+
 
 .pitcher-development-season-head {
   display: flex;
@@ -1147,7 +1315,9 @@ body[data-board-mode="pitchers"] .toolbar {
   gap: 8px;
 }
 
+
 .pitcher-development-season-head strong { font-size: 13px; }
+
 
 .pitcher-development-season-head span {
   display: block;
@@ -1156,10 +1326,12 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 7px;
 }
 
+
 .pitcher-development-season-head b {
   color: var(--green-bright);
   font-size: 9px;
 }
+
 
 .pitcher-development-raw-grid {
   display: grid;
@@ -1167,6 +1339,7 @@ body[data-board-mode="pitchers"] .toolbar {
   gap: 4px;
   margin-top: 7px;
 }
+
 
 .pitcher-development-raw-grid > div,
 .pitcher-development-score-grid > div {
@@ -1178,12 +1351,14 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-development-raw-grid small,
 .pitcher-development-score-grid small {
   display: block;
   color: var(--muted-2);
   font-size: 5.7px;
 }
+
 
 .pitcher-development-raw-grid strong,
 .pitcher-development-score-grid strong {
@@ -1192,6 +1367,7 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 9px;
 }
 
+
 .pitcher-development-score-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0,1fr));
@@ -1199,11 +1375,13 @@ body[data-board-mode="pitchers"] .toolbar {
   margin-top: 4px;
 }
 
+
 .pitcher-development-score-grid .tone-red strong { color: var(--score-red); }
 .pitcher-development-score-grid .tone-orange strong { color: var(--score-orange); }
 .pitcher-development-score-grid .tone-gold strong { color: var(--score-gold); }
 .pitcher-development-score-grid .tone-lime strong { color: var(--score-lime); }
 .pitcher-development-score-grid .tone-emerald strong { color: var(--score-emerald); }
+
 
 .pitcher-development-note {
   margin: 8px 1px 0;
@@ -1212,9 +1390,11 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.4;
 }
 
+
 .pitcher-development-mlb-grid {
   grid-template-columns: repeat(6, minmax(0,1fr));
 }
+
 
 @media (max-width: 640px) {
   .context-meter-grid { gap: 4px; }
@@ -1226,9 +1406,11 @@ body[data-board-mode="pitchers"] .toolbar {
   .context-meter > small { font-size: 7px; }
   .context-scale b { font-size: 7.5px; }
 
+
   .pitcher-development-traits { gap: 3px; }
   .pitcher-development-trait { padding: 6px 2px; }
   .pitcher-development-trait strong { font-size: 10px; }
+
 
   .pitcher-batted-ball-card { padding: 8px; }
   .pitcher-batted-ball-grid { gap: 4px; }
@@ -1239,40 +1421,49 @@ body[data-board-mode="pitchers"] .toolbar {
   .pitcher-batted-ball-scale b { font-size: 7px; }
   .pitcher-batted-ball-peers { font-size: 5.5px; }
 
+
   .pitcher-mlb-stat-grid,
   .pitcher-development-raw-grid {
     gap: 3px;
   }
+
 
   .pitcher-mlb-stat-grid > div,
   .pitcher-development-raw-grid > div {
     padding: 6px 1px;
   }
 
+
   .pitcher-mlb-stat-grid small,
   .pitcher-development-raw-grid small {
     font-size: 5.4px;
   }
+
 
   .pitcher-mlb-stat-grid strong,
   .pitcher-development-raw-grid strong {
     font-size: 8px;
   }
 
+
   .pitcher-development-detail-overlay {
     padding: max(8px, env(safe-area-inset-top)) 7px max(8px, env(safe-area-inset-bottom));
   }
+
 
   .pitcher-development-detail-sheet {
     max-height: 93dvh;
     border-radius: 17px;
   }
 
+
   .pitcher-development-detail-sticky {
     padding: 11px 12px 9px;
   }
 
+
   .pitcher-development-detail-sticky h3 { font-size: 20px; }
+
 
   .pitcher-development-detail-close {
     width: 36px;
@@ -1280,10 +1471,13 @@ body[data-board-mode="pitchers"] .toolbar {
     font-size: 23px;
   }
 
+
   .pitcher-development-detail-body {
     padding: 11px 12px 15px;
   }
 }
+
+
 
 
 /* =========================================================
@@ -1293,11 +1487,13 @@ body[data-board-mode="pitchers"] .toolbar {
    Raw evidence remains neutral, matching hitters.
    ========================================================= */
 
+
 .pitcher-mlb-stat-grid .tone-red strong { color: var(--score-red); }
 .pitcher-mlb-stat-grid .tone-orange strong { color: var(--score-orange); }
 .pitcher-mlb-stat-grid .tone-gold strong { color: var(--score-gold); }
 .pitcher-mlb-stat-grid .tone-lime strong { color: var(--score-lime); }
 .pitcher-mlb-stat-grid .tone-emerald strong { color: var(--score-emerald); }
+
 
 .pitcher-mlb-stat-grid .signed-green strong { color: var(--score-emerald); }
 .pitcher-mlb-stat-grid .signed-lime strong { color: var(--score-lime); }
@@ -1305,6 +1501,7 @@ body[data-board-mode="pitchers"] .toolbar {
 .pitcher-mlb-stat-grid .signed-orange strong { color: var(--score-orange); }
 .pitcher-mlb-stat-grid .signed-red strong { color: var(--score-red); }
 .pitcher-mlb-stat-grid .signed-neutral strong { color: var(--muted); }
+
 
 .pitcher-development-trait.delta-up-strong {
   border-color: color-mix(in srgb, var(--score-emerald) 26%, var(--border));
@@ -1321,6 +1518,7 @@ body[data-board-mode="pitchers"] .toolbar {
 .pitcher-development-trait.delta-down-strong {
   border-color: color-mix(in srgb, var(--score-red) 26%, var(--border));
 }
+
 
 .pitcher-development-score-grid .tone-red {
   border-color: color-mix(in srgb, var(--score-red) 22%, var(--border));
@@ -1339,10 +1537,13 @@ body[data-board-mode="pitchers"] .toolbar {
 }
 
 
+
+
 /* =========================================================
    Pitcher popup v29
    Hitter/pitcher presentation parity.
    ========================================================= */
+
 
 /* Header and section typography match the hitter popup. */
 .pitcher-profile-head h2 {
@@ -1351,20 +1552,24 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: -.04em;
 }
 
+
 .pitcher-profile-section {
   margin-top: 14px;
   padding-top: 14px;
 }
+
 
 .pitcher-section-title h3 {
   font-size: 15px;
   line-height: 1.05;
 }
 
+
 .pitcher-section-title span {
   color: var(--muted-2);
   font-size: 8px;
 }
+
 
 /* Rank/core cards: same emphasis hierarchy as hitters. */
 .pitcher-rank-card small,
@@ -1374,15 +1579,18 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: .07em;
 }
 
+
 .pitcher-score-ring-card.core > span {
   color: var(--muted);
   font-size: 9px;
   font-weight: 700;
 }
 
+
 .pitcher-score-ring-card.trait > span {
   font-weight: 650;
 }
+
 
 /* Development: same sparkline + trend-tag language as hitters. */
 .pitcher-development-trait {
@@ -1391,12 +1599,14 @@ body[data-board-mode="pitchers"] .toolbar {
   justify-items: center;
 }
 
+
 .pitcher-development-sparkline {
   width: 100%;
   height: 24px;
   margin: 3px 0 2px;
   overflow: visible;
 }
+
 
 .pitcher-development-sparkline polyline {
   fill: none;
@@ -1405,32 +1615,39 @@ body[data-board-mode="pitchers"] .toolbar {
   vector-effect: non-scaling-stroke;
 }
 
+
 .pitcher-development-sparkline circle {
   fill: currentColor;
 }
+
 
 .pitcher-development-trait.delta-up-strong,
 .pitcher-development-trait.delta-up {
   color: var(--score-emerald);
 }
 
+
 .pitcher-development-trait.delta-neutral {
   color: var(--score-gold);
 }
+
 
 .pitcher-development-trait.delta-down,
 .pitcher-development-trait.delta-down-strong {
   color: var(--score-red);
 }
 
+
 .pitcher-development-trait small,
 .pitcher-development-trait span {
   color: var(--muted);
 }
 
+
 .pitcher-development-trait strong {
   color: currentColor;
 }
+
 
 .pitcher-trait-trend {
   display: inline-flex;
@@ -1444,9 +1661,11 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1;
 }
 
+
 .pitcher-trait-trend.trend-up { color: var(--score-emerald); }
 .pitcher-trait-trend.trend-steady { color: var(--score-gold); }
 .pitcher-trait-trend.trend-down { color: var(--score-red); }
+
 
 .pitcher-development-trend-row em {
   max-width: 55%;
@@ -1456,6 +1675,7 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: right;
 }
 
+
 /* Batted-ball profile: raw shape + direction-only peer context. */
 .pitcher-batted-ball-card {
   padding: 10px;
@@ -1463,6 +1683,7 @@ body[data-board-mode="pitchers"] .toolbar {
   border-radius: 13px;
   background: rgba(255,255,255,.012);
 }
+
 
 .pitcher-batted-ball-meta {
   display: flex;
@@ -1474,11 +1695,13 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 7px;
 }
 
+
 .pitcher-batted-ball-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
   gap: 6px;
 }
+
 
 .pitcher-batted-ball-item {
   --shape-accent: var(--score-neutral);
@@ -1489,12 +1712,14 @@ body[data-board-mode="pitchers"] .toolbar {
   background: color-mix(in srgb, var(--shape-accent) 3%, rgba(255,255,255,.01));
 }
 
+
 .pitcher-batted-ball-item.tone-red { --shape-accent: var(--score-red); }
 .pitcher-batted-ball-item.tone-orange { --shape-accent: var(--score-orange); }
 .pitcher-batted-ball-item.tone-gold { --shape-accent: var(--score-gold); }
 .pitcher-batted-ball-item.tone-lime { --shape-accent: var(--score-lime); }
 .pitcher-batted-ball-item.tone-emerald { --shape-accent: var(--score-emerald); }
 .pitcher-batted-ball-item.tone-neutral { --shape-accent: var(--score-neutral); }
+
 
 .pitcher-batted-ball-head {
   display: flex;
@@ -1503,6 +1728,7 @@ body[data-board-mode="pitchers"] .toolbar {
   gap: 6px;
 }
 
+
 .pitcher-batted-ball-head small {
   color: var(--muted-2);
   font-size: 7px;
@@ -1510,11 +1736,13 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: .07em;
 }
 
+
 .pitcher-batted-ball-head strong {
   color: var(--shape-accent);
   font-size: 18px;
   line-height: 1;
 }
+
 
 .pitcher-batted-ball-label {
   display: block;
@@ -1523,12 +1751,14 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 7px;
 }
 
+
 .pitcher-batted-ball-track {
   --dot: 50%;
   position: relative;
   height: 18px;
   margin: 8px 1px 2px;
 }
+
 
 .pitcher-batted-ball-track::before {
   content: "";
@@ -1546,6 +1776,7 @@ body[data-board-mode="pitchers"] .toolbar {
   );
 }
 
+
 .pitcher-batted-ball-mid {
   position: absolute;
   top: 3px;
@@ -1554,6 +1785,7 @@ body[data-board-mode="pitchers"] .toolbar {
   width: 1px;
   background: rgba(243,247,244,.28);
 }
+
 
 .pitcher-batted-ball-dot {
   position: absolute;
@@ -1567,6 +1799,7 @@ body[data-board-mode="pitchers"] .toolbar {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--shape-accent) 16%, transparent);
 }
 
+
 .pitcher-batted-ball-scale {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -1575,13 +1808,16 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 7px;
 }
 
+
 .pitcher-batted-ball-scale span:first-child { text-align: left; }
 .pitcher-batted-ball-scale span:last-child { text-align: right; }
+
 
 .pitcher-batted-ball-scale b {
   color: var(--shape-accent);
   font-size: 8px;
 }
+
 
 .pitcher-batted-ball-peers {
   display: block;
@@ -1591,12 +1827,14 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .pitcher-batted-ball-card > p {
   margin: 8px 1px 0;
   color: var(--muted);
   font-size: 7px;
   line-height: 1.45;
 }
+
 
 /* Swing & miss now mirrors hitter's large feature-card treatment. */
 .pitcher-miss-card {
@@ -1607,11 +1845,13 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.012);
 }
 
+
 .pitcher-miss-card.tone-red { --score-accent: var(--score-red); }
 .pitcher-miss-card.tone-orange { --score-accent: var(--score-orange); }
 .pitcher-miss-card.tone-gold { --score-accent: var(--score-gold); }
 .pitcher-miss-card.tone-lime { --score-accent: var(--score-lime); }
 .pitcher-miss-card.tone-emerald { --score-accent: var(--score-emerald); }
+
 
 .pitcher-miss-head {
   display: flex;
@@ -1619,6 +1859,7 @@ body[data-board-mode="pitchers"] .toolbar {
   justify-content: space-between;
   gap: 10px;
 }
+
 
 .pitcher-miss-head small {
   display: block;
@@ -1629,6 +1870,7 @@ body[data-board-mode="pitchers"] .toolbar {
   text-transform: uppercase;
 }
 
+
 .pitcher-miss-head strong {
   display: block;
   margin-top: 2px;
@@ -1637,11 +1879,13 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1;
 }
 
+
 .pitcher-miss-head > span {
   color: var(--score-accent);
   font-size: 8px;
   font-weight: 750;
 }
+
 
 .pitcher-miss-meter {
   --miss: 50%;
@@ -1652,6 +1896,7 @@ body[data-board-mode="pitchers"] .toolbar {
   background: color-mix(in srgb, var(--score-accent) 13%, transparent);
 }
 
+
 .pitcher-miss-meter i {
   display: block;
   width: var(--miss);
@@ -1659,6 +1904,7 @@ body[data-board-mode="pitchers"] .toolbar {
   border-radius: inherit;
   background: var(--score-accent);
 }
+
 
 .pitcher-miss-scale {
   display: flex;
@@ -1669,12 +1915,14 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 7px;
 }
 
+
 .pitcher-miss-facts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0,1fr));
   gap: 6px;
   margin-top: 9px;
 }
+
 
 .pitcher-miss-facts > div {
   padding: 8px;
@@ -1683,6 +1931,7 @@ body[data-board-mode="pitchers"] .toolbar {
   background: rgba(255,255,255,.008);
 }
 
+
 .pitcher-miss-facts small {
   display: block;
   color: var(--muted-2);
@@ -1690,11 +1939,13 @@ body[data-board-mode="pitchers"] .toolbar {
   text-transform: uppercase;
 }
 
+
 .pitcher-miss-facts strong {
   display: block;
   margin-top: 2px;
   font-size: 13px;
 }
+
 
 .pitcher-miss-facts span {
   display: block;
@@ -1703,12 +1954,14 @@ body[data-board-mode="pitchers"] .toolbar {
   font-size: 6.5px;
 }
 
+
 .pitcher-miss-card > p {
   margin: 8px 1px 0;
   color: var(--muted);
   font-size: 7px;
   line-height: 1.45;
 }
+
 
 /* 5-year definitions match hitter expandable definitions. */
 .pitcher-outcome-definitions {
@@ -1718,6 +1971,7 @@ body[data-board-mode="pitchers"] .toolbar {
   border-radius: 10px;
   background: rgba(255,255,255,.008);
 }
+
 
 .pitcher-outcome-definitions summary {
   position: relative;
@@ -1729,9 +1983,11 @@ body[data-board-mode="pitchers"] .toolbar {
   font-weight: 800;
 }
 
+
 .pitcher-outcome-definitions summary::-webkit-details-marker {
   display: none;
 }
+
 
 .pitcher-outcome-definitions summary::after {
   content: "+";
@@ -1744,13 +2000,16 @@ body[data-board-mode="pitchers"] .toolbar {
   font-weight: 500;
 }
 
+
 .pitcher-outcome-definitions[open] summary::after {
   content: "−";
 }
 
+
 .pitcher-outcome-definitions > div {
   padding: 0 10px 9px;
 }
+
 
 .pitcher-outcome-definitions p {
   margin: 5px 0 0;
@@ -1759,15 +2018,18 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.4;
 }
 
+
 .pitcher-outcome-definitions b {
   color: var(--text);
 }
+
 
 /* Methodology tiles use the same + / − affordance as hitters. */
 .pitcher-method-card summary {
   position: relative;
   padding-right: 20px;
 }
+
 
 .pitcher-method-card summary::after {
   content: "+";
@@ -1780,9 +2042,11 @@ body[data-board-mode="pitchers"] .toolbar {
   font-weight: 500;
 }
 
+
 .pitcher-method-card[open] summary::after {
   content: "−";
 }
+
 
 @media (max-width: 640px) {
   .pitcher-development-trend-row em {
@@ -1790,22 +2054,27 @@ body[data-board-mode="pitchers"] .toolbar {
     font-size: 6px;
   }
 
+
   .pitcher-development-sparkline {
     height: 21px;
   }
+
 
   .pitcher-trait-trend {
     padding: 3px 4px;
     font-size: 5.4px;
   }
 
+
   .pitcher-miss-head strong {
     font-size: 24px;
   }
 
+
   .pitcher-miss-head > span {
     font-size: 7px;
   }
+
 
   .pitcher-method-card summary {
     min-height: 42px;
@@ -1813,10 +2082,13 @@ body[data-board-mode="pitchers"] .toolbar {
     font-size: 7.7px;
   }
 
+
   .pitcher-method-card p {
     font-size: 8.5px;
   }
 }
+
+
 
 
 /* =========================================================
@@ -1824,10 +2096,12 @@ body[data-board-mode="pitchers"] .toolbar {
    Overall Development trend pill matches hitter styling.
    ========================================================= */
 
+
 .pitcher-development-trend-row {
   gap: 7px;
   margin-bottom: 8px;
 }
+
 
 .pitcher-development-trend-row > span {
   color: var(--muted-2);
@@ -1836,6 +2110,7 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: .09em;
   text-transform: uppercase;
 }
+
 
 .pitcher-trend-tag {
   --trend-accent: var(--muted);
@@ -1854,25 +2129,31 @@ body[data-board-mode="pitchers"] .toolbar {
   white-space: nowrap;
 }
 
+
 .pitcher-trend-tag.trend-up {
   --trend-accent: var(--score-emerald);
 }
+
 
 .pitcher-trend-tag.trend-stable {
   --trend-accent: var(--score-gold);
 }
 
+
 .pitcher-trend-tag.trend-down {
   --trend-accent: var(--score-orange);
 }
+
 
 .pitcher-trend-tag.trend-mixed {
   --trend-accent: #d3b36a;
 }
 
+
 .pitcher-trend-tag.trend-baseline {
   --trend-accent: var(--muted);
 }
+
 
 .pitcher-development-trend-row em {
   min-width: 0;
@@ -1884,19 +2165,23 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: left;
 }
 
+
 @media (max-width: 640px) {
   .pitcher-development-trend-row {
     gap: 5px;
   }
+
 
   .pitcher-trend-tag {
     padding: 3px 6px;
     font-size: 6.3px;
   }
 
+
   .pitcher-development-trend-row > span {
     font-size: 6.2px;
   }
+
 
   .pitcher-development-trend-row em {
     max-width: none;
@@ -1905,11 +2190,13 @@ body[data-board-mode="pitchers"] .toolbar {
   }
 }
 
+
 /* =========================================================
    Pitcher popup typography polish v31
    Slightly stronger secondary copy for mobile readability.
    Keeps names, scores and primary headings unchanged.
    ========================================================= */
+
 
 .pitcher-meta span,
 .pitcher-confidence-note,
@@ -1946,6 +2233,7 @@ body[data-board-mode="pitchers"] .toolbar {
   font-weight: 500;
 }
 
+
 /* Tiny uppercase labels benefit from slightly more weight. */
 .pitcher-rank-card small,
 .pitcher-diamondscore-card > small,
@@ -1961,17 +2249,20 @@ body[data-board-mode="pitchers"] .toolbar {
   font-weight: 900;
 }
 
+
 /* =========================================================
    DiamondRank profile header v1
    Append this block to BOTH:
    - css/hitters.css
    - css/pitchers.css
 
+
    Presentation only:
    - no score/rank/confidence logic changes
    - no Supabase contract changes
    - no model changes
    ========================================================= */
+
 
 /* Put identity first, metadata second, rank summary third. */
 .profile-head,
@@ -1980,27 +2271,33 @@ body[data-board-mode="pitchers"] .toolbar {
   flex-direction: column;
 }
 
+
 .player-name-row {
   order: 1;
 }
 
+
 .pitcher-profile-head > h2 {
   order: 1;
 }
+
 
 .profile-meta.compact-meta,
 .pitcher-meta {
   order: 2;
 }
 
+
 .rank-score-strip,
 .pitcher-rank-score-strip {
   order: 3;
 }
 
+
 .profile-head > .warning {
   order: 4;
 }
+
 
 /* Player name: still prominent, but less oversized. */
 .player-name-row h2,
@@ -2013,6 +2310,7 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: -.045em;
 }
 
+
 /* Metadata becomes quiet inline identity text instead of five outlined pills. */
 .profile-meta.compact-meta,
 .pitcher-meta {
@@ -2022,6 +2320,7 @@ body[data-board-mode="pitchers"] .toolbar {
   gap: 0;
   margin-top: 8px;
 }
+
 
 .profile-meta.compact-meta .chip,
 .pitcher-meta span {
@@ -2034,12 +2333,14 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.4;
 }
 
+
 .profile-meta.compact-meta .chip:not(.emphasis) + .chip:not(.emphasis)::before,
 .pitcher-meta span:not(.emphasis) + span:not(.emphasis)::before {
   content: "·";
   margin: 0 7px;
   color: color-mix(in srgb, var(--gold) 46%, var(--muted-2));
 }
+
 
 /* Confidence remains the single status pill. */
 .profile-meta.compact-meta .chip.emphasis,
@@ -2054,6 +2355,7 @@ body[data-board-mode="pitchers"] .toolbar {
   font-weight: 750;
   line-height: 1.1;
 }
+
 
 /* One summary surface instead of three separate dashboard boxes. */
 .rank-score-strip,
@@ -2072,6 +2374,7 @@ body[data-board-mode="pitchers"] .toolbar {
     0 10px 28px rgba(0,0,0,.08);
 }
 
+
 .rank-summary-card,
 .diamondscore-card,
 .pitcher-rank-card,
@@ -2085,11 +2388,13 @@ body[data-board-mode="pitchers"] .toolbar {
   text-align: center;
 }
 
+
 .rank-summary-card,
 .pitcher-rank-card {
   display: grid;
   align-content: center;
 }
+
 
 .rank-summary-card:nth-child(2),
 .diamondscore-card,
@@ -2097,6 +2402,7 @@ body[data-board-mode="pitchers"] .toolbar {
 .pitcher-diamondscore-card {
   border-left: 1px solid rgba(216,189,113,.11);
 }
+
 
 /* Sand is used only as a quiet brand accent, not as another score colour. */
 .rank-summary-card small,
@@ -2112,6 +2418,7 @@ body[data-board-mode="pitchers"] .toolbar {
   text-transform: uppercase;
 }
 
+
 .rank-summary-card strong,
 .pitcher-rank-card strong {
   display: block;
@@ -2123,6 +2430,7 @@ body[data-board-mode="pitchers"] .toolbar {
   letter-spacing: -.045em;
 }
 
+
 .rank-summary-card span,
 .pitcher-rank-card span {
   display: block;
@@ -2133,6 +2441,7 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1.15;
 }
 
+
 /* DiamondScore stays the accent, but no longer looks like a separate card. */
 .diamondscore-card,
 .pitcher-diamondscore-card {
@@ -2142,20 +2451,26 @@ body[data-board-mode="pitchers"] .toolbar {
   align-content: center;
 }
 
+
 .diamondscore-card.tone-red,
 .pitcher-diamondscore-card.tone-red { --score-accent: var(--score-red); }
+
 
 .diamondscore-card.tone-orange,
 .pitcher-diamondscore-card.tone-orange { --score-accent: var(--score-orange); }
 
+
 .diamondscore-card.tone-gold,
 .pitcher-diamondscore-card.tone-gold { --score-accent: var(--score-gold); }
+
 
 .diamondscore-card.tone-lime,
 .pitcher-diamondscore-card.tone-lime { --score-accent: var(--score-lime); }
 
+
 .diamondscore-card.tone-emerald,
 .pitcher-diamondscore-card.tone-emerald { --score-accent: var(--score-emerald); }
+
 
 .diamondscore-ring,
 .pitcher-diamondscore-ring {
@@ -2177,6 +2492,7 @@ body[data-board-mode="pitchers"] .toolbar {
     0 0 18px color-mix(in srgb, var(--score-accent) 5%, transparent);
 }
 
+
 .diamondscore-ring strong,
 .pitcher-diamondscore-ring strong {
   color: var(--score-accent);
@@ -2185,6 +2501,7 @@ body[data-board-mode="pitchers"] .toolbar {
   line-height: 1;
   letter-spacing: -.035em;
 }
+
 
 /* Remove browser-blue focus treatment from the modal close button,
    while retaining a deliberate accessible focus state. */
@@ -2195,9 +2512,11 @@ body[data-board-mode="pitchers"] .toolbar {
   -webkit-tap-highlight-color: transparent;
 }
 
+
 .dialog-close:focus {
   outline: none;
 }
+
 
 .dialog-close:focus-visible {
   border-color: rgba(130,231,173,.5);
@@ -2206,6 +2525,7 @@ body[data-board-mode="pitchers"] .toolbar {
   box-shadow: 0 0 0 4px rgba(216,189,113,.10);
 }
 
+
 /* Mobile: keep all three summary values across without crowding. */
 @media (max-width: 640px) {
   .player-name-row h2,
@@ -2213,20 +2533,24 @@ body[data-board-mode="pitchers"] .toolbar {
     font-size: 32px;
   }
 
+
   .profile-meta.compact-meta,
   .pitcher-meta {
     margin-top: 7px;
   }
+
 
   .profile-meta.compact-meta .chip,
   .pitcher-meta span {
     font-size: 9.5px;
   }
 
+
   .profile-meta.compact-meta .chip:not(.emphasis) + .chip:not(.emphasis)::before,
   .pitcher-meta span:not(.emphasis) + span:not(.emphasis)::before {
     margin: 0 6px;
   }
+
 
   .profile-meta.compact-meta .chip.emphasis,
   .pitcher-meta .emphasis {
@@ -2235,11 +2559,13 @@ body[data-board-mode="pitchers"] .toolbar {
     font-size: 8.5px;
   }
 
+
   .rank-score-strip,
   .pitcher-rank-score-strip {
     margin-top: 11px;
     border-radius: 14px;
   }
+
 
   .rank-summary-card,
   .diamondscore-card,
@@ -2249,6 +2575,7 @@ body[data-board-mode="pitchers"] .toolbar {
     padding: 9px 5px;
   }
 
+
   .rank-summary-card small,
   .diamondscore-card > small,
   .pitcher-rank-card small,
@@ -2257,11 +2584,13 @@ body[data-board-mode="pitchers"] .toolbar {
     letter-spacing: .075em;
   }
 
+
   .rank-summary-card strong,
   .pitcher-rank-card strong {
     margin-top: 4px;
     font-size: 24px;
   }
+
 
   .rank-summary-card span,
   .pitcher-rank-card span {
@@ -2269,11 +2598,13 @@ body[data-board-mode="pitchers"] .toolbar {
     font-size: 7px;
   }
 
+
   .diamondscore-ring,
   .pitcher-diamondscore-ring {
     width: 54px;
     margin-top: 5px;
   }
+
 
   .diamondscore-ring strong,
   .pitcher-diamondscore-ring strong {
@@ -2281,10 +2612,101 @@ body[data-board-mode="pitchers"] .toolbar {
   }
 }
 
+
 @media (max-width: 390px) {
   .profile-meta.compact-meta .chip.emphasis,
   .pitcher-meta .emphasis {
     margin-left: 0;
     margin-top: 5px;
+  }
+}
+
+/* =========================================================
+   Pitcher development percentile + YoY unification v37
+   Display-only: current seasonal trait score + score-point
+   change; no ranking/model logic changes.
+   ========================================================= */
+.pitcher-development-percentile-card {
+  --dev-score-accent: var(--score-neutral);
+  color: var(--dev-score-accent);
+}
+
+.pitcher-development-percentile-card.tone-red { --dev-score-accent: var(--score-red); }
+.pitcher-development-percentile-card.tone-orange { --dev-score-accent: var(--score-orange); }
+.pitcher-development-percentile-card.tone-gold { --dev-score-accent: var(--score-gold); }
+.pitcher-development-percentile-card.tone-lime { --dev-score-accent: var(--score-lime); }
+.pitcher-development-percentile-card.tone-emerald { --dev-score-accent: var(--score-emerald); }
+.pitcher-development-percentile-card.tone-neutral { --dev-score-accent: var(--score-neutral); }
+
+.pitcher-development-percentile-card .pitcher-development-current-percentile {
+  display: block;
+  margin-top: 2px;
+  color: var(--dev-score-accent);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.03em;
+}
+
+.pitcher-development-percentile-card .pitcher-development-current-label {
+  display: block;
+  margin-top: 1px;
+  color: var(--muted-2);
+  font-size: 5.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.pitcher-development-percentile-card .pitcher-trait-trend {
+  margin-top: 4px;
+}
+
+.pitcher-development-percentile-card .pitcher-development-delta {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 9px;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.pitcher-development-percentile-card .pitcher-development-delta-label {
+  display: block;
+  margin-top: 1px;
+  color: var(--muted-2);
+  font-size: 5.4px;
+  line-height: 1.1;
+}
+
+.pitcher-development-score-grid > div > span {
+  display: block;
+  margin-top: 1px;
+  color: var(--muted-2);
+  font-size: 5px;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .pitcher-development-percentile-card .pitcher-development-sparkline {
+    height: 21px;
+    margin-top: 2px;
+  }
+
+  .pitcher-development-percentile-card .pitcher-development-current-percentile {
+    font-size: 12px;
+  }
+
+  .pitcher-development-percentile-card .pitcher-development-current-label {
+    font-size: 4.8px;
+  }
+
+  .pitcher-development-percentile-card .pitcher-development-delta {
+    font-size: 7.8px;
+  }
+
+  .pitcher-development-percentile-card .pitcher-development-delta-label {
+    font-size: 4.8px;
   }
 }
