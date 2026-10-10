@@ -649,13 +649,35 @@ function compCards(player) {
     const matchLabel = Number.isFinite(matchPct)
       ? `Match ${index + 1} · ${Math.round(matchPct)}%`
       : `Match ${index + 1}`;
+
+    const mlbPa = Number(comp.five_year_mlb_pa);
+    const mlbWar = Number(comp.five_year_mlb_war);
+    const mlbWrcPlus = Number(comp.five_year_mlb_wrc_plus);
+
     return `
       <div class="comp-card">
         <div class="comp-topline">
           <span>${matchLabel}</span>
         </div>
+
         <div class="comp-name">${escapeHtml(comp.name || "Historical comp")}</div>
         <div class="comp-meta">${escapeHtml(comp.level || "—")} • ${escapeHtml(comp.season || "—")} • ${escapeHtml(comp.position || comp.position_family || "—")}</div>
+
+        <div class="comp-mlb-stats" aria-label="Five-year MLB results">
+          <div>
+            <small>5Y PA</small>
+            <strong>${Number.isFinite(mlbPa) ? integer(mlbPa) : "—"}</strong>
+          </div>
+          <div>
+            <small>WAR</small>
+            <strong>${Number.isFinite(mlbWar) ? number1(mlbWar) : "—"}</strong>
+          </div>
+          <div>
+            <small>wRC+</small>
+            <strong>${Number.isFinite(mlbWrcPlus) ? integer(mlbWrcPlus) : "—"}</strong>
+          </div>
+        </div>
+
         <div class="comp-outcome ${outcomeToneClass(outcome)}">${escapeHtml(outcome)}</div>
       </div>
     `;
@@ -1298,7 +1320,7 @@ function explanationDetails(player) {
     ["Context Profile", "The centered meters compare current traits with the player’s age-and-level context. Left is below context, the middle is near context and right is above context. The marker and color show relative strength, not future projection."],
     ["Batted-Ball Shape", "The field shows where contact is going, while GB, FB and LD cards show the batted-ball mix versus peers. Direction and batted-ball mix describe style and context; they are not automatically good or bad."],
     ["Swing & Miss", "The bat-to-ball percentile shows how the player’s swing-and-miss result compares with the current context; higher percentile means stronger bat-to-ball performance. Raw SwStr% shows the actual miss rate, where lower is better. Sample depth tells you how much pitch evidence supports the reading."],
-    ["Comparables", `The ${compCount} closest historical player profiles. Match % measures statistical similarity to each historical profile; it is not the probability that the current player follows the same career.`],
+    ["Comparables", `The ${compCount} closest historical player profiles. Match % measures statistical similarity, not career probability. Each card also shows that comp’s MLB PA, WAR and wRC+ over the five seasons after the matched minor-league season, plus the resulting MLB outcome tier.`],
     ["5-Year Outcomes", "The outcome bar summarizes what the broader comparable group did in MLB over the next five seasons. These are historical reference outcomes for the neighborhood, not personalized probabilities for the current player."],
     ["Score Colors", "Warm colors indicate weaker relative scores and greener colors indicate stronger relative scores on DiamondRank’s comparative scales. Color describes relative strength; it does not indicate safety, risk or certainty."]
   ];
