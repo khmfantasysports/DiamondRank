@@ -5759,3 +5759,61 @@ body[data-board-mode="hitters"] .toolbar {
     font-size: 5.8px;
   }
 }
+
+
+/* =========================================================
+   Hitter comparable MLB result row v35
+   Five-year PA / WAR / wRC+ shown on each historical comp.
+   ========================================================= */
+.comp-mlb-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  margin-top: 7px;
+}
+
+.comp-mlb-stats > div {
+  min-width: 0;
+  padding: 5px 2px;
+  border: 1px solid rgba(177,224,197,.10);
+  border-radius: 7px;
+  background: rgba(255,255,255,.008);
+  text-align: center;
+}
+
+.comp-mlb-stats small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 5.2px;
+  font-weight: 800;
+  letter-spacing: .045em;
+  line-height: 1.1;
+}
+
+.comp-mlb-stats strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--text);
+  font-size: 8.5px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  .comp-mlb-stats {
+    gap: 2px;
+    margin-top: 6px;
+  }
+
+  .comp-mlb-stats > div {
+    padding: 4px 1px;
+  }
+
+  .comp-mlb-stats small {
+    font-size: 4.8px;
+  }
+
+  .comp-mlb-stats strong {
+    font-size: 7.8px;
+  }
+}
