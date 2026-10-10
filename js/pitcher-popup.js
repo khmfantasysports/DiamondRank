@@ -51,6 +51,13 @@ function signed1(value) {
   return `${n > 0 ? "+" : ""}${n.toFixed(1)}`;
 }
 
+function signedPoint1(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  const rounded = n.toFixed(1);
+  return n > 0 ? `+${rounded}` : rounded;
+}
+
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, Number(value) || 0));
 }
@@ -404,6 +411,8 @@ function developmentTraitCards(context) {
   const timeline = Array.isArray(context.stage_timeline) ? context.stage_timeline : [];
   const trends = context.trait_trends || {};
   const deltas = context.trait_deltas || {};
+  const latest = timeline.length ? timeline[timeline.length - 1] : null;
+  const previous = timeline.length >= 2 ? timeline[timeline.length - 2] : null;
   const traits = [
     ["Miss Bats", "miss_bats"],
     ["Command", "command"],
@@ -412,18 +421,38 @@ function developmentTraitCards(context) {
     ["Workload", "workload"]
   ];
 
+  if (!latest) return "";
+
   return `
     <div class="pitcher-development-traits">
       ${traits.map(([label, key]) => {
         const trend = trends[key] || {};
-        const value = trend.delta ?? deltas[key];
+        const current = Number(latest?.[key]);
+        const prior = Number(previous?.[key]);
+        const calculatedDelta =
+          Number.isFinite(current) && Number.isFinite(prior)
+            ? current - prior
+            : null;
+        const fallbackDelta = Number(trend.delta ?? deltas[key]);
+        const delta = Number.isFinite(calculatedDelta)
+          ? calculatedDelta
+          : Number.isFinite(fallbackDelta)
+            ? fallbackDelta
+            : null;
+        const hasComparison = Boolean(previous) && Number.isFinite(delta);
+        const trendTone = hasComparison ? (trend.tone || "trend-stable") : "trend-baseline";
+        const trendIcon = hasComparison ? (trend.icon || "→") : "•";
+        const trendLabel = hasComparison ? (trend.label || "Stable") : "Baseline";
+
         return `
-          <div class="pitcher-development-trait ${escapeHtml(trend.delta_tone || "delta-neutral")}">
+          <div class="pitcher-development-trait pitcher-development-percentile-card ${scoreToneClass(current)}">
             <small>${escapeHtml(label)}</small>
             ${developmentSparkline(timeline, key)}
-            <b class="pitcher-trait-trend ${escapeHtml(trend.tone || "trend-baseline")}">${escapeHtml(trend.icon || "→")} ${escapeHtml(trend.label || "Stable")}</b>
-            <strong>${signed1(value)}</strong>
-            <span>year over year</span>
+            <strong class="pitcher-development-current-percentile">${number1(current)}</strong>
+            <span class="pitcher-development-current-label">percentile</span>
+            <b class="pitcher-trait-trend ${escapeHtml(trendTone)}">${escapeHtml(trendIcon)} ${escapeHtml(trendLabel)}</b>
+            <span class="pitcher-development-delta">${hasComparison ? `${signedPoint1(delta)} pts` : "Baseline"}</span>
+            <span class="pitcher-development-delta-label">${hasComparison ? "year over year" : "first qualified season"}</span>
           </div>
         `;
       }).join("")}
@@ -441,7 +470,7 @@ function developmentPanel(player) {
     tone: context.trend_tone || "trend-baseline"
   };
 
-  if (!count) {
+  if (!count || !timeline.length) {
     return `
       <div class="pitcher-development-empty">
         <strong>Limited history</strong>
@@ -451,37 +480,19 @@ function developmentPanel(player) {
     `;
   }
 
-  if (count === 1) {
-    const only = timeline[0] || {};
-    return `
-      <div class="pitcher-development-overview">
-        <div class="pitcher-development-trend-row">
-          <span>Trend</span>
-          <b class="pitcher-trend-tag ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
-        </div>
-        <div class="pitcher-development-year-row">
-          <strong>${yearValue(only.season)}</strong>
-          <span>${escapeHtml(only.primary_level || only.highest_level || "—")} · ${number1(only.ip)} IP</span>
-        </div>
-        ${mlbTransitionCompact(player)}
-        <button class="pitcher-development-open" type="button" data-pitcher-development-open>
-          View development details <span aria-hidden="true">›</span>
-        </button>
-      </div>
-    `;
-  }
+  const latest = timeline[timeline.length - 1] || {};
 
   return `
     <div class="pitcher-development-overview">
       <div class="pitcher-development-trend-row">
         <span>Trend</span>
         <b class="pitcher-trend-tag ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
-        <em>${escapeHtml(context.trend_summary || "")}</em>
+        ${count >= 2 ? `<em>${escapeHtml(context.trend_summary || "")}</em>` : ""}
       </div>
 
       <div class="pitcher-development-year-row">
-        <strong>${yearValue(context.previous_season)} → ${yearValue(context.latest_season)}</strong>
-        <span>40+ IP season comparison</span>
+        <strong>${count >= 2 ? `${yearValue(context.previous_season)} → ${yearValue(context.latest_season)}` : yearValue(latest.season)}</strong>
+        <span>${count >= 2 ? "40+ IP season comparison" : `${escapeHtml(latest.primary_level || latest.highest_level || "—")} · ${number1(latest.ip)} IP baseline`}</span>
       </div>
 
       ${developmentTraitCards(context)}
@@ -527,6 +538,7 @@ function developmentSeasonCard(season, isCurrent) {
           <div class="${scoreToneClass(value)}">
             <small>${escapeHtml(label)}</small>
             <strong>${number1(value)}</strong>
+            <span>percentile</span>
           </div>
         `).join("")}
       </div>
@@ -595,21 +607,21 @@ function developmentDetailMarkup(player) {
         <section class="pitcher-development-detail-section">
           <div class="pitcher-development-detail-heading">
             <div>
-              <h4>Year-over-year change</h4>
-              <span>${context.previous_season ? `${yearValue(context.previous_season)} → ${yearValue(context.latest_season)}` : "Baseline only"}</span>
+              <h4>Trait percentiles & change</h4>
+              <span>${context.previous_season ? `${yearValue(context.previous_season)} → ${yearValue(context.latest_season)}` : timeline.length ? `${yearValue(timeline[timeline.length - 1]?.season)} baseline` : "Baseline unavailable"}</span>
             </div>
             <small>40+ IP seasons</small>
           </div>
 
           <div class="pitcher-development-detail-trend">
             <b class="pitcher-trend-tag ${tag.tone}">${tag.icon} ${escapeHtml(tag.label)}</b>
-            ${context.previous_season ? `<span>${signed1(context.overall_delta)} overall</span>` : ""}
+            ${context.previous_season ? `<span>${signedPoint1(context.overall_delta)} overall</span>` : ""}
           </div>
 
-          ${context.previous_season ? developmentTraitCards(context) : `
+          ${timeline.length ? developmentTraitCards(context) : `
             <div class="pitcher-development-empty">
-              <strong>Baseline only</strong>
-              <span>A second 40+ IP MiLB season is needed before year-over-year change is shown.</span>
+              <strong>Limited history</strong>
+              <span>No 40+ IP MiLB season is available for a trait baseline.</span>
             </div>
           `}
         </section>
