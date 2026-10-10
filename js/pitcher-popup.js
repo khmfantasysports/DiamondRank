@@ -38,9 +38,9 @@ function qualifiedSeasonLabel(value) {
 
 function evidenceSourceLabel(value) {
   const key = String(value || "").toUpperCase();
-  if (key === "CURRENT_MILB_40_PLUS") return "Current MiLB · 40+ IP";
-  if (key === "PRIOR_MILB_40_PLUS") return "Prior MiLB · 40+ IP";
-  if (key === "CURRENT_MILB_SMALL_SAMPLE") return "Current MiLB · Small sample";
+  if (key === "CURRENT_MILB_40_PLUS") return "Current MiLB · 40+ IP sample";
+  if (key === "PRIOR_MILB_40_PLUS") return "Prior MiLB · 40+ IP sample";
+  if (key === "CURRENT_MILB_SMALL_SAMPLE") return "Current MiLB · Limited IP sample";
   return String(value || "—").replaceAll("_", " ");
 }
 
@@ -103,9 +103,10 @@ function mlbKbbToneClass(value) {
 }
 
 function confidenceLabel(value) {
-  if (!value) return "Confidence —";
+  if (!value) return "Evidence confidence · —";
   const text = String(value).toLowerCase().replaceAll("_", " ");
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)} confidence`;
+  const label = `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
+  return `Evidence confidence · ${label}`;
 }
 
 function scoreRing(label, value, size = "trait") {
@@ -490,6 +491,8 @@ function developmentPanel(player) {
         ${count >= 2 ? `<em>${escapeHtml(context.trend_summary || "")}</em>` : ""}
       </div>
 
+      <p class="pitcher-development-read-key">Large number = current percentile · ± pts = change from prior qualified season</p>
+
       <div class="pitcher-development-year-row">
         <strong>${count >= 2 ? `${yearValue(context.previous_season)} → ${yearValue(context.latest_season)}` : yearValue(latest.season)}</strong>
         <span>${count >= 2 ? "40+ IP season comparison" : `${escapeHtml(latest.primary_level || latest.highest_level || "—")} · ${number1(latest.ip)} IP baseline`}</span>
@@ -653,15 +656,18 @@ function developmentDetailMarkup(player) {
 
 function readingGuide() {
   const items = [
-    ["DiamondScore", "Overall fantasy prospect score. It combines Opportunity and Fantasy Profile to rank the pitcher against the current prospect pool."],
-    ["Opportunity", "How strong the pitcher’s current path looks compared with similar historical pitchers. It is not MLB readiness or a probability."],
-    ["Fantasy Profile", "How strong the pitcher’s fantasy-relevant skill set is, using miss bats, command, run prevention, contact management and workload."],
-    ["Current Evidence", "The season and level used most heavily in the current profile."],
-    ["Development", "Year-to-year change across qualified 40+ IP MiLB seasons. MLB results are shown separately."],
-    ["Context Profile", "How the current evidence compares with pitchers at the same season and level. Farther right is stronger relative performance."],
-    ["Batted-Ball Profile", "Ground-ball, fly-ball and line-drive rates from the selected evidence season, compared with same-level peers when available."],
-    ["Comparables", "The six closest historical pitcher profiles. Match % measures similarity, not future outcome."],
-    ["5-Year Outcomes", "What happened in MLB over the next five seasons for the 30-player comparable group."]
+    ["DiamondScore", "The overall 0–99.9 fantasy prospect score used to rank the pitcher against the current DiamondRank pitcher pool. Higher is stronger. It is a comparative score, not a probability or career forecast."],
+    ["Opportunity", "How favorable the pitcher’s current historical path looks compared with similar pitchers at comparable ages, levels and roles. It is not MLB readiness and not a probability of reaching MLB."],
+    ["Fantasy Profile", "The pitcher’s current fantasy-relevant skill strength across Miss Bats, Command, Run Prevention, Contact Management and Workload after accounting for age and level. These are profile scores, not projected future stat totals."],
+    ["Evidence Confidence", "The High, Moderate or Low pill describes how much supporting evidence is available for the overall profile. It is not a player-risk meter, upside grade or chance of success. Lower evidence confidence means the ranking can move more as additional data arrives."],
+    ["Current Evidence", "The season, level, age, innings and raw pitching stats used most heavily in the current profile. The sample label tells you how much current MiLB evidence is available; it does not grade the pitcher’s performance or risk."],
+    ["Development", "Each trait card shows the current development percentile, then the change in score/percentile points from the previous qualified 40+ IP season. Higher means stronger relative trait evidence; +/− pts show movement, not raw-stat change. “Baseline” means no earlier qualified season is available."],
+    ["Context Profile", "The centered meters compare the current evidence with same-season, same-level pitchers. Left is below context, the middle is near context and right is above context. They describe relative performance, not future projection."],
+    ["Batted-Ball Profile", "Ground-ball, fly-ball and line-drive rates describe the pitcher’s contact shape. Peer percentile shows whether each rate is lower or higher than same-level peers; higher is not automatically better because the meter describes tendency, not overall quality."],
+    ["Swing & Miss", "Miss Bats combines strikeout and swing-and-miss evidence against the pitcher’s age-and-level context. The raw SwStr% and TBF sample show the underlying evidence. Sample size affects how firmly to read the result, not whether the pitcher is risky."],
+    ["Comparables", "The six closest historical pitcher profiles. Match % measures statistical similarity to each historical profile; it is not the probability that the current pitcher follows the same career."],
+    ["5-Year Outcomes", "The outcome panel summarizes what the broader 30-pitcher comparable group did in MLB over the next five seasons. These are historical reference outcomes, not personalized probabilities for the current pitcher."],
+    ["Score Colors", "Warm colors indicate weaker relative scores and greener colors indicate stronger relative scores on DiamondRank’s comparative scales. Color describes relative strength; it does not indicate safety, risk or certainty."]
   ];
 
   return items.map(([label, text]) => `
@@ -671,7 +677,6 @@ function readingGuide() {
     </details>
   `).join("");
 }
-
 function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDetails) {
   const e = player.current_evidence || {};
   const f = player.fantasy_skill_profile || {};
@@ -706,6 +711,7 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
         <span>Age ${number1(player.age)}</span>
         <span class="emphasis">${escapeHtml(confidenceLabel(player.ranking_confidence))}</span>
       </div>
+      <p class="pitcher-confidence-explainer">Evidence confidence reflects supporting data depth, not player risk or upside.</p>
     </div>
 
     <section class="pitcher-profile-section">
@@ -803,7 +809,7 @@ function renderProfile(player, dialogContent, dialogLoading, openDevelopmentDeta
             <span>Evidence season</span>
           </div>
           <div>
-            <small>Sample</small>
+            <small>Sample depth</small>
             <strong>${integer(e.tbf)} TBF</strong>
             <span>${escapeHtml(evidenceSourceLabel(e.source))}</span>
           </div>
