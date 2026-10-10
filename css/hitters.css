@@ -5722,3 +5722,40 @@ body[data-board-mode="hitters"] .toolbar {
     font-size: 4.8px;
   }
 }
+
+
+/* =========================================================
+   Reader guidance v34
+   Distinguish evidence confidence/sample depth from player risk.
+   ========================================================= */
+.profile-confidence-explainer {
+  margin: 5px 1px 0;
+  color: var(--muted-2);
+  font-size: 7px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.compact-warning strong {
+  color: var(--gold);
+}
+
+.development-read-key {
+  margin: 7px 1px 0;
+  color: var(--muted-2);
+  font-size: 6.4px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .profile-confidence-explainer {
+    font-size: 6.4px;
+  }
+
+  .development-read-key {
+    margin-top: 6px;
+    font-size: 5.8px;
+  }
+}
