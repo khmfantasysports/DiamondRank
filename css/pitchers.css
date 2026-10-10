@@ -2710,3 +2710,36 @@ body[data-board-mode="pitchers"] .toolbar {
     font-size: 4.8px;
   }
 }
+
+
+/* =========================================================
+   Reader guidance v38
+   Distinguish evidence confidence/sample depth from player risk.
+   ========================================================= */
+.pitcher-confidence-explainer {
+  margin: 5px 1px 0;
+  color: var(--muted-2);
+  font-size: 7px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.pitcher-development-read-key {
+  margin: 7px 1px 0;
+  color: var(--muted-2);
+  font-size: 6.4px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .pitcher-confidence-explainer {
+    font-size: 6.4px;
+  }
+
+  .pitcher-development-read-key {
+    margin-top: 6px;
+    font-size: 5.8px;
+  }
+}
