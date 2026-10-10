@@ -135,9 +135,15 @@ function positionFamilyLabel(value) {
 }
 
 function confidenceLabel(value) {
-  if (!value) return "Confidence —";
+  if (!value) return "Evidence confidence · —";
   const text = String(value).toLowerCase().replaceAll("_", " ");
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)} confidence`;
+  const label = `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
+  return `Evidence confidence · ${label}`;
+}
+
+function sampleTierLabel(value) {
+  const text = String(value || "—").toLowerCase().replaceAll("_", " ");
+  return text === "—" ? text : `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
 }
 
 function setLoading(on) {
@@ -519,9 +525,9 @@ function compactSwStr(player) {
           <span>Lower is better</span>
         </div>
         <div>
-          <small>Sample</small>
+          <small>Sample depth</small>
           <strong>${integer(player.swstr_source_pa)} PA</strong>
-          <span>${escapeHtml(player.swstr_sample_tier || "—")}</span>
+          <span>${escapeHtml(sampleTierLabel(player.swstr_sample_tier))} coverage</span>
         </div>
       </div>
 
@@ -1086,6 +1092,8 @@ function developmentPanel(player) {
 
       ${trendNote ? `<div class="development-rank-note">${escapeHtml(trendNote)}</div>` : ""}
 
+      <p class="development-read-key">Large number = current percentile · ± pts = change from prior qualified season</p>
+
       <div class="development-year-row">
         <strong>${previous ? `${yearValue(previous.season)} → ${yearValue(latest.season)}` : yearValue(latest.season)}</strong>
         <span>${previous ? "PA-weighted season comparison" : "Current qualified baseline"}</span>
@@ -1281,15 +1289,18 @@ function explanationDetails(player) {
   const compCount = Number(player.comparable_context?.displayed_comparables) || 6;
 
   const items = [
-    ["DiamondScore", "Overall fantasy prospect score. It combines Opportunity and Fantasy Profile to rank the player against the current prospect pool."],
-    ["Opportunity", "How strong the player’s current path looks compared with similar historical players, using age, level and performance context. It is not MLB readiness or a probability."],
-    ["Fantasy Profile", "How strong the player’s fantasy-relevant skills are for their age and level."],
-    ["Current Evidence", "The current-season stat line used most heavily in the player’s profile."],
-    ["Development", "How the player’s age-and-level-adjusted traits changed from the previous qualified season."],
-    ["Batted-Ball Shape", "How the player is putting the ball in play, with ground-ball, line-drive and fly-ball context."],
-    ["Comparables", `The ${compCount} closest historical player profiles. Match % measures similarity, not future outcome.`],
-    ["5-Year Outcomes", "What happened in MLB over the next five seasons for the broader comparable group."],
-    ["Swing & Miss", "Swinging-strike evidence that adds bat-to-ball context. Smaller samples are flagged."]
+    ["DiamondScore", "The overall 0–99.9 fantasy prospect score used to rank the player against the current DiamondRank hitter pool. Higher is stronger. It is a comparative score, not a probability or career forecast."],
+    ["Opportunity", "How favorable the player’s current historical path looks compared with similar prospects at comparable ages and levels. Higher is stronger historical path evidence. It is not MLB readiness and not a probability of reaching MLB."],
+    ["Fantasy Profile", "The player’s current fantasy-relevant skill strength across Production, Power, Contact, Discipline and Speed after adjusting for age and level. The five meters describe the shape of the current profile, not projected future stat totals."],
+    ["Evidence Confidence", "The High, Moderate or Low pill describes how much supporting evidence is available for the overall profile, including current and prior-season coverage. It is not a player-risk meter, upside grade or chance of success. Lower evidence confidence means the ranking can move more as additional data arrives."],
+    ["Current Evidence", "The raw season, level, age, playing time and familiar batting stats behind the current profile. “Sample depth” describes the amount of current-season playing-time evidence; it is not a performance grade or risk score."],
+    ["Development", "Each trait card shows the player’s current age-and-level-adjusted percentile, then the change in percentile points from the previous qualified season. Higher percentiles mean stronger relative traits; +/− pts show movement, not raw-stat change. “Baseline” means there is no earlier qualified season to compare."],
+    ["Context Profile", "The centered meters compare current traits with the player’s age-and-level context. Left is below context, the middle is near context and right is above context. The marker and color show relative strength, not future projection."],
+    ["Batted-Ball Shape", "The field shows where contact is going, while GB, FB and LD cards show the batted-ball mix versus peers. Direction and batted-ball mix describe style and context; they are not automatically good or bad."],
+    ["Swing & Miss", "The bat-to-ball percentile shows how the player’s swing-and-miss result compares with the current context; higher percentile means stronger bat-to-ball performance. Raw SwStr% shows the actual miss rate, where lower is better. Sample depth tells you how much pitch evidence supports the reading."],
+    ["Comparables", `The ${compCount} closest historical player profiles. Match % measures statistical similarity to each historical profile; it is not the probability that the current player follows the same career.`],
+    ["5-Year Outcomes", "The outcome bar summarizes what the broader comparable group did in MLB over the next five seasons. These are historical reference outcomes for the neighborhood, not personalized probabilities for the current player."],
+    ["Score Colors", "Warm colors indicate weaker relative scores and greener colors indicate stronger relative scores on DiamondRank’s comparative scales. Color describes relative strength; it does not indicate safety, risk or certainty."]
   ];
 
   return items.map(([label, text]) => `
@@ -1299,7 +1310,6 @@ function explanationDetails(player) {
     </details>
   `).join("");
 }
-
 async function openPlayer(playerId) {
   el.dialogContent.innerHTML = "";
   el.dialogContent.hidden = true;
@@ -1360,7 +1370,8 @@ function renderPlayer(player) {
         <span class="chip">Age ${number1(player.age)}</span>
         <span class="chip emphasis">${escapeHtml(confidenceLabel(player.ranking_confidence))}</span>
       </div>
-      ${player.sample_size_warning ? `<div class="warning compact-warning">${escapeHtml(player.sample_size_warning)}</div>` : ""}
+      <p class="profile-confidence-explainer">Evidence confidence reflects supporting data depth, not player risk or upside.</p>
+      ${player.sample_size_warning ? `<div class="warning compact-warning"><strong>Evidence note:</strong> ${escapeHtml(player.sample_size_warning)}</div>` : ""}
     </div>
 
     <section class="profile-section compact-section">
@@ -1377,7 +1388,7 @@ function renderPlayer(player) {
     </section>
 
     <section class="profile-section compact-section">
-      <div class="section-title-row"><h3>Current evidence</h3><span>${escapeHtml(evidence.sample_tier || "—")} sample</span></div>
+      <div class="section-title-row"><h3>Current evidence</h3><span>Sample depth · ${escapeHtml(sampleTierLabel(evidence.sample_tier))}</span></div>
       <div class="evidence-grid">
         <div><small>Season</small><strong>${escapeHtml(evidence.season || "—")}</strong></div>
         <div><small>Level</small><strong>${escapeHtml(evidence.level || player.current_level || "—")}</strong></div>
