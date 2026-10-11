@@ -20,9 +20,10 @@
     .file-summary,.qa-grid,.refresh-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.file-summary>div,.qa-item,.refresh-item{min-width:0;padding:10px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(255,255,255,.025)}.file-summary small,.qa-item small,.refresh-item small,.identity-row small{display:block;color:#8fa098;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}.file-summary strong,.qa-item strong,.refresh-item strong,.identity-row strong{display:block;margin-top:4px;color:#eef7f1;overflow-wrap:anywhere}
     .progress-wrap{margin-top:14px}progress{width:100%;height:9px;margin-top:7px}.action-row{justify-content:flex-start;flex-wrap:wrap;margin-top:16px}.json-details{margin-top:12px;color:#cbd5cf}.json-details summary{cursor:pointer;font-weight:800}.json-details pre{max-height:360px;overflow:auto;padding:12px;border-radius:10px;background:#04100a;color:#c6f6d5;font-size:.76rem;white-space:pre-wrap;overflow-wrap:anywhere}
     .refresh-banner{margin-top:12px;padding:12px 13px;border-radius:12px;border:1px solid rgba(200,170,120,.22);background:rgba(200,170,120,.06);color:#ddd3bf;line-height:1.5}.refresh-banner strong{color:#f2e8d6}.refresh-churn{margin-top:12px}.refresh-churn .refresh-item strong{font-variant-numeric:tabular-nums}.subtle-divider{height:1px;background:rgba(148,163,184,.12);margin:16px 0}
+    .backend-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.backend-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(255,255,255,.025)}.backend-item span:first-child{color:#cbd5cf;font-size:.8rem;font-weight:800}.backend-detail{margin-top:8px;color:#8fa098;font-size:.76rem;line-height:1.45}
     footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#71867a;padding:18px 2px 34px;font-size:.8rem}
     @media(max-width:760px){.admin-grid.two,.file-summary,.qa-grid,.refresh-grid{grid-template-columns:1fr 1fr}.admin-card{padding:14px}.admin-card-head{align-items:flex-start}}
-    @media(max-width:480px){.admin-grid.two,.file-summary,.qa-grid,.refresh-grid{grid-template-columns:1fr}.identity-row{align-items:flex-start;flex-direction:column}.action-row>*{flex:1 1 100%}}
+    @media(max-width:480px){.admin-grid.two,.file-summary,.qa-grid,.refresh-grid,.backend-grid{grid-template-columns:1fr}.identity-row{align-items:flex-start;flex-direction:column}.action-row>*{flex:1 1 100%}}
   </style>
 </head>
 <body class="admin-page">
@@ -62,7 +63,12 @@
             <div><small>Signed in</small><strong id="signedInEmail">—</strong></div>
             <button id="signOutButton" class="ghost-action" type="button">Sign out</button>
           </div>
-          <div class="admin-message warning" id="approvalMessage" hidden>Your login is valid, but this account has not been approved for DiamondRank operations yet.</div>
+          <div class="backend-grid" aria-label="Backend availability">
+            <div class="backend-item"><span>Hitters</span><span class="status-pill neutral" id="hitterBackendStatus">Checking…</span></div>
+            <div class="backend-item"><span>Pitchers</span><span class="status-pill neutral" id="pitcherBackendStatus">Checking…</span></div>
+          </div>
+          <div class="backend-detail" id="backendDetail">Checking DiamondRank services…</div>
+          <div class="admin-message warning" id="approvalMessage" hidden></div>
         </div>
       </section>
 
@@ -143,7 +149,7 @@
         </div>
 
         <div class="refresh-banner">
-          <strong>Population-safe:</strong> private player counts are discovered from the live model at run time and validated against that run. There is no fixed total-player expectation. The public leaderboard remains intentionally capped at the Top 500 when at least 500 eligible players exist.
+          <strong>Population-safe:</strong> private player counts are discovered from the live model at run time and validated against that run. There is no fixed total-player expectation. The public leaderboard publishes up to 500 eligible players.
         </div>
 
         <div class="admin-grid two" style="margin-top:14px">
@@ -301,6 +307,8 @@
     const state = {
       session: null,
       approved: false,
+      projectAccess: { hitter: false, pitcher: false },
+      projectStatus: { hitter: "unknown", pitcher: "unknown" },
       rows: [],
       columns: [],
       file: null,
@@ -320,6 +328,9 @@
       signedIn: document.getElementById("signedInPanel"),
       signedInEmail: document.getElementById("signedInEmail"),
       approvalMessage: document.getElementById("approvalMessage"),
+      hitterBackendStatus: document.getElementById("hitterBackendStatus"),
+      pitcherBackendStatus: document.getElementById("pitcherBackendStatus"),
+      backendDetail: document.getElementById("backendDetail"),
       loginForm: document.getElementById("loginForm"),
       email: document.getElementById("emailInput"),
       loginMessage: document.getElementById("loginMessage"),
@@ -438,16 +449,27 @@
         });
       });
     }
-    async function api(project, action, body = {}) {
+    async function api(project, action, body = {}, { timeoutMs = 20000 } = {}) {
       if (!state.session?.access_token) throw new Error("Admin session is missing.");
-      const response = await fetch(ENDPOINTS[project], {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${state.session.access_token}`
-        },
-        body: JSON.stringify({ action, ...body })
-      });
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      let response;
+      try {
+        response = await fetch(ENDPOINTS[project], {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${state.session.access_token}`
+          },
+          body: JSON.stringify({ action, ...body }),
+          signal: controller.signal
+        });
+      } catch (error) {
+        if (error?.name === "AbortError") throw new Error(`${project === "hitter" ? "Hitter" : "Pitcher"} service timed out.`);
+        throw new Error(`${project === "hitter" ? "Hitter" : "Pitcher"} service is unavailable: ${error?.message || String(error)}`);
+      } finally {
+        clearTimeout(timer);
+      }
       let payload;
       try { payload = await response.json(); }
       catch { payload = { ok: false, error: `HTTP ${response.status}` }; }
@@ -456,24 +478,91 @@
       }
       return payload;
     }
+    function projectReady(project) {
+      return state.projectAccess?.[project] === true;
+    }
+    function projectLabel(project) {
+      return project === "hitter" ? "Hitter" : "Pitcher";
+    }
+    function syncAvailabilityControls() {
+      for (const option of el.source.options) {
+        const cfg = SOURCES[option.value];
+        if (cfg) option.disabled = !projectReady(cfg.project);
+      }
+      for (const option of el.refreshProject.options) {
+        option.disabled = !projectReady(option.value);
+      }
+
+      const currentSource = sourceConfig();
+      if (currentSource && !projectReady(currentSource.project)) {
+        const fallback = [...el.source.options].find((option) => !option.disabled);
+        if (fallback) el.source.value = fallback.value;
+      }
+      if (!projectReady(el.refreshProject.value)) {
+        const fallbackProject = projectReady("hitter") ? "hitter" : projectReady("pitcher") ? "pitcher" : null;
+        if (fallbackProject) {
+          el.refreshProject.value = fallbackProject;
+          state.refreshProject = fallbackProject;
+        }
+      }
+
+      renderSourceNote();
+      renderRefreshScopeNote();
+      if (state.file && state.rows.length) el.stage.disabled = !projectReady(sourceConfig().project);
+      el.refreshStart.disabled = !projectReady(el.refreshProject.value) || state.refreshPayload?.status === "RUNNING" || state.refreshAutoRunning;
+    }
     async function checkApproval() {
-      const [hitter, pitcher] = await Promise.allSettled([api("hitter", "status"), api("pitcher", "status")]);
-      const hitterOk = hitter.status === "fulfilled" && hitter.value?.authorized === true;
-      const pitcherOk = pitcher.status === "fulfilled" && pitcher.value?.authorized === true;
-      state.approved = hitterOk && pitcherOk;
-      if (state.approved) {
+      const [hitter, pitcher] = await Promise.allSettled([
+        api("hitter", "status", {}, { timeoutMs: 10000 }),
+        api("pitcher", "status", {}, { timeoutMs: 10000 })
+      ]);
+
+      const results = { hitter, pitcher };
+      const details = [];
+      for (const project of ["hitter", "pitcher"]) {
+        const result = results[project];
+        const authorized = result.status === "fulfilled" && result.value?.authorized === true;
+        const reachable = result.status === "fulfilled";
+        state.projectAccess[project] = authorized;
+        state.projectStatus[project] = authorized ? "ready" : reachable ? "not-approved" : "unavailable";
+
+        const pill = project === "hitter" ? el.hitterBackendStatus : el.pitcherBackendStatus;
+        if (authorized) setPill(pill, "Ready", "pass");
+        else if (reachable) setPill(pill, "Not approved", "warning");
+        else setPill(pill, "Unavailable", "fail");
+
+        if (!authorized) {
+          const detail = reachable
+            ? `${projectLabel(project)} access is not approved for this account.`
+            : `${projectLabel(project)} service could not be reached: ${result.reason?.message || "service unavailable"}`;
+          details.push(detail);
+        }
+      }
+
+      state.approved = state.projectAccess.hitter || state.projectAccess.pitcher;
+      el.importCard.hidden = !state.approved;
+      el.refreshCard.hidden = !state.approved;
+
+      if (state.projectAccess.hitter && state.projectAccess.pitcher) {
         setPill(el.authStatus, "Approved", "pass");
         el.headerStatus.textContent = "Admin ready";
         el.approvalMessage.hidden = true;
-        el.importCard.hidden = false;
-        el.refreshCard.hidden = false;
-      } else {
-        setPill(el.authStatus, "Approval required", "warning");
-        el.headerStatus.textContent = "Signed in • locked";
+        el.backendDetail.textContent = "Hitter and pitcher operations are available.";
+      } else if (state.approved) {
+        setPill(el.authStatus, "Partial access", "warning");
+        el.headerStatus.textContent = "Admin partially available";
         el.approvalMessage.hidden = false;
-        el.importCard.hidden = true;
-        el.refreshCard.hidden = true;
+        showMessage(el.approvalMessage, details.join("\n"), "warning");
+        el.backendDetail.textContent = "Available services remain usable; unavailable services are disabled below.";
+      } else {
+        setPill(el.authStatus, "Unavailable", "fail");
+        el.headerStatus.textContent = "Signed in • services unavailable";
+        el.approvalMessage.hidden = false;
+        showMessage(el.approvalMessage, details.join("\n") || "No DiamondRank admin service is currently available.", "fail");
+        el.backendDetail.textContent = "No admin backend is currently available.";
       }
+
+      syncAvailabilityControls();
     }
     async function renderSession(session) {
       state.session = session;
@@ -482,7 +571,12 @@
       el.signedIn.hidden = !signedIn;
       if (!signedIn) {
         state.approved = false;
+        state.projectAccess = { hitter: false, pitcher: false };
+        state.projectStatus = { hitter: "unknown", pitcher: "unknown" };
         setPill(el.authStatus, "Signed out");
+        setPill(el.hitterBackendStatus, "Signed out");
+        setPill(el.pitcherBackendStatus, "Signed out");
+        el.backendDetail.textContent = "Sign in to check DiamondRank services.";
         el.headerStatus.textContent = "Locked";
         el.importCard.hidden = true;
         el.refreshCard.hidden = true;
@@ -497,9 +591,14 @@
     function sourceConfig() { return SOURCES[el.source.value]; }
     function renderSourceNote() {
       const cfg = sourceConfig();
-      el.sourceNote.textContent = `${cfg.note} Recommended refresh: ${cfg.recommendedScope.replaceAll("_", " ")}.`;
-      el.exportButton.hidden = !cfg.exportAction;
+      if (!cfg) return;
+      const unavailable = state.session && !projectReady(cfg.project);
+      el.sourceNote.textContent = unavailable
+        ? `${cfg.note} ${projectLabel(cfg.project)} operations are currently unavailable, so this source cannot be staged yet.`
+        : `${cfg.note} Recommended refresh: ${cfg.recommendedScope.replaceAll("_", " ")}.`;
+      el.exportButton.hidden = !cfg.exportAction || unavailable;
       resetImportState({ keepFile: true });
+      if (unavailable) el.stage.disabled = true;
     }
     function prettifyKey(key) {
       return String(key).replaceAll("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -632,7 +731,11 @@
     }
 
     function renderRefreshScopeNote() {
-      el.refreshScopeNote.textContent = REFRESH_SCOPES[el.refreshScope.value] || "";
+      const project = el.refreshProject.value;
+      const base = REFRESH_SCOPES[el.refreshScope.value] || "";
+      el.refreshScopeNote.textContent = projectReady(project)
+        ? base
+        : `${base} ${projectLabel(project)} operations are currently unavailable.`;
     }
     function refreshAction(kind) {
       return REFRESH_ACTIONS[el.refreshProject.value][kind];
@@ -679,6 +782,7 @@
     }
     async function startRefresh() {
       const project = el.refreshProject.value;
+      if (!projectReady(project)) throw new Error(`${projectLabel(project)} service is currently unavailable.`);
       const scope = el.refreshScope.value;
       const label = `${project === "hitter" ? "Hitter" : "Pitcher"} ${scope.replaceAll("_", " ")}`;
       if (!window.confirm(`Start ${label} refresh? Source activation and model refresh are deliberate operations.`)) return;
@@ -690,6 +794,7 @@
     }
     async function checkRefreshStatus() {
       const project = el.refreshProject.value;
+      if (!projectReady(project)) throw new Error(`${projectLabel(project)} service is currently unavailable.`);
       state.refreshProject = project;
       const payload = await api(project, REFRESH_ACTIONS[project].status, { run_id: state.refreshRunId ?? null });
       renderRefresh(payload);
@@ -697,6 +802,7 @@
     }
     async function advanceRefresh() {
       const project = el.refreshProject.value;
+      if (!projectReady(project)) throw new Error(`${projectLabel(project)} service is currently unavailable.`);
       if (state.refreshRunId == null) throw new Error("No refresh run is loaded.");
       const payload = await api(project, REFRESH_ACTIONS[project].advance, { run_id: state.refreshRunId });
       renderRefresh(payload);
@@ -704,6 +810,7 @@
     }
     async function retryRefresh() {
       const project = el.refreshProject.value;
+      if (!projectReady(project)) throw new Error(`${projectLabel(project)} service is currently unavailable.`);
       if (state.refreshRunId == null) throw new Error("No failed refresh run is loaded.");
       const payload = await api(project, REFRESH_ACTIONS[project].retry, { run_id: state.refreshRunId });
       renderRefresh(payload);
@@ -764,7 +871,7 @@
         el.fileColumns.textContent = columns.length.toLocaleString();
         el.fileHash.textContent = `${hash.slice(0, 12)}…`;
         el.fileSummary.hidden = false;
-        el.stage.disabled = !state.approved || rows.length === 0;
+        el.stage.disabled = !projectReady(sourceConfig().project) || rows.length === 0;
         setPill(el.importStatus, rows.length ? "File ready" : "Empty file", rows.length ? "pass" : "fail");
       } catch (error) {
         showMessage(el.importMessage, `CSV parse failed: ${error.message}`, "fail");
@@ -786,7 +893,9 @@
     el.refreshProject.addEventListener("change", () => {
       state.refreshProject = el.refreshProject.value;
       state.refreshRunId = null;
+      renderRefreshScopeNote();
       renderRefresh({ status: "NO_RUN" });
+      el.refreshStart.disabled = !projectReady(el.refreshProject.value);
     });
     el.refreshStart.addEventListener("click", async () => {
       try { await startRefresh(); }
