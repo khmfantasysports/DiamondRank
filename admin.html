@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#07110d" />
   <meta name="robots" content="noindex,nofollow,noarchive" />
   <title>DiamondRank Admin</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/diamondrank-favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/diamondrank-favicon-16.png" />
+  <link rel="apple-touch-icon" href="./assets/diamondrank-apple-touch-icon.png" />
   <link rel="stylesheet" href="./css/diamondrank.css?v=31" />
   <style>
     :root{color-scheme:dark}
@@ -22,6 +25,7 @@
     .refresh-banner{margin-top:12px;padding:12px 13px;border-radius:12px;border:1px solid rgba(200,170,120,.22);background:rgba(200,170,120,.06);color:#ddd3bf;line-height:1.5}.refresh-banner strong{color:#f2e8d6}.refresh-churn{margin-top:12px}.refresh-churn .refresh-item strong{font-variant-numeric:tabular-nums}.subtle-divider{height:1px;background:rgba(148,163,184,.12);margin:16px 0}
     .backend-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.backend-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(255,255,255,.025)}.backend-item span:first-child{color:#cbd5cf;font-size:.8rem;font-weight:800}.backend-detail{margin-top:8px;color:#8fa098;font-size:.76rem;line-height:1.45}
     .admin-header-actions{display:flex;align-items:center;gap:9px}.workflow-trigger{min-height:36px;padding:7px 11px;font-size:.78rem}
+    .admin-brand-logo{display:block;width:42px;height:42px;flex:0 0 42px;border-radius:11px;object-fit:cover;box-shadow:0 4px 14px rgba(0,0,0,.18)}
     .workflow-dialog{width:min(920px,calc(100vw - 24px));max-height:min(88vh,860px);padding:0;border:1px solid rgba(200,170,120,.24);border-radius:20px;background:#08140f;color:#eef7f1;box-shadow:0 30px 90px rgba(0,0,0,.58);overflow:hidden}.workflow-dialog::backdrop{background:rgba(1,7,4,.76);backdrop-filter:blur(5px)}
     .workflow-dialog-shell{display:flex;flex-direction:column;max-height:min(88vh,860px)}.workflow-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 18px 15px;border-bottom:1px solid rgba(148,163,184,.14);background:linear-gradient(180deg,rgba(200,170,120,.07),rgba(8,20,15,0))}.workflow-dialog-head h2{margin:3px 0 0;font-size:clamp(1.25rem,4vw,1.7rem)}.workflow-close{width:38px;min-width:38px;height:38px;padding:0;border-radius:50%;font-size:1.25rem;line-height:1}
     .workflow-body{overflow:auto;padding:16px 18px 20px}.workflow-intro{margin:0 0 14px;padding:12px 13px;border:1px solid rgba(89,209,140,.18);border-radius:12px;background:rgba(89,209,140,.055);color:#c9d8cf;line-height:1.5}.workflow-intro strong{color:#e9f8ef}
@@ -36,7 +40,7 @@
   <div class="site-shell admin-shell">
     <header class="site-header">
       <a class="brand" href="./" aria-label="DiamondRank home">
-        <span class="brand-mark" aria-hidden="true">◆</span>
+        <img class="admin-brand-logo" src="./assets/diamondrank-icon-64.png" alt="" width="42" height="42" />
         <span><strong>DiamondRank</strong><small>Private Operations</small></span>
       </a>
       <div class="admin-header-actions">
