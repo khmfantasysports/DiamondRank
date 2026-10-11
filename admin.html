@@ -266,10 +266,10 @@
             <div class="workflow-source-row"><strong>Pitchers — Player Master</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">FULL</span><p>Export current/relevant pitcher identities, edit/add pitchers, then re-import. Historical donor identities omitted from the file are preserved.</p></div>
             <div class="workflow-source-row"><strong>Hitters — MiLB stats + SwStr</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Routine hitter evidence update.</p></div>
             <div class="workflow-source-row"><strong>Hitters — MLB seasons</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Routine MLB hitter season-by-season evidence update.</p></div>
-            <div class="workflow-source-row"><strong>Hitters — MLB career totals</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Updates current MLB career totals and archives the FanGraphs career snapshot; unmatched historical source rows remain archived.</p></div>
+            <div class="workflow-source-row"><strong>Hitters — MLB career totals</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Export/edit/re-import the current career source or upload a fresh FanGraphs career table. Updates current MLB career totals and archives the source snapshot.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — MiLB current seasons</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine current MiLB pitcher evidence update.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — MLB seasons</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine MLB pitcher season update.</p></div>
-            <div class="workflow-source-row"><strong>Pitchers — MLB career totals</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine MLB career-support update.</p></div>
+            <div class="workflow-source-row"><strong>Pitchers — MLB career totals</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Export/edit/re-import the current versioned career source or upload a fresh FanGraphs career table.</p></div>
             <div class="workflow-source-row"><strong>Hitters — FanGraphs Board scouting</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">SCOUTING ONLY</span><p>Export/edit/re-import or upload a compatible Board table directly; all rows must resolve to the Hitter Player Master.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — FanGraphs Board scouting</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">SCOUTING ONLY</span><p>Scouting changes without a statistical evidence rebuild.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — historical MiLB</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">FULL</span><p>Historical donor evidence can change, so rebuild the complete validated chain.</p></div>
@@ -357,7 +357,10 @@
         mode: "direct",
         kind: "stats",
         recommendedScope: "DATA",
-        note: "FanGraphs MLB hitter career totals. Upload the career leaderboard directly. The source is archived by export date, matched current hitters update the live career table, and unmatched source rows remain in the archive for historical reference.",
+        note: "FanGraphs MLB hitter career totals. Export/edit/re-import the current career source or upload a fresh compatible FanGraphs career leaderboard directly. The source is archived by export date; matched current hitters update the live career table and unmatched source rows remain archived for historical reference.",
+        exportAction: "export_hitter_mlb_career",
+        exportFilename: "diamondrank-hitter-mlb-career",
+        exportLabel: "Export hitter MLB career",
         resetAction: "reset_hitter_mlb_career",
         loadAction: "load_hitter_mlb_career_chunk",
         validateAction: "validate_hitter_mlb_career",
@@ -399,7 +402,10 @@
         kind: "stats",
         recommendedScope: "DATA",
         sourceKey: "fangraphs_mlb_pitching_career",
-        note: "Routine FanGraphs MLB pitcher career totals. Versioned source batch; activation does not refresh rankings automatically."
+        exportAction: "export_pitcher_mlb_career",
+        exportFilename: "diamondrank-pitcher-mlb-career",
+        exportLabel: "Export pitcher MLB career",
+        note: "Routine FanGraphs MLB pitcher career totals. Export/edit/re-import the current versioned source or upload a fresh compatible FanGraphs career table directly. Activation keeps the previous batch recoverable until the new batch becomes current."
       },
       pitcher_board: {
         project: "pitcher",
