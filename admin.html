@@ -23,6 +23,7 @@
     .file-summary,.qa-grid,.refresh-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.file-summary>div,.qa-item,.refresh-item{min-width:0;padding:10px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(255,255,255,.025)}.file-summary small,.qa-item small,.refresh-item small,.identity-row small{display:block;color:#8fa098;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}.file-summary strong,.qa-item strong,.refresh-item strong,.identity-row strong{display:block;margin-top:4px;color:#eef7f1;overflow-wrap:anywhere}
     .progress-wrap{margin-top:14px}progress{width:100%;height:9px;margin-top:7px}.action-row{justify-content:flex-start;flex-wrap:wrap;margin-top:16px}.json-details{margin-top:12px;color:#cbd5cf}.json-details summary{cursor:pointer;font-weight:800}.json-details pre{max-height:360px;overflow:auto;padding:12px;border-radius:10px;background:#04100a;color:#c6f6d5;font-size:.76rem;white-space:pre-wrap;overflow-wrap:anywhere}
     .refresh-banner{margin-top:12px;padding:12px 13px;border-radius:12px;border:1px solid rgba(200,170,120,.22);background:rgba(200,170,120,.06);color:#ddd3bf;line-height:1.5}.refresh-banner strong{color:#f2e8d6}.refresh-churn{margin-top:12px}.refresh-churn .refresh-item strong{font-variant-numeric:tabular-nums}.subtle-divider{height:1px;background:rgba(148,163,184,.12);margin:16px 0}
+    .source-note-row{display:flex;align-items:flex-start;gap:10px;margin-top:10px}.source-note-row .source-note{margin:0;flex:1}.source-project-pill{margin-top:1px}
     .backend-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.backend-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(255,255,255,.025)}.backend-item span:first-child{color:#cbd5cf;font-size:.8rem;font-weight:800}.backend-detail{margin-top:8px;color:#8fa098;font-size:.76rem;line-height:1.45}
     .admin-header-actions{display:flex;align-items:center;gap:9px}.workflow-trigger{min-height:36px;padding:7px 11px;font-size:.78rem}
     .admin-brand-logo{display:block;width:42px;height:42px;flex:0 0 42px;border-radius:11px;object-fit:cover;box-shadow:0 4px 14px rgba(0,0,0,.18)}
@@ -96,7 +97,8 @@
             <span>Import source</span>
             <select id="sourceSelect">
               <optgroup label="Player maintenance">
-                <option value="player_master">Player Master — export / edit / re-import</option>
+                <option value="hitter_player_master">Hitters — Player Master</option>
+                <option value="pitcher_player_master">Pitchers — Player Master</option>
               </optgroup>
               <optgroup label="Routine in-season">
                 <option value="hitter_milb">Hitters — MiLB stats + SwStr</option>
@@ -105,7 +107,8 @@
                 <option value="pitcher_mlb_seasons">Pitchers — MLB seasons</option>
                 <option value="pitcher_mlb_career">Pitchers — MLB career totals</option>
               </optgroup>
-              <optgroup label="Maintenance">
+              <optgroup label="Scouting / maintenance">
+                <option value="hitter_board">Hitters — FanGraphs Board scouting</option>
                 <option value="pitcher_board">Pitchers — FanGraphs Board scouting</option>
                 <option value="pitcher_milb_history">Pitchers — historical MiLB pitching</option>
               </optgroup>
@@ -114,7 +117,7 @@
           <label><span>CSV file</span><input id="fileInput" type="file" accept=".csv,text/csv" /></label>
         </div>
 
-        <div class="source-note" id="sourceNote"></div>
+        <div class="source-note-row"><span class="status-pill pass source-project-pill" id="sourceProjectPill">Hitters</span><div class="source-note" id="sourceNote"></div></div>
 
         <div class="file-summary" id="fileSummary" hidden>
           <div><small>File</small><strong id="fileName">—</strong></div>
@@ -129,7 +132,7 @@
         </div>
 
         <div class="action-row">
-          <button id="exportButton" class="ghost-action" type="button" hidden>Export current master</button>
+          <button id="exportButton" class="ghost-action" type="button" hidden>Export current source</button>
           <button id="stageButton" class="primary-action" type="button" disabled>Stage & validate</button>
           <button id="activateButton" class="danger-action" type="button" disabled>Activate validated data</button>
           <button id="resetButton" class="ghost-action" type="button">Clear selection</button>
@@ -151,7 +154,10 @@
           <div><span class="admin-kicker">Source activation</span><h2>Data activated</h2></div>
           <span class="status-pill pass">PASS</span>
         </div>
-        <p class="admin-copy">The source data is current. <strong>No model refresh starts automatically.</strong> Use the Model Refresh panel below and choose the scope appropriate to the change.</p>
+        <p class="admin-copy">The source data is current. <strong>No model refresh starts automatically.</strong> Run the recommended workflow below to rebuild the correct model dependencies and publish the site, or use the Model Refresh panel for manual control.</p>
+        <div class="action-row">
+          <button id="recommendedWorkflowButton" class="primary-action" type="button">Run recommended workflow</button>
+        </div>
         <details class="json-details"><summary>Activation response</summary><pre id="activationJson"></pre></details>
       </section>
 
@@ -233,11 +239,11 @@
         <section class="workflow-section" aria-labelledby="workflowRoutineTitle">
           <h3 id="workflowRoutineTitle">Routine source update</h3>
           <div class="workflow-step-grid">
-            <div class="workflow-step"><span class="workflow-step-num">1</span><strong>Choose the source</strong><p>Select the matching import and choose the current CSV. Player Master can be exported first, edited, then re-imported.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">1</span><strong>Choose the source</strong><p>Select the matching import and choose the current CSV. Hitters and Pitchers each have their own Player Master; supported masters/scouting tables can be exported first, edited, then re-imported.</p></div>
             <div class="workflow-step"><span class="workflow-step-num">2</span><strong>Stage & validate</strong><p>Upload to staging and review the validation card. Do not activate a blocked batch.</p></div>
             <div class="workflow-step"><span class="workflow-step-num">3</span><strong>Activate</strong><p>Activate only after validation passes. The previously current source remains in place until this step succeeds.</p></div>
             <div class="workflow-step"><span class="workflow-step-num">4</span><strong>Use the recommended scope</strong><p>Activation preselects the model and refresh scope. Confirm the recommendation before starting.</p></div>
-            <div class="workflow-step"><span class="workflow-step-num">5</span><strong>Run the refresh</strong><p>Start the run, then use <em>Run to completion</em> for normal operation. Stages remain resumable if the connection stops.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">5</span><strong>Run the refresh</strong><p>Use <em>Run recommended workflow</em> after activation for normal operation, or start manually and use <em>Run to completion</em>. Stages remain resumable if the connection stops.</p></div>
             <div class="workflow-step"><span class="workflow-step-num">6</span><strong>Confirm completion</strong><p>Look for COMPLETED, published rows, churn, and successful publication QA before considering the update finished.</p></div>
           </div>
         </section>
@@ -246,7 +252,7 @@
           <h3 id="workflowScopesTitle">Which refresh scope?</h3>
           <div class="workflow-scope-grid">
             <div class="workflow-scope-card"><div class="workflow-scope-head"><strong>Formula only</strong><span class="workflow-scope-code">FORMULA_ONLY</span></div><p>Use after changing weights, score formulas, calibration, or ranking logic while the underlying evidence is unchanged. Reuses existing comps, development, context, and historical caches.</p></div>
-            <div class="workflow-scope-card"><div class="workflow-scope-head"><strong>Scouting only</strong><span class="workflow-scope-code">SCOUTING_ONLY</span></div><p>Use when scouting evidence changed but statistical source data did not. Current pitcher Board imports use this path.</p></div>
+            <div class="workflow-scope-card"><div class="workflow-scope-head"><strong>Scouting only</strong><span class="workflow-scope-code">SCOUTING_ONLY</span></div><p>Use when scouting evidence changed but statistical source data did not. Both hitter and pitcher Board imports use this path.</p></div>
             <div class="workflow-scope-card"><div class="workflow-scope-head"><strong>Data refresh</strong><span class="workflow-scope-code">DATA</span></div><p>Use after routine MiLB or MLB statistical updates. Runs the validated evidence, feature, comparable, scoring, and publication workflow.</p></div>
             <div class="workflow-scope-card"><div class="workflow-scope-head"><strong>Full rebuild</strong><span class="workflow-scope-code">FULL</span></div><p>Use for player-population changes, historical donor-source changes, or major model/data maintenance that can affect the entire dependency chain.</p></div>
           </div>
@@ -255,12 +261,14 @@
         <section class="workflow-section" aria-labelledby="workflowMapTitle">
           <h3 id="workflowMapTitle">Source → refresh map</h3>
           <div class="workflow-source-list">
-            <div class="workflow-source-row"><strong>Player Master</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">FULL</span><p>Export current master → edit/add players → stage → validate → activate → full hitter rebuild.</p></div>
+            <div class="workflow-source-row"><strong>Hitters — Player Master</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">FULL</span><p>Export/edit/re-import or direct compatible master import. Updates hitter identities only; omitted existing hitters are preserved.</p></div>
+            <div class="workflow-source-row"><strong>Pitchers — Player Master</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">FULL</span><p>Export current/relevant pitcher identities, edit/add pitchers, then re-import. Historical donor identities omitted from the file are preserved.</p></div>
             <div class="workflow-source-row"><strong>Hitters — MiLB stats + SwStr</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Routine hitter evidence update.</p></div>
             <div class="workflow-source-row"><strong>Hitters — MLB seasons</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Routine MLB hitter evidence update.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — MiLB current seasons</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine current MiLB pitcher evidence update.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — MLB seasons</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine MLB pitcher season update.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — MLB career totals</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine MLB career-support update.</p></div>
+            <div class="workflow-source-row"><strong>Hitters — FanGraphs Board scouting</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">SCOUTING ONLY</span><p>Export/edit/re-import or upload a compatible Board table directly; all rows must resolve to the Hitter Player Master.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — FanGraphs Board scouting</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">SCOUTING ONLY</span><p>Scouting changes without a statistical evidence rebuild.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — historical MiLB</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">FULL</span><p>Historical donor evidence can change, so rebuild the complete validated chain.</p></div>
           </div>
@@ -292,20 +300,40 @@
     const CHUNK_SIZE = 500;
 
     const SOURCES = {
-      player_master: {
+      hitter_player_master: {
         project: "hitter",
+        mode: "direct",
+        kind: "master",
         recommendedScope: "FULL",
-        note: "Canonical player maintenance. Export the current master, edit existing rows or add players, then re-import. The master population is dynamic; omitted existing rows are preserved unless explicitly deactivated.",
+        note: "Hitter canonical identity/master data only. Export the current hitter master, edit or add hitters, then re-import; or upload a complete compatible hitter master directly. Omitted existing hitters are preserved.",
         exportAction: "export_players_master",
+        exportFilename: "diamondrank-hitter-player-master",
+        exportLabel: "Export hitter master",
         resetAction: "reset_players_master",
         loadAction: "load_players_master_chunk",
         validateAction: "validate_players_master",
         activateAction: "activate_players_master"
       },
+      pitcher_player_master: {
+        project: "pitcher",
+        mode: "direct",
+        kind: "master",
+        recommendedScope: "FULL",
+        note: "Pitcher canonical identity/master data only. The export contains the current/relevant pitcher universe rather than all historical donors. Edit/add pitchers and re-import, or upload a compatible pitcher master directly. Omitted historical identities are preserved.",
+        exportAction: "export_pitcher_players_master",
+        exportFilename: "diamondrank-pitcher-player-master",
+        exportLabel: "Export pitcher master",
+        resetAction: "reset_pitcher_players_master",
+        loadAction: "load_pitcher_players_master_chunk",
+        validateAction: "validate_pitcher_players_master",
+        activateAction: "activate_pitcher_players_master"
+      },
       hitter_milb: {
         project: "hitter",
+        mode: "direct",
+        kind: "stats",
         recommendedScope: "DATA",
-        note: "Routine MiLB hitter export. Include SwStr% in the same FanGraphs file. Standard MiLB evidence and SwStr are staged together.",
+        note: "Routine hitter MiLB evidence. Upload the FanGraphs table directly; include SwStr% in the same file. Standard MiLB evidence and SwStr are staged together.",
         resetAction: "reset_hitter_milb",
         loadAction: "load_hitter_milb_chunk",
         validateAction: "validate_hitter_milb",
@@ -313,42 +341,71 @@
       },
       hitter_mlb_seasons: {
         project: "hitter",
+        mode: "direct",
+        kind: "stats",
         recommendedScope: "DATA",
-        note: "FanGraphs MLB season-by-season hitter export. The existing MLB audit runs before apply.",
+        note: "Routine FanGraphs MLB season-by-season hitter data. Upload the table directly; the existing MLB audit runs before activation.",
         resetAction: "reset_hitter_mlb_seasons",
         loadAction: "load_hitter_mlb_seasons_chunk",
         validateAction: "validate_hitter_mlb_seasons",
         activateAction: "activate_hitter_mlb_seasons"
       },
+      hitter_board: {
+        project: "hitter",
+        mode: "direct",
+        kind: "scouting",
+        recommendedScope: "SCOUTING_ONLY",
+        note: "Hitter FanGraphs Board scouting only. Export/edit/re-import the current scouting table or upload a compatible FanGraphs Board table directly. Every row must resolve to the Hitter Player Master before activation.",
+        exportAction: "export_hitter_scouting",
+        exportFilename: "diamondrank-hitter-scouting",
+        exportLabel: "Export hitter scouting",
+        resetAction: "reset_hitter_scouting",
+        loadAction: "load_hitter_scouting_chunk",
+        validateAction: "validate_hitter_scouting",
+        activateAction: "activate_hitter_scouting"
+      },
       pitcher_milb_current: {
         project: "pitcher",
+        mode: "batch",
+        kind: "stats",
         recommendedScope: "DATA",
         sourceKey: "fangraphs_milb_pitching_2021_2026",
-        note: "Routine current MiLB pitcher export. The previous current batch remains recoverable until the new batch is activated."
+        note: "Routine current MiLB pitcher evidence. Upload the FanGraphs table directly. The previous current source batch remains recoverable until the new batch is activated."
       },
       pitcher_mlb_seasons: {
         project: "pitcher",
+        mode: "batch",
+        kind: "stats",
         recommendedScope: "DATA",
         sourceKey: "fangraphs_mlb_pitching_seasons",
-        note: "FanGraphs MLB pitcher season-by-season export. Versioned batch; activation does not refresh rankings automatically."
+        note: "Routine FanGraphs MLB pitcher season-by-season data. Versioned source batch; activation does not refresh rankings automatically."
       },
       pitcher_mlb_career: {
         project: "pitcher",
+        mode: "batch",
+        kind: "stats",
         recommendedScope: "DATA",
         sourceKey: "fangraphs_mlb_pitching_career",
-        note: "FanGraphs MLB pitcher career totals export. Versioned batch; activation does not refresh rankings automatically."
+        note: "Routine FanGraphs MLB pitcher career totals. Versioned source batch; activation does not refresh rankings automatically."
       },
       pitcher_board: {
         project: "pitcher",
+        mode: "batch",
+        kind: "scouting",
         recommendedScope: "SCOUTING_ONLY",
         sourceKey: "fangraphs_board_pitchers",
-        note: "FanGraphs Board scouting. After activation, use a Scouting-only pitcher refresh unless another data source also changed."
+        exportAction: "export_pitcher_scouting",
+        exportFilename: "diamondrank-pitcher-scouting",
+        exportLabel: "Export pitcher scouting",
+        note: "Pitcher FanGraphs Board scouting only. Export/edit/re-import the current Board table or upload the FanGraphs Board export directly. Identity QA runs before activation."
       },
       pitcher_milb_history: {
         project: "pitcher",
+        mode: "batch",
+        kind: "history",
         recommendedScope: "FULL",
         sourceKey: "fangraphs_milb_pitching_2010_2019",
-        note: "Historical MiLB pitching maintenance. Because historical donor evidence can change, a Full rebuild is the safest follow-up."
+        note: "Historical MiLB pitcher donor evidence. Upload the complete historical table directly. Because donor evidence can change, a Full rebuild is required after activation."
       }
     };
 
@@ -392,7 +449,8 @@
       refreshRunId: null,
       refreshProject: "hitter",
       refreshPayload: null,
-      refreshAutoRunning: false
+      refreshAutoRunning: false,
+      activatedSource: null
     };
 
     const el = {
@@ -416,6 +474,7 @@
       source: document.getElementById("sourceSelect"),
       file: document.getElementById("fileInput"),
       sourceNote: document.getElementById("sourceNote"),
+      sourceProjectPill: document.getElementById("sourceProjectPill"),
       exportButton: document.getElementById("exportButton"),
       fileSummary: document.getElementById("fileSummary"),
       fileName: document.getElementById("fileName"),
@@ -436,6 +495,7 @@
       qaGrid: document.getElementById("qaGrid"),
       validationJson: document.getElementById("validationJson"),
       completionCard: document.getElementById("completionCard"),
+      recommendedWorkflow: document.getElementById("recommendedWorkflowButton"),
       activationJson: document.getElementById("activationJson"),
       refreshCard: document.getElementById("refreshCard"),
       refreshStatus: document.getElementById("refreshStatus"),
@@ -486,6 +546,7 @@
     function resetImportState({ keepFile = false } = {}) {
       state.validation = null;
       state.batchId = null;
+      state.activatedSource = null;
       el.activate.disabled = true;
       el.validationCard.hidden = true;
       el.completionCard.hidden = true;
@@ -670,10 +731,14 @@
       const cfg = sourceConfig();
       if (!cfg) return;
       const unavailable = state.session && !projectReady(cfg.project);
+      const label = projectLabel(cfg.project);
+      el.sourceProjectPill.textContent = `${label}s`;
+      el.sourceProjectPill.className = `status-pill ${unavailable ? "fail" : "pass"} source-project-pill`;
       el.sourceNote.textContent = unavailable
-        ? `${cfg.note} ${projectLabel(cfg.project)} operations are currently unavailable, so this source cannot be staged yet.`
+        ? `${cfg.note} ${label} operations are currently unavailable, so this source cannot be staged yet.`
         : `${cfg.note} Recommended refresh: ${cfg.recommendedScope.replaceAll("_", " ")}.`;
       el.exportButton.hidden = !cfg.exportAction || unavailable;
+      el.exportButton.textContent = cfg.exportLabel || "Export current source";
       resetImportState({ keepFile: true });
       if (unavailable) el.stage.disabled = true;
     }
@@ -710,48 +775,51 @@
         setProgress((done / total) * 100, `Uploaded ${done.toLocaleString()} of ${total.toLocaleString()} rows`);
       }
     }
-    async function exportCurrentPlayerMaster() {
+    async function exportCurrentSource() {
       const cfg = sourceConfig();
       if (!cfg.exportAction) return;
       el.exportButton.disabled = true;
       setPill(el.importStatus, "Exporting…", "warning");
       hideMessage(el.importMessage);
       try {
-        const payload = await api("hitter", cfg.exportAction);
+        const payload = await api(cfg.project, cfg.exportAction, {}, { timeoutMs: 30000 });
         const rows = payload?.rows || [];
-        if (!rows.length) throw new Error("Player master export returned no rows.");
+        if (!Array.isArray(rows) || !rows.length) throw new Error("Current source export returned no rows.");
         const csv = Papa.unparse(rows, { newline: "\r\n" });
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         const date = new Date().toISOString().slice(0, 10);
         a.href = url;
-        a.download = `diamondrank-player-master-${date}.csv`;
+        a.download = `${cfg.exportFilename || `diamondrank-${el.source.value}`}-${date}.csv`;
         document.body.appendChild(a);
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
-        setPill(el.importStatus, "Master exported", "pass");
-        showMessage(el.importMessage, `Exported ${rows.length.toLocaleString()} current player rows. The master count is dynamic and is not hard-coded in the importer.`, "pass");
+        setPill(el.importStatus, "Source exported", "pass");
+        showMessage(el.importMessage, `Exported ${rows.length.toLocaleString()} ${projectLabel(cfg.project).toLowerCase()} rows. You can edit this CSV and re-import it through the same source selector.`, "pass");
       } finally { el.exportButton.disabled = false; }
     }
     async function stageAndValidate() {
       const cfg = sourceConfig();
       if (!state.file || !state.rows.length) throw new Error("Choose a non-empty CSV first.");
+      if (!projectReady(cfg.project)) throw new Error(`${projectLabel(cfg.project)} service is currently unavailable.`);
       el.stage.disabled = true;
       el.activate.disabled = true;
       el.completionCard.hidden = true;
       hideMessage(el.importMessage);
       setPill(el.importStatus, "Staging…", "warning");
 
-      if (cfg.project === "hitter") {
-        await api("hitter", cfg.resetAction);
-        await uploadChunks("hitter", cfg.loadAction);
-        const validation = await api("hitter", cfg.validateAction);
+      if (cfg.mode === "direct") {
+        await api(cfg.project, cfg.resetAction);
+        await uploadChunks(cfg.project, cfg.loadAction);
+        const validation = await api(cfg.project, cfg.validateAction);
         const pass = renderValidation(validation);
         setPill(el.importStatus, pass ? "Preflight PASS" : "Preflight blocked", pass ? "pass" : "fail");
-        showMessage(el.importMessage, pass ? "Staging is complete and validation passed. Review QA before activating." : "The source remains staged but is blocked. Fix the reported issue before activation.", pass ? "pass" : "fail");
-      } else {
+        showMessage(el.importMessage, pass
+          ? `${projectLabel(cfg.project)} staging is complete and validation passed. Review QA before activating.`
+          : `The ${projectLabel(cfg.project).toLowerCase()} source remains staged but is blocked. Fix the reported issue before activation.`, pass ? "pass" : "fail");
+      } else if (cfg.mode === "batch") {
         const begin = await api("pitcher", "begin_batch", {
           source_key: cfg.sourceKey,
           source_filename: state.file.name,
@@ -764,7 +832,7 @@
           const validation = await api("pitcher", "validate_batch", { batch_id: state.batchId });
           const pass = renderValidation(validation);
           setPill(el.importStatus, "Already current", pass ? "pass" : "warning");
-          showMessage(el.importMessage, "This exact file hash is already current. No duplicate batch was created.", "pass");
+          showMessage(el.importMessage, "This exact pitcher source file is already current. No duplicate batch was created.", "pass");
           el.activate.disabled = true;
           el.stage.disabled = false;
           return;
@@ -774,7 +842,11 @@
         const validation = await api("pitcher", "validate_batch", { batch_id: state.batchId });
         const pass = renderValidation(validation);
         setPill(el.importStatus, pass ? "Preflight PASS" : "Preflight blocked", pass ? "pass" : "fail");
-        showMessage(el.importMessage, pass ? "The new batch is staged and validated. The existing current batch remains active until Activate." : "The staged batch is blocked. The existing current batch remains unchanged.", pass ? "pass" : "fail");
+        showMessage(el.importMessage, pass
+          ? "The new pitcher batch is staged and validated. The existing current batch remains active until Activate."
+          : "The staged pitcher batch is blocked. The existing current batch remains unchanged.", pass ? "pass" : "fail");
+      } else {
+        throw new Error("This source has no configured import mode.");
       }
       el.stage.disabled = false;
     }
@@ -787,23 +859,36 @@
     async function activateValidated() {
       const cfg = sourceConfig();
       if (!state.validation) throw new Error("Run staging and validation first.");
-      const confirmText = cfg.exportAction
-        ? "Apply these validated Player Master edits/additions? Existing players omitted from this CSV will be preserved. No model refresh will start automatically."
-        : "Activate this validated source data? This changes source data only and will NOT start a model refresh.";
+      const preserveNote = cfg.kind === "master"
+        ? " Existing players omitted from this CSV will be preserved."
+        : "";
+      const confirmText = `Activate this validated ${projectLabel(cfg.project).toLowerCase()} source data?${preserveNote} No model refresh will start automatically.`;
       if (!window.confirm(confirmText)) return;
 
       el.activate.disabled = true;
       el.stage.disabled = true;
       setPill(el.importStatus, "Activating…", "warning");
       let result;
-      if (cfg.project === "hitter") result = await api("hitter", cfg.activateAction, { source_filename: state.file?.name || null });
-      else result = await api("pitcher", "activate_batch", { batch_id: state.batchId });
+      if (cfg.mode === "direct") {
+        result = await api(cfg.project, cfg.activateAction, { source_filename: state.file?.name || null });
+      } else if (cfg.mode === "batch") {
+        result = await api("pitcher", "activate_batch", { batch_id: state.batchId });
+      } else {
+        throw new Error("This source has no configured activation mode.");
+      }
 
       el.activationJson.textContent = JSON.stringify(result, null, 2);
       el.completionCard.hidden = false;
       setPill(el.importStatus, "Source activated", "pass");
+      state.activatedSource = {
+        key: el.source.value,
+        project: cfg.project,
+        scope: cfg.recommendedScope
+      };
       applyRecommendedRefresh(cfg);
-      showMessage(el.importMessage, `Source activation passed. Recommended next step: ${cfg.project.toUpperCase()} ${cfg.recommendedScope.replaceAll("_", " ")} refresh. Nothing was refreshed automatically.`, "pass");
+      el.recommendedWorkflow.textContent = `Run recommended ${cfg.recommendedScope.replaceAll("_", " ")} workflow`;
+      el.recommendedWorkflow.disabled = false;
+      showMessage(el.importMessage, `Source activation passed. Recommended next step: ${projectLabel(cfg.project).toUpperCase()} ${cfg.recommendedScope.replaceAll("_", " ")} refresh. Nothing was refreshed automatically.`, "pass");
       el.stage.disabled = false;
     }
 
@@ -857,18 +942,37 @@
       else hideMessage(el.refreshMessage);
       return payload;
     }
-    async function startRefresh() {
+    async function startRefresh({ skipConfirm = false } = {}) {
       const project = el.refreshProject.value;
       if (!projectReady(project)) throw new Error(`${projectLabel(project)} service is currently unavailable.`);
       const scope = el.refreshScope.value;
       const label = `${project === "hitter" ? "Hitter" : "Pitcher"} ${scope.replaceAll("_", " ")}`;
-      if (!window.confirm(`Start ${label} refresh? Source activation and model refresh are deliberate operations.`)) return;
+      if (!skipConfirm && !window.confirm(`Start ${label} refresh? Source activation and model refresh are deliberate operations.`)) return null;
       state.refreshProject = project;
       hideMessage(el.refreshMessage);
       setPill(el.refreshStatus, "Starting…", "warning");
       const payload = await api(project, REFRESH_ACTIONS[project].start, { scope });
-      renderRefresh(payload);
+      return renderRefresh(payload);
     }
+    async function runRecommendedWorkflow() {
+      const activated = state.activatedSource;
+      if (!activated) throw new Error("Activate a validated source first.");
+      if (!projectReady(activated.project)) throw new Error(`${projectLabel(activated.project)} service is currently unavailable.`);
+      const cfg = SOURCES[activated.key];
+      if (!cfg) throw new Error("The activated source configuration is no longer available.");
+      applyRecommendedRefresh(cfg);
+      const label = `${projectLabel(cfg.project)} ${cfg.recommendedScope.replaceAll("_", " ")}`;
+      if (!window.confirm(`Run the recommended ${label} workflow through publication now?`)) return;
+      el.recommendedWorkflow.disabled = true;
+      try {
+        const payload = await startRefresh({ skipConfirm: true });
+        if (payload?.status === "RUNNING") await runRefreshToCompletion();
+        el.refreshCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      } finally {
+        el.recommendedWorkflow.disabled = false;
+      }
+    }
+
     async function checkRefreshStatus() {
       const project = el.refreshProject.value;
       if (!projectReady(project)) throw new Error(`${projectLabel(project)} service is currently unavailable.`);
@@ -938,7 +1042,7 @@
     el.signOut.addEventListener("click", () => auth.auth.signOut());
     el.source.addEventListener("change", renderSourceNote);
     el.exportButton.addEventListener("click", async () => {
-      try { await exportCurrentPlayerMaster(); }
+      try { await exportCurrentSource(); }
       catch (error) { setPill(el.importStatus, "Export failed", "fail"); showMessage(el.importMessage, error.message, "fail"); }
     });
     el.file.addEventListener("change", async () => {
@@ -972,6 +1076,10 @@
     el.activate.addEventListener("click", async () => {
       try { await activateValidated(); }
       catch (error) { setPill(el.importStatus, "Activation failed", "fail"); showMessage(el.importMessage, error.message, "fail"); el.stage.disabled = false; }
+    });
+    el.recommendedWorkflow.addEventListener("click", async () => {
+      try { await runRecommendedWorkflow(); }
+      catch (error) { showMessage(el.importMessage, `${error.message}\nThe activated source remains current; use Model Refresh to resume or inspect status.`, "fail"); }
     });
     el.reset.addEventListener("click", () => resetImportState());
 
