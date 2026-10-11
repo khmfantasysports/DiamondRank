@@ -103,6 +103,7 @@
               <optgroup label="Routine in-season">
                 <option value="hitter_milb">Hitters — MiLB stats + SwStr</option>
                 <option value="hitter_mlb_seasons">Hitters — MLB seasons</option>
+                <option value="hitter_mlb_career">Hitters — MLB career totals</option>
                 <option value="pitcher_milb_current">Pitchers — MiLB current seasons</option>
                 <option value="pitcher_mlb_seasons">Pitchers — MLB seasons</option>
                 <option value="pitcher_mlb_career">Pitchers — MLB career totals</option>
@@ -264,7 +265,8 @@
             <div class="workflow-source-row"><strong>Hitters — Player Master</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">FULL</span><p>Export/edit/re-import or direct compatible master import. Updates hitter identities only; omitted existing hitters are preserved.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — Player Master</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">FULL</span><p>Export current/relevant pitcher identities, edit/add pitchers, then re-import. Historical donor identities omitted from the file are preserved.</p></div>
             <div class="workflow-source-row"><strong>Hitters — MiLB stats + SwStr</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Routine hitter evidence update.</p></div>
-            <div class="workflow-source-row"><strong>Hitters — MLB seasons</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Routine MLB hitter evidence update.</p></div>
+            <div class="workflow-source-row"><strong>Hitters — MLB seasons</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Routine MLB hitter season-by-season evidence update.</p></div>
+            <div class="workflow-source-row"><strong>Hitters — MLB career totals</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Updates current MLB career totals and archives the FanGraphs career snapshot; unmatched historical source rows remain archived.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — MiLB current seasons</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine current MiLB pitcher evidence update.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — MLB seasons</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine MLB pitcher season update.</p></div>
             <div class="workflow-source-row"><strong>Pitchers — MLB career totals</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine MLB career-support update.</p></div>
@@ -349,6 +351,17 @@
         loadAction: "load_hitter_mlb_seasons_chunk",
         validateAction: "validate_hitter_mlb_seasons",
         activateAction: "activate_hitter_mlb_seasons"
+      },
+      hitter_mlb_career: {
+        project: "hitter",
+        mode: "direct",
+        kind: "stats",
+        recommendedScope: "DATA",
+        note: "FanGraphs MLB hitter career totals. Upload the career leaderboard directly. The source is archived by export date, matched current hitters update the live career table, and unmatched source rows remain in the archive for historical reference.",
+        resetAction: "reset_hitter_mlb_career",
+        loadAction: "load_hitter_mlb_career_chunk",
+        validateAction: "validate_hitter_mlb_career",
+        activateAction: "activate_hitter_mlb_career"
       },
       hitter_board: {
         project: "hitter",
