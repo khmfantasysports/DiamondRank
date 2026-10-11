@@ -4,22 +4,25 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#07110d" />
-  <title>DiamondRank Importer V2</title>
   <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>DiamondRank Admin</title>
   <link rel="stylesheet" href="./css/diamondrank.css?v=31" />
   <style>
-.admin-page{min-height:100vh;background:radial-gradient(circle at top left,rgba(34,197,94,.08),transparent 32rem),#07110d}
-.admin-shell{max-width:980px}.admin-hero{padding-bottom:14px}.admin-card{margin:14px 0;padding:18px;border:1px solid rgba(148,163,184,.18);border-radius:18px;background:rgba(8,20,15,.84);box-shadow:0 18px 50px rgba(0,0,0,.16)}
-.admin-card-head,.identity-row,.action-row,.progress-line{display:flex;align-items:center;justify-content:space-between;gap:12px}.admin-card-head{margin-bottom:16px}.admin-card h2{margin:3px 0 0;font-size:clamp(1.15rem,4vw,1.55rem)}
-.admin-kicker{color:#86efac;font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.admin-copy,.source-note{color:#b8c5bd;line-height:1.55}.admin-form,.admin-grid{display:grid;gap:12px}.admin-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
-.admin-form label,.admin-grid label{display:grid;gap:6px;color:#cbd5cf;font-size:.82rem;font-weight:700}.admin-form input,.admin-grid input,.admin-grid select{width:100%;min-height:44px;border:1px solid rgba(148,163,184,.24);border-radius:11px;background:#0b1812;color:#eef7f1;padding:10px 12px;font:inherit}
-.primary-action,.danger-action,.ghost-action{min-height:42px;border-radius:11px;padding:9px 14px;font:inherit;font-weight:800;cursor:pointer}.primary-action{border:1px solid rgba(74,222,128,.38);background:rgba(34,197,94,.16);color:#dcfce7}.danger-action{border:1px solid rgba(251,146,60,.4);background:rgba(249,115,22,.14);color:#ffedd5}.ghost-action{border:1px solid rgba(148,163,184,.22);background:rgba(148,163,184,.07);color:#d8e1db}button:disabled{opacity:.42;cursor:not-allowed}
-.status-pill{border-radius:999px;padding:5px 9px;font-size:.72rem;font-weight:900;white-space:nowrap}.status-pill.neutral{background:rgba(148,163,184,.12);color:#cbd5e1}.status-pill.pass{background:rgba(34,197,94,.14);color:#bbf7d0}.status-pill.fail{background:rgba(239,68,68,.13);color:#fecaca}.status-pill.warning{background:rgba(245,158,11,.14);color:#fde68a}
-.admin-message{margin-top:12px;padding:11px 12px;border-radius:11px;background:rgba(148,163,184,.08);color:#d8e1db;line-height:1.45;white-space:pre-wrap}.admin-message.pass{background:rgba(34,197,94,.1);color:#dcfce7}.admin-message.warning{background:rgba(245,158,11,.1);color:#fde68a}.admin-message.fail{background:rgba(239,68,68,.1);color:#fecaca}
-.file-summary,.qa-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.file-summary>div,.qa-item{min-width:0;padding:10px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(255,255,255,.025)}.file-summary small,.qa-item small,.identity-row small{display:block;color:#8fa098;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}.file-summary strong,.qa-item strong,.identity-row strong{display:block;margin-top:4px;color:#eef7f1;overflow-wrap:anywhere}
-.progress-wrap{margin-top:14px}progress{width:100%;height:9px;margin-top:7px}.action-row{justify-content:flex-start;flex-wrap:wrap;margin-top:16px}.json-details{margin-top:12px;color:#cbd5cf}.json-details summary{cursor:pointer;font-weight:800}.json-details pre{max-height:360px;overflow:auto;padding:12px;border-radius:10px;background:#04100a;color:#c6f6d5;font-size:.76rem;white-space:pre-wrap;overflow-wrap:anywhere}
-@media(max-width:720px){.admin-grid.two,.file-summary,.qa-grid{grid-template-columns:1fr 1fr}.admin-card{padding:14px}.admin-card-head{align-items:flex-start}}@media(max-width:460px){.admin-grid.two,.file-summary,.qa-grid{grid-template-columns:1fr}.identity-row{align-items:flex-start;flex-direction:column}}
-
+    :root{color-scheme:dark}
+    .admin-page{min-height:100vh;background:radial-gradient(circle at top left,rgba(89,209,140,.08),transparent 32rem),#07110d}
+    .admin-shell{max-width:1040px}.admin-hero{padding-bottom:14px}.admin-card{margin:14px 0;padding:18px;border:1px solid rgba(148,163,184,.18);border-radius:18px;background:rgba(8,20,15,.84);box-shadow:0 18px 50px rgba(0,0,0,.16)}
+    .admin-card-head,.identity-row,.action-row,.progress-line{display:flex;align-items:center;justify-content:space-between;gap:12px}.admin-card-head{margin-bottom:16px}.admin-card h2{margin:3px 0 0;font-size:clamp(1.15rem,4vw,1.55rem)}
+    .admin-kicker{color:#86efac;font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.admin-copy,.source-note,.scope-note{color:#b8c5bd;line-height:1.55}.admin-form,.admin-grid{display:grid;gap:12px}.admin-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .admin-form label,.admin-grid label{display:grid;gap:6px;color:#cbd5cf;font-size:.82rem;font-weight:700}.admin-form input,.admin-grid input,.admin-grid select{width:100%;min-height:44px;border:1px solid rgba(148,163,184,.24);border-radius:11px;background:#0b1812;color:#eef7f1;padding:10px 12px;font:inherit}
+    .primary-action,.danger-action,.ghost-action{min-height:42px;border-radius:11px;padding:9px 14px;font:inherit;font-weight:800;cursor:pointer}.primary-action{border:1px solid rgba(74,222,128,.38);background:rgba(34,197,94,.16);color:#dcfce7}.danger-action{border:1px solid rgba(251,146,60,.4);background:rgba(249,115,22,.14);color:#ffedd5}.ghost-action{border:1px solid rgba(148,163,184,.22);background:rgba(148,163,184,.07);color:#d8e1db}button:disabled{opacity:.42;cursor:not-allowed}
+    .status-pill{border-radius:999px;padding:5px 9px;font-size:.72rem;font-weight:900;white-space:nowrap}.status-pill.neutral{background:rgba(148,163,184,.12);color:#cbd5e1}.status-pill.pass{background:rgba(34,197,94,.14);color:#bbf7d0}.status-pill.fail{background:rgba(239,68,68,.13);color:#fecaca}.status-pill.warning{background:rgba(245,158,11,.14);color:#fde68a}
+    .admin-message{margin-top:12px;padding:11px 12px;border-radius:11px;background:rgba(148,163,184,.08);color:#d8e1db;line-height:1.45;white-space:pre-wrap}.admin-message.pass{background:rgba(34,197,94,.1);color:#dcfce7}.admin-message.warning{background:rgba(245,158,11,.1);color:#fde68a}.admin-message.fail{background:rgba(239,68,68,.1);color:#fecaca}
+    .file-summary,.qa-grid,.refresh-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.file-summary>div,.qa-item,.refresh-item{min-width:0;padding:10px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(255,255,255,.025)}.file-summary small,.qa-item small,.refresh-item small,.identity-row small{display:block;color:#8fa098;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}.file-summary strong,.qa-item strong,.refresh-item strong,.identity-row strong{display:block;margin-top:4px;color:#eef7f1;overflow-wrap:anywhere}
+    .progress-wrap{margin-top:14px}progress{width:100%;height:9px;margin-top:7px}.action-row{justify-content:flex-start;flex-wrap:wrap;margin-top:16px}.json-details{margin-top:12px;color:#cbd5cf}.json-details summary{cursor:pointer;font-weight:800}.json-details pre{max-height:360px;overflow:auto;padding:12px;border-radius:10px;background:#04100a;color:#c6f6d5;font-size:.76rem;white-space:pre-wrap;overflow-wrap:anywhere}
+    .refresh-banner{margin-top:12px;padding:12px 13px;border-radius:12px;border:1px solid rgba(200,170,120,.22);background:rgba(200,170,120,.06);color:#ddd3bf;line-height:1.5}.refresh-banner strong{color:#f2e8d6}.refresh-churn{margin-top:12px}.refresh-churn .refresh-item strong{font-variant-numeric:tabular-nums}.subtle-divider{height:1px;background:rgba(148,163,184,.12);margin:16px 0}
+    footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#71867a;padding:18px 2px 34px;font-size:.8rem}
+    @media(max-width:760px){.admin-grid.two,.file-summary,.qa-grid,.refresh-grid{grid-template-columns:1fr 1fr}.admin-card{padding:14px}.admin-card-head{align-items:flex-start}}
+    @media(max-width:480px){.admin-grid.two,.file-summary,.qa-grid,.refresh-grid{grid-template-columns:1fr}.identity-row{align-items:flex-start;flex-direction:column}.action-row>*{flex:1 1 100%}}
   </style>
 </head>
 <body class="admin-page">
@@ -27,7 +30,7 @@
     <header class="site-header">
       <a class="brand" href="./" aria-label="DiamondRank home">
         <span class="brand-mark" aria-hidden="true">◆</span>
-        <span><strong>DiamondRank</strong><small>Private Importer</small></span>
+        <span><strong>DiamondRank</strong><small>Private Operations</small></span>
       </a>
       <div class="header-status" id="adminHeaderStatus">Locked</div>
     </header>
@@ -36,8 +39,8 @@
       <section class="hero admin-hero">
         <div class="hero-copy">
           <p class="eyebrow">PRIVATE OPERATIONS</p>
-          <h1>FanGraphs Data Importer</h1>
-          <p class="hero-text">Stage → validate → activate. Ranking refreshes and public publication remain separate.</p>
+          <h1>Data & Model Administration</h1>
+          <p class="hero-text">Stage source data, validate it, activate it, then deliberately run the appropriate scoped model refresh.</p>
         </div>
       </section>
 
@@ -47,7 +50,7 @@
           <span class="status-pill neutral" id="authStatus">Signed out</span>
         </div>
         <div id="signedOutPanel">
-          <p class="admin-copy">Sign in with the email address registered as a DiamondRank import administrator.</p>
+          <p class="admin-copy">Sign in with the email address registered as a DiamondRank administrator.</p>
           <form id="loginForm" class="admin-form">
             <label><span>Email</span><input id="emailInput" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
             <button class="primary-action" type="submit">Send sign-in link</button>
@@ -59,9 +62,7 @@
             <div><small>Signed in</small><strong id="signedInEmail">—</strong></div>
             <button id="signOutButton" class="ghost-action" type="button">Sign out</button>
           </div>
-          <div class="admin-message warning" id="approvalMessage" hidden>
-            Your login is valid, but this account has not been approved for imports yet.
-          </div>
+          <div class="admin-message warning" id="approvalMessage" hidden>Your login is valid, but this account has not been approved for DiamondRank operations yet.</div>
         </div>
       </section>
 
@@ -81,13 +82,13 @@
               <optgroup label="Routine in-season">
                 <option value="hitter_milb">Hitters — MiLB stats + SwStr</option>
                 <option value="hitter_mlb_seasons">Hitters — MLB seasons</option>
-                <option value="pitcher_milb_current">Pitchers — MiLB 2021–2026</option>
+                <option value="pitcher_milb_current">Pitchers — MiLB current seasons</option>
                 <option value="pitcher_mlb_seasons">Pitchers — MLB seasons</option>
                 <option value="pitcher_mlb_career">Pitchers — MLB career totals</option>
               </optgroup>
               <optgroup label="Maintenance">
                 <option value="pitcher_board">Pitchers — FanGraphs Board scouting</option>
-                <option value="pitcher_milb_history">Pitchers — MiLB 2010–2019 history</option>
+                <option value="pitcher_milb_history">Pitchers — historical MiLB pitching</option>
               </optgroup>
             </select>
           </label>
@@ -131,499 +132,695 @@
           <div><span class="admin-kicker">Source activation</span><h2>Data activated</h2></div>
           <span class="status-pill pass">PASS</span>
         </div>
-        <p class="admin-copy">
-          The source data is current. <strong>No ranking refresh was started automatically.</strong>
-          Continue with the documented DiamondRank refresh workflow, run QA, then publish only after the refresh passes.
-        </p>
+        <p class="admin-copy">The source data is current. <strong>No model refresh starts automatically.</strong> Use the Model Refresh panel below and choose the scope appropriate to the change.</p>
         <details class="json-details"><summary>Activation response</summary><pre id="activationJson"></pre></details>
+      </section>
+
+      <section class="admin-card" id="refreshCard" hidden>
+        <div class="admin-card-head">
+          <div><span class="admin-kicker">Model operations</span><h2>Scoped model refresh</h2></div>
+          <span class="status-pill neutral" id="refreshStatus">No run</span>
+        </div>
+
+        <div class="refresh-banner">
+          <strong>Population-safe:</strong> private player counts are discovered from the live model at run time and validated against that run. There is no fixed total-player expectation. The public leaderboard remains intentionally capped at the Top 500 when at least 500 eligible players exist.
+        </div>
+
+        <div class="admin-grid two" style="margin-top:14px">
+          <label>
+            <span>Model</span>
+            <select id="refreshProject">
+              <option value="hitter">Hitters</option>
+              <option value="pitcher">Pitchers</option>
+            </select>
+          </label>
+          <label>
+            <span>Refresh scope</span>
+            <select id="refreshScope">
+              <option value="FORMULA_ONLY">Formula only</option>
+              <option value="SCOUTING_ONLY">Scouting only</option>
+              <option value="DATA">Data refresh</option>
+              <option value="FULL">Full rebuild</option>
+            </select>
+          </label>
+        </div>
+        <div class="scope-note" id="refreshScopeNote"></div>
+
+        <div class="refresh-grid" id="refreshSummary">
+          <div class="refresh-item"><small>Run</small><strong id="refreshRunId">—</strong></div>
+          <div class="refresh-item"><small>Status</small><strong id="refreshRunStatus">—</strong></div>
+          <div class="refresh-item"><small>Stage</small><strong id="refreshStage">—</strong></div>
+          <div class="refresh-item"><small>Private population</small><strong id="refreshPopulation">—</strong></div>
+        </div>
+
+        <div class="subtle-divider"></div>
+        <div class="refresh-grid refresh-churn">
+          <div class="refresh-item"><small>Top 25 churn</small><strong id="refreshChurn25">—</strong></div>
+          <div class="refresh-item"><small>Top 100 churn</small><strong id="refreshChurn100">—</strong></div>
+          <div class="refresh-item"><small>Top 500 churn</small><strong id="refreshChurn500">—</strong></div>
+          <div class="refresh-item"><small>Published rows</small><strong id="refreshPublicRows">—</strong></div>
+        </div>
+
+        <div class="action-row">
+          <button id="refreshStartButton" class="primary-action" type="button">Start refresh</button>
+          <button id="refreshAdvanceButton" class="ghost-action" type="button" disabled>Run next stage</button>
+          <button id="refreshAutoButton" class="ghost-action" type="button" disabled>Run to completion</button>
+          <button id="refreshRetryButton" class="danger-action" type="button" disabled>Retry failed stage</button>
+          <button id="refreshStatusButton" class="ghost-action" type="button">Check status</button>
+        </div>
+        <div class="admin-message" id="refreshMessage" hidden></div>
+        <details class="json-details"><summary>Full refresh response</summary><pre id="refreshJson">No refresh loaded.</pre></details>
       </section>
     </main>
 
     <footer>
       <span>DiamondRank private operations</span>
-      <span>Source import is intentionally separate from model refresh and publication.</span>
+      <span>Source activation and model publication remain deliberate, separate actions.</span>
     </footer>
   </div>
+
   <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-import Papa from "https://cdn.jsdelivr.net/npm/papaparse@5.5.3/+esm";
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    import Papa from "https://cdn.jsdelivr.net/npm/papaparse@5.5.3/+esm";
 
-const AUTH_URL = "https://uxvuehmighuqqejowxoq.supabase.co";
-const AUTH_PUBLISHABLE_KEY = "sb_publishable_mQiGDDJ7o5vbF5RYSnl0-g_tRiJRi06";
-const ENDPOINTS = {
-  hitter: `${AUTH_URL}/functions/v1/diamondrank-import-hitters`,
-  pitcher: "https://pkgnjhkdqzfrsrjdsjcp.supabase.co/functions/v1/diamondrank-import-pitchers"
-};
-const CHUNK_SIZE = 500;
+    const AUTH_URL = "https://uxvuehmighuqqejowxoq.supabase.co";
+    const AUTH_PUBLISHABLE_KEY = "sb_publishable_mQiGDDJ7o5vbF5RYSnl0-g_tRiJRi06";
+    const ENDPOINTS = {
+      hitter: `${AUTH_URL}/functions/v1/diamondrank-import-hitters`,
+      pitcher: "https://pkgnjhkdqzfrsrjdsjcp.supabase.co/functions/v1/diamondrank-import-pitchers"
+    };
+    const CHUNK_SIZE = 500;
 
-const SOURCES = {
-  player_master: {
-    project: "hitter",
-    note: "Canonical player maintenance. Export the current 2,988-row master, edit existing rows or add new players, then re-import. For a new player, leave player_id/player_slug blank and provide full_name, birth_date, fangraphs_id, mlb_mlbam_id and milb_minor_master_id. Omitted existing rows are preserved; use manual_status=inactive to remove a player from the active population.",
-    exportAction: "export_players_master",
-    resetAction: "reset_players_master",
-    loadAction: "load_players_master_chunk",
-    validateAction: "validate_players_master",
-    activateAction: "activate_players_master"
-  },
-  hitter_milb: {
-    project: "hitter",
-    note: "Routine MiLB hitter export. Include SwStr% in this same FanGraphs file. Standard MiLB evidence and SwStr are staged together.",
-    resetAction: "reset_hitter_milb",
-    loadAction: "load_hitter_milb_chunk",
-    validateAction: "validate_hitter_milb",
-    activateAction: "activate_hitter_milb"
-  },
-  hitter_mlb_seasons: {
-    project: "hitter",
-    note: "FanGraphs MLB season-by-season hitter export. The existing MLB audit runs before the unified apply.",
-    resetAction: "reset_hitter_mlb_seasons",
-    loadAction: "load_hitter_mlb_seasons_chunk",
-    validateAction: "validate_hitter_mlb_seasons",
-    activateAction: "activate_hitter_mlb_seasons"
-  },
-  pitcher_milb_current: {
-    project: "pitcher",
-    sourceKey: "fangraphs_milb_pitching_2021_2026",
-    note: "Routine MiLB pitcher export covering 2021–2026. The previous current batch remains recoverable."
-  },
-  pitcher_mlb_seasons: {
-    project: "pitcher",
-    sourceKey: "fangraphs_mlb_pitching_seasons",
-    note: "FanGraphs MLB pitcher season-by-season export. Versioned batch; activation does not refresh rankings."
-  },
-  pitcher_mlb_career: {
-    project: "pitcher",
-    sourceKey: "fangraphs_mlb_pitching_career",
-    note: "FanGraphs MLB pitcher career totals export. Versioned batch; activation does not refresh rankings."
-  },
-  pitcher_board: {
-    project: "pitcher",
-    sourceKey: "fangraphs_board_pitchers",
-    note: "Maintenance source. Update only when FanGraphs Board scouting changes."
-  },
-  pitcher_milb_history: {
-    project: "pitcher",
-    sourceKey: "fangraphs_milb_pitching_2010_2019",
-    note: "Historical maintenance source. Do not re-import during ordinary weekly/biweekly updates unless the historical file changed."
-  }
-};
+    const SOURCES = {
+      player_master: {
+        project: "hitter",
+        recommendedScope: "FULL",
+        note: "Canonical player maintenance. Export the current master, edit existing rows or add players, then re-import. The master population is dynamic; omitted existing rows are preserved unless explicitly deactivated.",
+        exportAction: "export_players_master",
+        resetAction: "reset_players_master",
+        loadAction: "load_players_master_chunk",
+        validateAction: "validate_players_master",
+        activateAction: "activate_players_master"
+      },
+      hitter_milb: {
+        project: "hitter",
+        recommendedScope: "DATA",
+        note: "Routine MiLB hitter export. Include SwStr% in the same FanGraphs file. Standard MiLB evidence and SwStr are staged together.",
+        resetAction: "reset_hitter_milb",
+        loadAction: "load_hitter_milb_chunk",
+        validateAction: "validate_hitter_milb",
+        activateAction: "activate_hitter_milb"
+      },
+      hitter_mlb_seasons: {
+        project: "hitter",
+        recommendedScope: "DATA",
+        note: "FanGraphs MLB season-by-season hitter export. The existing MLB audit runs before apply.",
+        resetAction: "reset_hitter_mlb_seasons",
+        loadAction: "load_hitter_mlb_seasons_chunk",
+        validateAction: "validate_hitter_mlb_seasons",
+        activateAction: "activate_hitter_mlb_seasons"
+      },
+      pitcher_milb_current: {
+        project: "pitcher",
+        recommendedScope: "DATA",
+        sourceKey: "fangraphs_milb_pitching_2021_2026",
+        note: "Routine current MiLB pitcher export. The previous current batch remains recoverable until the new batch is activated."
+      },
+      pitcher_mlb_seasons: {
+        project: "pitcher",
+        recommendedScope: "DATA",
+        sourceKey: "fangraphs_mlb_pitching_seasons",
+        note: "FanGraphs MLB pitcher season-by-season export. Versioned batch; activation does not refresh rankings automatically."
+      },
+      pitcher_mlb_career: {
+        project: "pitcher",
+        recommendedScope: "DATA",
+        sourceKey: "fangraphs_mlb_pitching_career",
+        note: "FanGraphs MLB pitcher career totals export. Versioned batch; activation does not refresh rankings automatically."
+      },
+      pitcher_board: {
+        project: "pitcher",
+        recommendedScope: "SCOUTING_ONLY",
+        sourceKey: "fangraphs_board_pitchers",
+        note: "FanGraphs Board scouting. After activation, use a Scouting-only pitcher refresh unless another data source also changed."
+      },
+      pitcher_milb_history: {
+        project: "pitcher",
+        recommendedScope: "FULL",
+        sourceKey: "fangraphs_milb_pitching_2010_2019",
+        note: "Historical MiLB pitching maintenance. Because historical donor evidence can change, a Full rebuild is the safest follow-up."
+      }
+    };
 
-const auth = createClient(AUTH_URL, AUTH_PUBLISHABLE_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-});
+    const REFRESH_SCOPES = {
+      FORMULA_ONLY: "Recalculates score/rank/publication state from existing model evidence. It does not rebuild comparables, development, context, or historical outcome caches.",
+      SCOUTING_ONLY: "Use after a scouting-source update. Re-resolves the score/rank/publication path while reusing unchanged statistical and profile evidence.",
+      DATA: "Use after routine MiLB/MLB stat updates. Runs the validated heavy refresh workflow, including evidence/features/comparables and publication gates.",
+      FULL: "Complete validated rebuild. Use for player-population changes, historical-source changes, or major model/data maintenance."
+    };
 
-const state = {
-  session: null,
-  approved: false,
-  rows: [],
-  columns: [],
-  file: null,
-  fileHash: null,
-  validation: null,
-  batchId: null
-};
+    const REFRESH_ACTIONS = {
+      hitter: {
+        start: "start_hitter_refresh",
+        advance: "advance_hitter_refresh",
+        retry: "retry_hitter_refresh",
+        status: "status_hitter_refresh"
+      },
+      pitcher: {
+        start: "start_pitcher_refresh",
+        advance: "advance_pitcher_refresh",
+        retry: "retry_pitcher_refresh",
+        status: "status_pitcher_refresh"
+      }
+    };
 
-const el = {
-  headerStatus: document.getElementById("adminHeaderStatus"),
-  authStatus: document.getElementById("authStatus"),
-  signedOut: document.getElementById("signedOutPanel"),
-  signedIn: document.getElementById("signedInPanel"),
-  signedInEmail: document.getElementById("signedInEmail"),
-  approvalMessage: document.getElementById("approvalMessage"),
-  loginForm: document.getElementById("loginForm"),
-  email: document.getElementById("emailInput"),
-  loginMessage: document.getElementById("loginMessage"),
-  signOut: document.getElementById("signOutButton"),
-  importCard: document.getElementById("importCard"),
-  source: document.getElementById("sourceSelect"),
-  file: document.getElementById("fileInput"),
-  sourceNote: document.getElementById("sourceNote"),
-  exportButton: document.getElementById("exportButton"),
-  fileSummary: document.getElementById("fileSummary"),
-  fileName: document.getElementById("fileName"),
-  fileRows: document.getElementById("fileRows"),
-  fileColumns: document.getElementById("fileColumns"),
-  fileHash: document.getElementById("fileHash"),
-  progressWrap: document.getElementById("progressWrap"),
-  progressLabel: document.getElementById("progressLabel"),
-  progressValue: document.getElementById("progressValue"),
-  progress: document.getElementById("uploadProgress"),
-  stage: document.getElementById("stageButton"),
-  activate: document.getElementById("activateButton"),
-  reset: document.getElementById("resetButton"),
-  importStatus: document.getElementById("importStatus"),
-  importMessage: document.getElementById("importMessage"),
-  validationCard: document.getElementById("validationCard"),
-  validationStatus: document.getElementById("validationStatus"),
-  qaGrid: document.getElementById("qaGrid"),
-  validationJson: document.getElementById("validationJson"),
-  completionCard: document.getElementById("completionCard"),
-  activationJson: document.getElementById("activationJson")
-};
+    const auth = createClient(AUTH_URL, AUTH_PUBLISHABLE_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
 
-function setPill(node, text, tone = "neutral") {
-  node.textContent = text;
-  node.className = `status-pill ${tone}`;
-}
-function showMessage(node, text, tone = "") {
-  node.hidden = false;
-  node.className = `admin-message ${tone}`.trim();
-  node.textContent = text;
-}
-function hideMessage(node) {
-  node.hidden = true;
-  node.textContent = "";
-}
-function setProgress(percent, label) {
-  const n = Math.max(0, Math.min(100, Math.round(percent)));
-  el.progress.value = n;
-  el.progressValue.textContent = `${n}%`;
-  el.progressLabel.textContent = label || "Uploading…";
-  el.progressWrap.hidden = !label;
-}
-function resetImportState({ keepFile = false } = {}) {
-  state.validation = null;
-  state.batchId = null;
-  el.activate.disabled = true;
-  el.validationCard.hidden = true;
-  el.completionCard.hidden = true;
-  hideMessage(el.importMessage);
-  setPill(el.importStatus, "Ready");
-  if (!keepFile) {
-    state.rows = [];
-    state.columns = [];
-    state.file = null;
-    state.fileHash = null;
-    el.file.value = "";
-    el.fileSummary.hidden = true;
-    el.stage.disabled = true;
-  }
-  setProgress(0, "");
-}
-async function hashFile(file) {
-  const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-function parseCsv(file) {
-  return new Promise((resolve, reject) => {
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: "greedy",
-      dynamicTyping: false,
-      transformHeader: (h) => h.replace(/^\uFEFF/, "").trim(),
-      complete: (result) => {
-        if (result.errors?.length) {
-          reject(new Error(result.errors.slice(0, 3).map((x) => x.message).join("; ")));
+    const state = {
+      session: null,
+      approved: false,
+      rows: [],
+      columns: [],
+      file: null,
+      fileHash: null,
+      validation: null,
+      batchId: null,
+      refreshRunId: null,
+      refreshProject: "hitter",
+      refreshPayload: null,
+      refreshAutoRunning: false
+    };
+
+    const el = {
+      headerStatus: document.getElementById("adminHeaderStatus"),
+      authStatus: document.getElementById("authStatus"),
+      signedOut: document.getElementById("signedOutPanel"),
+      signedIn: document.getElementById("signedInPanel"),
+      signedInEmail: document.getElementById("signedInEmail"),
+      approvalMessage: document.getElementById("approvalMessage"),
+      loginForm: document.getElementById("loginForm"),
+      email: document.getElementById("emailInput"),
+      loginMessage: document.getElementById("loginMessage"),
+      signOut: document.getElementById("signOutButton"),
+      importCard: document.getElementById("importCard"),
+      source: document.getElementById("sourceSelect"),
+      file: document.getElementById("fileInput"),
+      sourceNote: document.getElementById("sourceNote"),
+      exportButton: document.getElementById("exportButton"),
+      fileSummary: document.getElementById("fileSummary"),
+      fileName: document.getElementById("fileName"),
+      fileRows: document.getElementById("fileRows"),
+      fileColumns: document.getElementById("fileColumns"),
+      fileHash: document.getElementById("fileHash"),
+      progressWrap: document.getElementById("progressWrap"),
+      progressLabel: document.getElementById("progressLabel"),
+      progressValue: document.getElementById("progressValue"),
+      progress: document.getElementById("uploadProgress"),
+      stage: document.getElementById("stageButton"),
+      activate: document.getElementById("activateButton"),
+      reset: document.getElementById("resetButton"),
+      importStatus: document.getElementById("importStatus"),
+      importMessage: document.getElementById("importMessage"),
+      validationCard: document.getElementById("validationCard"),
+      validationStatus: document.getElementById("validationStatus"),
+      qaGrid: document.getElementById("qaGrid"),
+      validationJson: document.getElementById("validationJson"),
+      completionCard: document.getElementById("completionCard"),
+      activationJson: document.getElementById("activationJson"),
+      refreshCard: document.getElementById("refreshCard"),
+      refreshStatus: document.getElementById("refreshStatus"),
+      refreshProject: document.getElementById("refreshProject"),
+      refreshScope: document.getElementById("refreshScope"),
+      refreshScopeNote: document.getElementById("refreshScopeNote"),
+      refreshRunId: document.getElementById("refreshRunId"),
+      refreshRunStatus: document.getElementById("refreshRunStatus"),
+      refreshStage: document.getElementById("refreshStage"),
+      refreshPopulation: document.getElementById("refreshPopulation"),
+      refreshChurn25: document.getElementById("refreshChurn25"),
+      refreshChurn100: document.getElementById("refreshChurn100"),
+      refreshChurn500: document.getElementById("refreshChurn500"),
+      refreshPublicRows: document.getElementById("refreshPublicRows"),
+      refreshStart: document.getElementById("refreshStartButton"),
+      refreshAdvance: document.getElementById("refreshAdvanceButton"),
+      refreshAuto: document.getElementById("refreshAutoButton"),
+      refreshRetry: document.getElementById("refreshRetryButton"),
+      refreshCheck: document.getElementById("refreshStatusButton"),
+      refreshMessage: document.getElementById("refreshMessage"),
+      refreshJson: document.getElementById("refreshJson")
+    };
+
+    function setPill(node, text, tone = "neutral") {
+      node.textContent = text;
+      node.className = `status-pill ${tone}`;
+    }
+    function showMessage(node, text, tone = "") {
+      node.hidden = false;
+      node.className = `admin-message ${tone}`.trim();
+      node.textContent = text;
+    }
+    function hideMessage(node) {
+      node.hidden = true;
+      node.textContent = "";
+    }
+    function setProgress(percent, label) {
+      const n = Math.max(0, Math.min(100, Math.round(percent)));
+      el.progress.value = n;
+      el.progressValue.textContent = `${n}%`;
+      el.progressLabel.textContent = label || "Uploading…";
+      el.progressWrap.hidden = !label;
+    }
+    function formatNumber(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n.toLocaleString() : "—";
+    }
+    function resetImportState({ keepFile = false } = {}) {
+      state.validation = null;
+      state.batchId = null;
+      el.activate.disabled = true;
+      el.validationCard.hidden = true;
+      el.completionCard.hidden = true;
+      hideMessage(el.importMessage);
+      setPill(el.importStatus, "Ready");
+      if (!keepFile) {
+        state.rows = [];
+        state.columns = [];
+        state.file = null;
+        state.fileHash = null;
+        el.file.value = "";
+        el.fileSummary.hidden = true;
+        el.stage.disabled = true;
+      }
+      setProgress(0, "");
+    }
+    async function hashFile(file) {
+      const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+      return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    function parseCsv(file) {
+      return new Promise((resolve, reject) => {
+        Papa.parse(file, {
+          header: true,
+          skipEmptyLines: "greedy",
+          dynamicTyping: false,
+          transformHeader: (h) => h.replace(/^\uFEFF/, "").trim(),
+          complete: (result) => {
+            if (result.errors?.length) {
+              reject(new Error(result.errors.slice(0, 3).map((x) => x.message).join("; ")));
+              return;
+            }
+            const columns = result.meta.fields || [];
+            const rows = result.data.filter((row) => Object.values(row).some((value) => String(value ?? "").trim() !== ""));
+            resolve({ columns, rows });
+          },
+          error: reject
+        });
+      });
+    }
+    async function api(project, action, body = {}) {
+      if (!state.session?.access_token) throw new Error("Admin session is missing.");
+      const response = await fetch(ENDPOINTS[project], {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${state.session.access_token}`
+        },
+        body: JSON.stringify({ action, ...body })
+      });
+      let payload;
+      try { payload = await response.json(); }
+      catch { payload = { ok: false, error: `HTTP ${response.status}` }; }
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.error || payload?.error_message || payload?.message || `Request failed (${response.status}).`);
+      }
+      return payload;
+    }
+    async function checkApproval() {
+      const [hitter, pitcher] = await Promise.allSettled([api("hitter", "status"), api("pitcher", "status")]);
+      const hitterOk = hitter.status === "fulfilled" && hitter.value?.authorized === true;
+      const pitcherOk = pitcher.status === "fulfilled" && pitcher.value?.authorized === true;
+      state.approved = hitterOk && pitcherOk;
+      if (state.approved) {
+        setPill(el.authStatus, "Approved", "pass");
+        el.headerStatus.textContent = "Admin ready";
+        el.approvalMessage.hidden = true;
+        el.importCard.hidden = false;
+        el.refreshCard.hidden = false;
+      } else {
+        setPill(el.authStatus, "Approval required", "warning");
+        el.headerStatus.textContent = "Signed in • locked";
+        el.approvalMessage.hidden = false;
+        el.importCard.hidden = true;
+        el.refreshCard.hidden = true;
+      }
+    }
+    async function renderSession(session) {
+      state.session = session;
+      const signedIn = Boolean(session?.user);
+      el.signedOut.hidden = signedIn;
+      el.signedIn.hidden = !signedIn;
+      if (!signedIn) {
+        state.approved = false;
+        setPill(el.authStatus, "Signed out");
+        el.headerStatus.textContent = "Locked";
+        el.importCard.hidden = true;
+        el.refreshCard.hidden = true;
+        resetImportState();
+        return;
+      }
+      el.signedInEmail.textContent = session.user.email || session.user.id;
+      setPill(el.authStatus, "Checking…");
+      await checkApproval();
+    }
+
+    function sourceConfig() { return SOURCES[el.source.value]; }
+    function renderSourceNote() {
+      const cfg = sourceConfig();
+      el.sourceNote.textContent = `${cfg.note} Recommended refresh: ${cfg.recommendedScope.replaceAll("_", " ")}.`;
+      el.exportButton.hidden = !cfg.exportAction;
+      resetImportState({ keepFile: true });
+    }
+    function prettifyKey(key) {
+      return String(key).replaceAll("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    }
+    function flattenQa(value, prefix = "") {
+      const items = [];
+      if (!value || typeof value !== "object" || Array.isArray(value)) return items;
+      for (const [key, val] of Object.entries(value)) {
+        const name = prefix ? `${prefix} ${key}` : key;
+        if (val !== null && typeof val === "object" && !Array.isArray(val)) items.push(...flattenQa(val, name));
+        else if (["string", "number", "boolean"].includes(typeof val) || val === null) items.push([name, val]);
+      }
+      return items;
+    }
+    function renderValidation(payload) {
+      state.validation = payload;
+      const pass = payload?.ok === true || payload?.validation?.ok === true || payload?.ready_to_apply === true;
+      setPill(el.validationStatus, pass ? "PASS" : "BLOCKED", pass ? "pass" : "fail");
+      el.validationJson.textContent = JSON.stringify(payload, null, 2);
+      const qa = flattenQa(payload).filter(([key]) => !/next action|batch id|source key/i.test(key)).slice(0, 16);
+      el.qaGrid.innerHTML = qa.map(([key, value]) => `<div class="qa-item"><small>${prettifyKey(key)}</small><strong>${String(value ?? "—")}</strong></div>`).join("");
+      el.validationCard.hidden = false;
+      el.activate.disabled = !pass;
+      return pass;
+    }
+    async function uploadChunks(project, action, extra = {}) {
+      const total = state.rows.length;
+      for (let start = 0; start < total; start += CHUNK_SIZE) {
+        const chunk = state.rows.slice(start, start + CHUNK_SIZE).map((row, index) => ({ _row: start + index + 1, ...row }));
+        await api(project, action, { ...extra, rows: chunk });
+        const done = Math.min(total, start + chunk.length);
+        setProgress((done / total) * 100, `Uploaded ${done.toLocaleString()} of ${total.toLocaleString()} rows`);
+      }
+    }
+    async function exportCurrentPlayerMaster() {
+      const cfg = sourceConfig();
+      if (!cfg.exportAction) return;
+      el.exportButton.disabled = true;
+      setPill(el.importStatus, "Exporting…", "warning");
+      hideMessage(el.importMessage);
+      try {
+        const payload = await api("hitter", cfg.exportAction);
+        const rows = payload?.rows || [];
+        if (!rows.length) throw new Error("Player master export returned no rows.");
+        const csv = Papa.unparse(rows, { newline: "\r\n" });
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const date = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `diamondrank-player-master-${date}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        setPill(el.importStatus, "Master exported", "pass");
+        showMessage(el.importMessage, `Exported ${rows.length.toLocaleString()} current player rows. The master count is dynamic and is not hard-coded in the importer.`, "pass");
+      } finally { el.exportButton.disabled = false; }
+    }
+    async function stageAndValidate() {
+      const cfg = sourceConfig();
+      if (!state.file || !state.rows.length) throw new Error("Choose a non-empty CSV first.");
+      el.stage.disabled = true;
+      el.activate.disabled = true;
+      el.completionCard.hidden = true;
+      hideMessage(el.importMessage);
+      setPill(el.importStatus, "Staging…", "warning");
+
+      if (cfg.project === "hitter") {
+        await api("hitter", cfg.resetAction);
+        await uploadChunks("hitter", cfg.loadAction);
+        const validation = await api("hitter", cfg.validateAction);
+        const pass = renderValidation(validation);
+        setPill(el.importStatus, pass ? "Preflight PASS" : "Preflight blocked", pass ? "pass" : "fail");
+        showMessage(el.importMessage, pass ? "Staging is complete and validation passed. Review QA before activating." : "The source remains staged but is blocked. Fix the reported issue before activation.", pass ? "pass" : "fail");
+      } else {
+        const begin = await api("pitcher", "begin_batch", {
+          source_key: cfg.sourceKey,
+          source_filename: state.file.name,
+          source_sha256: state.fileHash,
+          expected_rows: state.rows.length,
+          source_columns: state.columns
+        });
+        if (begin.duplicate_file && begin.is_current) {
+          state.batchId = begin.batch_id;
+          const validation = await api("pitcher", "validate_batch", { batch_id: state.batchId });
+          const pass = renderValidation(validation);
+          setPill(el.importStatus, "Already current", pass ? "pass" : "warning");
+          showMessage(el.importMessage, "This exact file hash is already current. No duplicate batch was created.", "pass");
+          el.activate.disabled = true;
+          el.stage.disabled = false;
           return;
         }
-        const columns = result.meta.fields || [];
-        const rows = result.data.filter((row) =>
-          Object.values(row).some((value) => String(value ?? "").trim() !== "")
-        );
-        resolve({ columns, rows });
-      },
-      error: reject
-    });
-  });
-}
-async function api(project, action, body = {}) {
-  if (!state.session?.access_token) throw new Error("Admin session is missing.");
-  const response = await fetch(ENDPOINTS[project], {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${state.session.access_token}`
-    },
-    body: JSON.stringify({ action, ...body })
-  });
-  let payload;
-  try { payload = await response.json(); }
-  catch { payload = { ok: false, error: `HTTP ${response.status}` }; }
-  if (!response.ok || payload?.ok === false) {
-    throw new Error(payload?.error || payload?.message || `Request failed (${response.status}).`);
-  }
-  return payload;
-}
-async function checkApproval() {
-  const [hitter, pitcher] = await Promise.allSettled([
-    api("hitter", "status"),
-    api("pitcher", "status")
-  ]);
-  const hitterOk = hitter.status === "fulfilled" && hitter.value?.authorized === true;
-  const pitcherOk = pitcher.status === "fulfilled" && pitcher.value?.authorized === true;
-  state.approved = hitterOk && pitcherOk;
-  if (state.approved) {
-    setPill(el.authStatus, "Approved", "pass");
-    el.headerStatus.textContent = "Admin ready";
-    el.approvalMessage.hidden = true;
-    el.importCard.hidden = false;
-  } else {
-    setPill(el.authStatus, "Approval required", "warning");
-    el.headerStatus.textContent = "Signed in • locked";
-    el.approvalMessage.hidden = false;
-    el.importCard.hidden = true;
-  }
-}
-async function renderSession(session) {
-  state.session = session;
-  const signedIn = Boolean(session?.user);
-  el.signedOut.hidden = signedIn;
-  el.signedIn.hidden = !signedIn;
-  if (!signedIn) {
-    state.approved = false;
-    setPill(el.authStatus, "Signed out");
-    el.headerStatus.textContent = "Locked";
-    el.importCard.hidden = true;
-    resetImportState();
-    return;
-  }
-  el.signedInEmail.textContent = session.user.email || session.user.id;
-  setPill(el.authStatus, "Checking…");
-  await checkApproval();
-}
-function sourceConfig() { return SOURCES[el.source.value]; }
-function renderSourceNote() {
-  const cfg = sourceConfig();
-  el.sourceNote.textContent = cfg.note;
-  el.exportButton.hidden = !cfg.exportAction;
-  resetImportState({ keepFile: true });
-}
-function prettifyKey(key) {
-  return String(key).replaceAll("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
-function flattenQa(value, prefix = "") {
-  const items = [];
-  if (!value || typeof value !== "object" || Array.isArray(value)) return items;
-  for (const [key, val] of Object.entries(value)) {
-    const name = prefix ? `${prefix} ${key}` : key;
-    if (val !== null && typeof val === "object" && !Array.isArray(val)) {
-      items.push(...flattenQa(val, name));
-    } else if (["string", "number", "boolean"].includes(typeof val) || val === null) {
-      items.push([name, val]);
-    }
-  }
-  return items;
-}
-function renderValidation(payload) {
-  state.validation = payload;
-  const pass = payload?.ok === true || payload?.validation?.ok === true || payload?.ready_to_apply === true;
-  setPill(el.validationStatus, pass ? "PASS" : "BLOCKED", pass ? "pass" : "fail");
-  el.validationJson.textContent = JSON.stringify(payload, null, 2);
-  const qa = flattenQa(payload)
-    .filter(([key]) => !/next action|batch id|source key/i.test(key))
-    .slice(0, 16);
-  el.qaGrid.innerHTML = qa.map(([key, value]) => `
-    <div class="qa-item"><small>${prettifyKey(key)}</small><strong>${String(value ?? "—")}</strong></div>
-  `).join("");
-  el.validationCard.hidden = false;
-  el.activate.disabled = !pass;
-  return pass;
-}
-async function uploadChunks(project, action, extra = {}) {
-  const total = state.rows.length;
-  for (let start = 0; start < total; start += CHUNK_SIZE) {
-    const chunk = state.rows.slice(start, start + CHUNK_SIZE).map((row, index) => ({
-      _row: start + index + 1,
-      ...row
-    }));
-    await api(project, action, { ...extra, rows: chunk });
-    const done = Math.min(total, start + chunk.length);
-    setProgress((done / total) * 100, `Uploaded ${done.toLocaleString()} of ${total.toLocaleString()} rows`);
-  }
-}
-async function exportCurrentPlayerMaster() {
-  const cfg = sourceConfig();
-  if (!cfg.exportAction) return;
-
-  el.exportButton.disabled = true;
-  setPill(el.importStatus, "Exporting…", "warning");
-  hideMessage(el.importMessage);
-
-  try {
-    const payload = await api("hitter", cfg.exportAction);
-    const rows = payload?.rows || [];
-    if (!rows.length) throw new Error("Player master export returned no rows.");
-
-    const csv = Papa.unparse(rows, { newline: "\r\n" });
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    const date = new Date().toISOString().slice(0, 10);
-    a.href = url;
-    a.download = `diamondrank-player-master-${date}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-
-    setPill(el.importStatus, "Master exported", "pass");
-    showMessage(
-      el.importMessage,
-      `Exported ${rows.length.toLocaleString()} player rows. Edit that CSV, add new rows as needed, then re-import it here. Existing rows omitted from the CSV are preserved.`,
-      "pass"
-    );
-  } finally {
-    el.exportButton.disabled = false;
-  }
-}
-async function stageAndValidate() {
-  const cfg = sourceConfig();
-  if (!state.file || !state.rows.length) throw new Error("Choose a non-empty CSV first.");
-  el.stage.disabled = true;
-  el.activate.disabled = true;
-  el.completionCard.hidden = true;
-  hideMessage(el.importMessage);
-  setPill(el.importStatus, "Staging…", "warning");
-
-  if (cfg.project === "hitter") {
-    await api("hitter", cfg.resetAction);
-    await uploadChunks("hitter", cfg.loadAction);
-    const validation = await api("hitter", cfg.validateAction);
-    const pass = renderValidation(validation);
-    setPill(el.importStatus, pass ? "Preflight PASS" : "Preflight blocked", pass ? "pass" : "fail");
-    showMessage(el.importMessage,
-      pass ? "Staging is complete and validation passed. Review QA before activating."
-           : "The source remains staged but is blocked. Fix the reported issue before activation.",
-      pass ? "pass" : "fail"
-    );
-  } else {
-    const begin = await api("pitcher", "begin_batch", {
-      source_key: cfg.sourceKey,
-      source_filename: state.file.name,
-      source_sha256: state.fileHash,
-      expected_rows: state.rows.length,
-      source_columns: state.columns
-    });
-    if (begin.duplicate_file && begin.is_current) {
-      state.batchId = begin.batch_id;
-      const validation = await api("pitcher", "validate_batch", { batch_id: state.batchId });
-      const pass = renderValidation(validation);
-      setPill(el.importStatus, "Already current", pass ? "pass" : "warning");
-      showMessage(el.importMessage, "This exact file hash is already current. No duplicate batch was created.", "pass");
-      el.activate.disabled = true;
+        state.batchId = begin.batch_id;
+        await uploadChunks("pitcher", "load_chunk", { batch_id: state.batchId, source_key: cfg.sourceKey });
+        const validation = await api("pitcher", "validate_batch", { batch_id: state.batchId });
+        const pass = renderValidation(validation);
+        setPill(el.importStatus, pass ? "Preflight PASS" : "Preflight blocked", pass ? "pass" : "fail");
+        showMessage(el.importMessage, pass ? "The new batch is staged and validated. The existing current batch remains active until Activate." : "The staged batch is blocked. The existing current batch remains unchanged.", pass ? "pass" : "fail");
+      }
       el.stage.disabled = false;
-      return;
     }
-    state.batchId = begin.batch_id;
-    await uploadChunks("pitcher", "load_chunk", { batch_id: state.batchId, source_key: cfg.sourceKey });
-    const validation = await api("pitcher", "validate_batch", { batch_id: state.batchId });
-    const pass = renderValidation(validation);
-    setPill(el.importStatus, pass ? "Preflight PASS" : "Preflight blocked", pass ? "pass" : "fail");
-    showMessage(el.importMessage,
-      pass ? "The new batch is staged and validated. The existing current batch remains active until Activate."
-           : "The staged batch is blocked. The existing current batch remains unchanged.",
-      pass ? "pass" : "fail"
-    );
-  }
-  el.stage.disabled = false;
-}
-async function activateValidated() {
-  const cfg = sourceConfig();
-  if (!state.validation) throw new Error("Run staging and validation first.");
-  const confirmText = cfg.exportAction
-    ? "Apply these validated Player Master edits/additions? Existing players omitted from this CSV will be preserved. No ranking refresh will start automatically."
-    : "Activate this validated source data? This changes source data only and will NOT start a ranking refresh.";
-  if (!window.confirm(confirmText)) return;
+    function applyRecommendedRefresh(cfg) {
+      el.refreshProject.value = cfg.project;
+      el.refreshScope.value = cfg.recommendedScope;
+      state.refreshProject = cfg.project;
+      renderRefreshScopeNote();
+    }
+    async function activateValidated() {
+      const cfg = sourceConfig();
+      if (!state.validation) throw new Error("Run staging and validation first.");
+      const confirmText = cfg.exportAction
+        ? "Apply these validated Player Master edits/additions? Existing players omitted from this CSV will be preserved. No model refresh will start automatically."
+        : "Activate this validated source data? This changes source data only and will NOT start a model refresh.";
+      if (!window.confirm(confirmText)) return;
 
-  el.activate.disabled = true;
-  el.stage.disabled = true;
-  setPill(el.importStatus, "Activating…", "warning");
+      el.activate.disabled = true;
+      el.stage.disabled = true;
+      setPill(el.importStatus, "Activating…", "warning");
+      let result;
+      if (cfg.project === "hitter") result = await api("hitter", cfg.activateAction, { source_filename: state.file?.name || null });
+      else result = await api("pitcher", "activate_batch", { batch_id: state.batchId });
 
-  let result;
-  if (cfg.project === "hitter") {
-    result = await api("hitter", cfg.activateAction, { source_filename: state.file?.name || null });
-  } else {
-    result = await api("pitcher", "activate_batch", { batch_id: state.batchId });
-  }
-  el.activationJson.textContent = JSON.stringify(result, null, 2);
-  el.completionCard.hidden = false;
-  setPill(el.importStatus, "Source activated", "pass");
-  showMessage(el.importMessage,
-    cfg.exportAction
-      ? "Player Master apply passed. Edits/additions are now in the canonical master. No ranking refresh was started automatically."
-      : "Source activation passed. Stop here until you deliberately start the documented DiamondRank refresh workflow.",
-    "pass"
-  );
-  el.stage.disabled = false;
-}
+      el.activationJson.textContent = JSON.stringify(result, null, 2);
+      el.completionCard.hidden = false;
+      setPill(el.importStatus, "Source activated", "pass");
+      applyRecommendedRefresh(cfg);
+      showMessage(el.importMessage, `Source activation passed. Recommended next step: ${cfg.project.toUpperCase()} ${cfg.recommendedScope.replaceAll("_", " ")} refresh. Nothing was refreshed automatically.`, "pass");
+      el.stage.disabled = false;
+    }
 
-el.loginForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  hideMessage(el.loginMessage);
-  const email = el.email.value.trim();
-  if (!email) return;
-  const redirect = new URL("./admin.html", window.location.href).href;
-  const { error } = await auth.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: redirect, shouldCreateUser: true }
-  });
-  if (error) return showMessage(el.loginMessage, error.message, "fail");
-  showMessage(el.loginMessage, "Sign-in link sent. Open it in this browser to continue.", "pass");
-});
+    function renderRefreshScopeNote() {
+      el.refreshScopeNote.textContent = REFRESH_SCOPES[el.refreshScope.value] || "";
+    }
+    function refreshAction(kind) {
+      return REFRESH_ACTIONS[el.refreshProject.value][kind];
+    }
+    function populationFromPayload(payload) {
+      return payload?.candidate_rows ?? payload?.score_target_players ?? payload?.ranked_players ?? payload?.eligible_rows ?? payload?.private_profile_rows ?? payload?.baseline_profile_rows ?? null;
+    }
+    function churnText(churn, key) {
+      const i = churn?.[`top${key}_in`];
+      const o = churn?.[`top${key}_out`];
+      if (i == null && o == null) return "—";
+      return `${Number(i || 0).toLocaleString()} in / ${Number(o || 0).toLocaleString()} out`;
+    }
+    function renderRefresh(payload) {
+      state.refreshPayload = payload;
+      if (payload?.run_id != null) state.refreshRunId = payload.run_id;
+      const status = payload?.status || "NO_RUN";
+      const tone = status === "COMPLETED" ? "pass" : status === "FAILED" ? "fail" : status === "RUNNING" ? "warning" : "neutral";
+      setPill(el.refreshStatus, status === "NO_RUN" ? "No run" : status, tone);
+      el.refreshRunId.textContent = payload?.run_id ?? "—";
+      el.refreshRunStatus.textContent = status;
+      el.refreshStage.textContent = payload?.current_stage || payload?.failed_stage || "—";
+      el.refreshPopulation.textContent = formatNumber(populationFromPayload(payload));
+      el.refreshPublicRows.textContent = formatNumber(payload?.public_rows ?? payload?.board_rows);
+      el.refreshChurn25.textContent = churnText(payload?.churn, 25);
+      el.refreshChurn100.textContent = churnText(payload?.churn, 100);
+      el.refreshChurn500.textContent = churnText(payload?.churn, 500);
+      el.refreshJson.textContent = JSON.stringify(payload, null, 2);
 
-el.signOut.addEventListener("click", () => auth.auth.signOut());
-el.source.addEventListener("change", renderSourceNote);
-el.exportButton.addEventListener("click", async () => {
-  try { await exportCurrentPlayerMaster(); }
-  catch (error) {
-    setPill(el.importStatus, "Export failed", "fail");
-    showMessage(el.importMessage, error.message, "fail");
-  }
-});
-el.file.addEventListener("change", async () => {
-  resetImportState({ keepFile: true });
-  const file = el.file.files?.[0];
-  if (!file) return;
-  setPill(el.importStatus, "Reading file…", "warning");
-  try {
-    const [{ columns, rows }, hash] = await Promise.all([parseCsv(file), hashFile(file)]);
-    state.file = file;
-    state.columns = columns;
-    state.rows = rows;
-    state.fileHash = hash;
-    el.fileName.textContent = file.name;
-    el.fileRows.textContent = rows.length.toLocaleString();
-    el.fileColumns.textContent = columns.length.toLocaleString();
-    el.fileHash.textContent = `${hash.slice(0, 12)}…`;
-    el.fileSummary.hidden = false;
-    el.stage.disabled = !state.approved || rows.length === 0;
-    setPill(el.importStatus, rows.length ? "File ready" : "Empty file", rows.length ? "pass" : "fail");
-  } catch (error) {
-    showMessage(el.importMessage, `CSV parse failed: ${error.message}`, "fail");
-    setPill(el.importStatus, "File blocked", "fail");
-  }
-});
-el.stage.addEventListener("click", async () => {
-  try { await stageAndValidate(); }
-  catch (error) {
-    setPill(el.importStatus, "Blocked", "fail");
-    showMessage(el.importMessage, error.message, "fail");
-    el.stage.disabled = false;
-    el.activate.disabled = true;
-  } finally { setProgress(0, ""); }
-});
-el.activate.addEventListener("click", async () => {
-  try { await activateValidated(); }
-  catch (error) {
-    setPill(el.importStatus, "Activation failed", "fail");
-    showMessage(el.importMessage, error.message, "fail");
-    el.stage.disabled = false;
-  }
-});
-el.reset.addEventListener("click", () => resetImportState());
+      const running = status === "RUNNING";
+      const failed = status === "FAILED";
+      el.refreshStart.disabled = running || state.refreshAutoRunning;
+      el.refreshAdvance.disabled = !running || state.refreshAutoRunning;
+      el.refreshAuto.disabled = !running || state.refreshAutoRunning;
+      el.refreshRetry.disabled = !failed || state.refreshAutoRunning;
+      el.refreshProject.disabled = running || state.refreshAutoRunning;
+      el.refreshScope.disabled = running || state.refreshAutoRunning;
 
-auth.auth.onAuthStateChange((_event, session) => {
-  queueMicrotask(() => renderSession(session).catch((error) => {
-    setPill(el.authStatus, "Auth error", "fail");
-    showMessage(el.loginMessage, error.message, "fail");
-  }));
-});
+      if (status === "COMPLETED") showMessage(el.refreshMessage, "Refresh completed and publication QA passed.", "pass");
+      else if (status === "FAILED") showMessage(el.refreshMessage, payload?.error || payload?.error_message || "Refresh failed. Review the response, then retry the failed stage when ready.", "fail");
+      else if (running) showMessage(el.refreshMessage, `Run ${payload.run_id} is waiting at ${payload.current_stage || "the next stage"}.`, "warning");
+      else hideMessage(el.refreshMessage);
+      return payload;
+    }
+    async function startRefresh() {
+      const project = el.refreshProject.value;
+      const scope = el.refreshScope.value;
+      const label = `${project === "hitter" ? "Hitter" : "Pitcher"} ${scope.replaceAll("_", " ")}`;
+      if (!window.confirm(`Start ${label} refresh? Source activation and model refresh are deliberate operations.`)) return;
+      state.refreshProject = project;
+      hideMessage(el.refreshMessage);
+      setPill(el.refreshStatus, "Starting…", "warning");
+      const payload = await api(project, REFRESH_ACTIONS[project].start, { scope });
+      renderRefresh(payload);
+    }
+    async function checkRefreshStatus() {
+      const project = el.refreshProject.value;
+      state.refreshProject = project;
+      const payload = await api(project, REFRESH_ACTIONS[project].status, { run_id: state.refreshRunId ?? null });
+      renderRefresh(payload);
+      return payload;
+    }
+    async function advanceRefresh() {
+      const project = el.refreshProject.value;
+      if (state.refreshRunId == null) throw new Error("No refresh run is loaded.");
+      const payload = await api(project, REFRESH_ACTIONS[project].advance, { run_id: state.refreshRunId });
+      renderRefresh(payload);
+      return payload;
+    }
+    async function retryRefresh() {
+      const project = el.refreshProject.value;
+      if (state.refreshRunId == null) throw new Error("No failed refresh run is loaded.");
+      const payload = await api(project, REFRESH_ACTIONS[project].retry, { run_id: state.refreshRunId });
+      renderRefresh(payload);
+      return payload;
+    }
+    async function runRefreshToCompletion() {
+      if (state.refreshRunId == null) throw new Error("No refresh run is loaded.");
+      state.refreshAutoRunning = true;
+      el.refreshAdvance.disabled = true;
+      el.refreshAuto.disabled = true;
+      el.refreshRetry.disabled = true;
+      el.refreshStart.disabled = true;
+      showMessage(el.refreshMessage, "Running staged refresh. The run remains resumable if the browser or connection stops.", "warning");
+      try {
+        let payload = await checkRefreshStatus();
+        for (let i = 0; i < 250 && payload?.status === "RUNNING"; i += 1) {
+          payload = await advanceRefresh();
+          if (payload?.status !== "RUNNING") break;
+          await new Promise((resolve) => setTimeout(resolve, 250));
+        }
+        if (payload?.status === "RUNNING") throw new Error("Refresh is still running after 250 stages. Stop and inspect status before continuing.");
+      } finally {
+        state.refreshAutoRunning = false;
+        if (state.refreshPayload) renderRefresh(state.refreshPayload);
+      }
+    }
 
-const { data: { session } } = await auth.auth.getSession();
-await renderSession(session);
-renderSourceNote();
+    el.loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      hideMessage(el.loginMessage);
+      const email = el.email.value.trim();
+      if (!email) return;
+      const redirect = new URL("./admin.html", window.location.href).href;
+      const { error } = await auth.auth.signInWithOtp({ email, options: { emailRedirectTo: redirect, shouldCreateUser: true } });
+      if (error) return showMessage(el.loginMessage, error.message, "fail");
+      showMessage(el.loginMessage, "Sign-in link sent. Open it in this browser to continue.", "pass");
+    });
 
+    el.signOut.addEventListener("click", () => auth.auth.signOut());
+    el.source.addEventListener("change", renderSourceNote);
+    el.exportButton.addEventListener("click", async () => {
+      try { await exportCurrentPlayerMaster(); }
+      catch (error) { setPill(el.importStatus, "Export failed", "fail"); showMessage(el.importMessage, error.message, "fail"); }
+    });
+    el.file.addEventListener("change", async () => {
+      resetImportState({ keepFile: true });
+      const file = el.file.files?.[0];
+      if (!file) return;
+      setPill(el.importStatus, "Reading file…", "warning");
+      try {
+        const [{ columns, rows }, hash] = await Promise.all([parseCsv(file), hashFile(file)]);
+        state.file = file;
+        state.columns = columns;
+        state.rows = rows;
+        state.fileHash = hash;
+        el.fileName.textContent = file.name;
+        el.fileRows.textContent = rows.length.toLocaleString();
+        el.fileColumns.textContent = columns.length.toLocaleString();
+        el.fileHash.textContent = `${hash.slice(0, 12)}…`;
+        el.fileSummary.hidden = false;
+        el.stage.disabled = !state.approved || rows.length === 0;
+        setPill(el.importStatus, rows.length ? "File ready" : "Empty file", rows.length ? "pass" : "fail");
+      } catch (error) {
+        showMessage(el.importMessage, `CSV parse failed: ${error.message}`, "fail");
+        setPill(el.importStatus, "File blocked", "fail");
+      }
+    });
+    el.stage.addEventListener("click", async () => {
+      try { await stageAndValidate(); }
+      catch (error) { setPill(el.importStatus, "Blocked", "fail"); showMessage(el.importMessage, error.message, "fail"); el.stage.disabled = false; el.activate.disabled = true; }
+      finally { setProgress(0, ""); }
+    });
+    el.activate.addEventListener("click", async () => {
+      try { await activateValidated(); }
+      catch (error) { setPill(el.importStatus, "Activation failed", "fail"); showMessage(el.importMessage, error.message, "fail"); el.stage.disabled = false; }
+    });
+    el.reset.addEventListener("click", () => resetImportState());
+
+    el.refreshScope.addEventListener("change", renderRefreshScopeNote);
+    el.refreshProject.addEventListener("change", () => {
+      state.refreshProject = el.refreshProject.value;
+      state.refreshRunId = null;
+      renderRefresh({ status: "NO_RUN" });
+    });
+    el.refreshStart.addEventListener("click", async () => {
+      try { await startRefresh(); }
+      catch (error) { setPill(el.refreshStatus, "Start failed", "fail"); showMessage(el.refreshMessage, error.message, "fail"); }
+    });
+    el.refreshAdvance.addEventListener("click", async () => {
+      try { await advanceRefresh(); }
+      catch (error) { showMessage(el.refreshMessage, error.message, "fail"); }
+    });
+    el.refreshAuto.addEventListener("click", async () => {
+      try { await runRefreshToCompletion(); }
+      catch (error) { showMessage(el.refreshMessage, `${error.message}\nThe run is resumable; use Check status before retrying.`, "fail"); }
+    });
+    el.refreshRetry.addEventListener("click", async () => {
+      try { await retryRefresh(); }
+      catch (error) { showMessage(el.refreshMessage, error.message, "fail"); }
+    });
+    el.refreshCheck.addEventListener("click", async () => {
+      try { await checkRefreshStatus(); }
+      catch (error) { showMessage(el.refreshMessage, error.message, "fail"); }
+    });
+
+    auth.auth.onAuthStateChange((_event, session) => {
+      queueMicrotask(() => renderSession(session).catch((error) => {
+        setPill(el.authStatus, "Auth error", "fail");
+        showMessage(el.loginMessage, error.message, "fail");
+      }));
+    });
+
+    const { data: { session } } = await auth.auth.getSession();
+    await renderSession(session);
+    renderSourceNote();
+    renderRefreshScopeNote();
+    renderRefresh({ status: "NO_RUN" });
   </script>
 </body>
 </html>
