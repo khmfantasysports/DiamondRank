@@ -21,9 +21,15 @@
     .progress-wrap{margin-top:14px}progress{width:100%;height:9px;margin-top:7px}.action-row{justify-content:flex-start;flex-wrap:wrap;margin-top:16px}.json-details{margin-top:12px;color:#cbd5cf}.json-details summary{cursor:pointer;font-weight:800}.json-details pre{max-height:360px;overflow:auto;padding:12px;border-radius:10px;background:#04100a;color:#c6f6d5;font-size:.76rem;white-space:pre-wrap;overflow-wrap:anywhere}
     .refresh-banner{margin-top:12px;padding:12px 13px;border-radius:12px;border:1px solid rgba(200,170,120,.22);background:rgba(200,170,120,.06);color:#ddd3bf;line-height:1.5}.refresh-banner strong{color:#f2e8d6}.refresh-churn{margin-top:12px}.refresh-churn .refresh-item strong{font-variant-numeric:tabular-nums}.subtle-divider{height:1px;background:rgba(148,163,184,.12);margin:16px 0}
     .backend-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.backend-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(255,255,255,.025)}.backend-item span:first-child{color:#cbd5cf;font-size:.8rem;font-weight:800}.backend-detail{margin-top:8px;color:#8fa098;font-size:.76rem;line-height:1.45}
+    .admin-header-actions{display:flex;align-items:center;gap:9px}.workflow-trigger{min-height:36px;padding:7px 11px;font-size:.78rem}
+    .workflow-dialog{width:min(920px,calc(100vw - 24px));max-height:min(88vh,860px);padding:0;border:1px solid rgba(200,170,120,.24);border-radius:20px;background:#08140f;color:#eef7f1;box-shadow:0 30px 90px rgba(0,0,0,.58);overflow:hidden}.workflow-dialog::backdrop{background:rgba(1,7,4,.76);backdrop-filter:blur(5px)}
+    .workflow-dialog-shell{display:flex;flex-direction:column;max-height:min(88vh,860px)}.workflow-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 18px 15px;border-bottom:1px solid rgba(148,163,184,.14);background:linear-gradient(180deg,rgba(200,170,120,.07),rgba(8,20,15,0))}.workflow-dialog-head h2{margin:3px 0 0;font-size:clamp(1.25rem,4vw,1.7rem)}.workflow-close{width:38px;min-width:38px;height:38px;padding:0;border-radius:50%;font-size:1.25rem;line-height:1}
+    .workflow-body{overflow:auto;padding:16px 18px 20px}.workflow-intro{margin:0 0 14px;padding:12px 13px;border:1px solid rgba(89,209,140,.18);border-radius:12px;background:rgba(89,209,140,.055);color:#c9d8cf;line-height:1.5}.workflow-intro strong{color:#e9f8ef}
+    .workflow-section{margin-top:18px}.workflow-section:first-of-type{margin-top:0}.workflow-section h3{margin:0 0 10px;font-size:.98rem}.workflow-step-grid,.workflow-scope-grid{display:grid;gap:9px}.workflow-step-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.workflow-scope-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workflow-step,.workflow-scope-card,.workflow-source-row{border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(255,255,255,.025)}.workflow-step{padding:12px}.workflow-step-num{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(89,209,140,.13);color:#bdf7d4;font-size:.74rem;font-weight:900}.workflow-step strong{display:block;margin:8px 0 4px;font-size:.88rem}.workflow-step p,.workflow-scope-card p,.workflow-source-row p{margin:0;color:#9fb0a6;font-size:.78rem;line-height:1.45}
+    .workflow-scope-card{padding:12px}.workflow-scope-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}.workflow-scope-head strong{font-size:.86rem}.workflow-scope-code{display:inline-flex;align-items:center;border-radius:999px;padding:4px 7px;background:rgba(200,170,120,.1);color:#e2ccaa;font-size:.64rem;font-weight:900;letter-spacing:.05em}.workflow-source-list{display:grid;gap:7px}.workflow-source-row{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.75fr) minmax(0,.8fr);gap:10px;align-items:center;padding:10px 11px}.workflow-source-row strong{font-size:.8rem}.workflow-source-project,.workflow-source-scope{color:#c9d8cf;font-size:.75rem;font-weight:800}.workflow-source-scope{color:#e0c68f}.workflow-note{margin-top:12px;color:#8fa098;font-size:.76rem;line-height:1.5}.workflow-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.workflow-actions button{min-height:36px;padding:7px 10px;font-size:.75rem}
     footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#71867a;padding:18px 2px 34px;font-size:.8rem}
-    @media(max-width:760px){.admin-grid.two,.file-summary,.qa-grid,.refresh-grid{grid-template-columns:1fr 1fr}.admin-card{padding:14px}.admin-card-head{align-items:flex-start}}
-    @media(max-width:480px){.admin-grid.two,.file-summary,.qa-grid,.refresh-grid,.backend-grid{grid-template-columns:1fr}.identity-row{align-items:flex-start;flex-direction:column}.action-row>*{flex:1 1 100%}}
+    @media(max-width:760px){.admin-grid.two,.file-summary,.qa-grid,.refresh-grid{grid-template-columns:1fr 1fr}.admin-card{padding:14px}.admin-card-head{align-items:flex-start}.workflow-step-grid{grid-template-columns:1fr 1fr}.workflow-source-row{grid-template-columns:1fr auto}.workflow-source-row p{grid-column:1/-1}}
+    @media(max-width:480px){.admin-grid.two,.file-summary,.qa-grid,.refresh-grid,.backend-grid,.workflow-step-grid,.workflow-scope-grid{grid-template-columns:1fr}.identity-row{align-items:flex-start;flex-direction:column}.action-row>*{flex:1 1 100%}.admin-header-actions{gap:6px}.workflow-trigger{padding:7px 9px}.workflow-body{padding:14px}.workflow-dialog-head{padding:15px 14px 12px}.workflow-source-row{grid-template-columns:1fr}.workflow-source-project,.workflow-source-scope{font-size:.72rem}}
   </style>
 </head>
 <body class="admin-page">
@@ -33,7 +39,10 @@
         <span class="brand-mark" aria-hidden="true">◆</span>
         <span><strong>DiamondRank</strong><small>Private Operations</small></span>
       </a>
-      <div class="header-status" id="adminHeaderStatus">Locked</div>
+      <div class="admin-header-actions">
+        <button id="workflowButton" class="ghost-action workflow-trigger" type="button">Workflow</button>
+        <div class="header-status" id="adminHeaderStatus">Locked</div>
+      </div>
     </header>
 
     <main>
@@ -205,6 +214,67 @@
     </footer>
   </div>
 
+  <dialog class="workflow-dialog" id="workflowDialog" aria-labelledby="workflowTitle">
+    <div class="workflow-dialog-shell">
+      <div class="workflow-dialog-head">
+        <div>
+          <span class="admin-kicker">Operations guide</span>
+          <h2 id="workflowTitle">DiamondRank admin workflow</h2>
+        </div>
+        <button id="workflowCloseButton" class="ghost-action workflow-close" type="button" aria-label="Close workflow">×</button>
+      </div>
+      <div class="workflow-body">
+        <p class="workflow-intro"><strong>Source activation and model publication are separate.</strong> Import changes become current only after validation + activation. Rankings change only after the appropriate scoped refresh completes and publication QA passes.</p>
+
+        <section class="workflow-section" aria-labelledby="workflowRoutineTitle">
+          <h3 id="workflowRoutineTitle">Routine source update</h3>
+          <div class="workflow-step-grid">
+            <div class="workflow-step"><span class="workflow-step-num">1</span><strong>Choose the source</strong><p>Select the matching import and choose the current CSV. Player Master can be exported first, edited, then re-imported.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">2</span><strong>Stage & validate</strong><p>Upload to staging and review the validation card. Do not activate a blocked batch.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">3</span><strong>Activate</strong><p>Activate only after validation passes. The previously current source remains in place until this step succeeds.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">4</span><strong>Use the recommended scope</strong><p>Activation preselects the model and refresh scope. Confirm the recommendation before starting.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">5</span><strong>Run the refresh</strong><p>Start the run, then use <em>Run to completion</em> for normal operation. Stages remain resumable if the connection stops.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">6</span><strong>Confirm completion</strong><p>Look for COMPLETED, published rows, churn, and successful publication QA before considering the update finished.</p></div>
+          </div>
+        </section>
+
+        <section class="workflow-section" aria-labelledby="workflowScopesTitle">
+          <h3 id="workflowScopesTitle">Which refresh scope?</h3>
+          <div class="workflow-scope-grid">
+            <div class="workflow-scope-card"><div class="workflow-scope-head"><strong>Formula only</strong><span class="workflow-scope-code">FORMULA_ONLY</span></div><p>Use after changing weights, score formulas, calibration, or ranking logic while the underlying evidence is unchanged. Reuses existing comps, development, context, and historical caches.</p></div>
+            <div class="workflow-scope-card"><div class="workflow-scope-head"><strong>Scouting only</strong><span class="workflow-scope-code">SCOUTING_ONLY</span></div><p>Use when scouting evidence changed but statistical source data did not. Current pitcher Board imports use this path.</p></div>
+            <div class="workflow-scope-card"><div class="workflow-scope-head"><strong>Data refresh</strong><span class="workflow-scope-code">DATA</span></div><p>Use after routine MiLB or MLB statistical updates. Runs the validated evidence, feature, comparable, scoring, and publication workflow.</p></div>
+            <div class="workflow-scope-card"><div class="workflow-scope-head"><strong>Full rebuild</strong><span class="workflow-scope-code">FULL</span></div><p>Use for player-population changes, historical donor-source changes, or major model/data maintenance that can affect the entire dependency chain.</p></div>
+          </div>
+        </section>
+
+        <section class="workflow-section" aria-labelledby="workflowMapTitle">
+          <h3 id="workflowMapTitle">Source → refresh map</h3>
+          <div class="workflow-source-list">
+            <div class="workflow-source-row"><strong>Player Master</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">FULL</span><p>Export current master → edit/add players → stage → validate → activate → full hitter rebuild.</p></div>
+            <div class="workflow-source-row"><strong>Hitters — MiLB stats + SwStr</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Routine hitter evidence update.</p></div>
+            <div class="workflow-source-row"><strong>Hitters — MLB seasons</strong><span class="workflow-source-project">Hitters</span><span class="workflow-source-scope">DATA</span><p>Routine MLB hitter evidence update.</p></div>
+            <div class="workflow-source-row"><strong>Pitchers — MiLB current seasons</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine current MiLB pitcher evidence update.</p></div>
+            <div class="workflow-source-row"><strong>Pitchers — MLB seasons</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine MLB pitcher season update.</p></div>
+            <div class="workflow-source-row"><strong>Pitchers — MLB career totals</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">DATA</span><p>Routine MLB career-support update.</p></div>
+            <div class="workflow-source-row"><strong>Pitchers — FanGraphs Board scouting</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">SCOUTING ONLY</span><p>Scouting changes without a statistical evidence rebuild.</p></div>
+            <div class="workflow-source-row"><strong>Pitchers — historical MiLB</strong><span class="workflow-source-project">Pitchers</span><span class="workflow-source-scope">FULL</span><p>Historical donor evidence can change, so rebuild the complete validated chain.</p></div>
+          </div>
+        </section>
+
+        <section class="workflow-section" aria-labelledby="workflowRecoveryTitle">
+          <h3 id="workflowRecoveryTitle">If a refresh stops or fails</h3>
+          <div class="workflow-step-grid">
+            <div class="workflow-step"><span class="workflow-step-num">1</span><strong>Check status</strong><p>Do not start a second run. Load the existing run first to see the last completed stage.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">2</span><strong>RUNNING</strong><p>Resume with <em>Run next stage</em> or <em>Run to completion</em>. The workflow is designed to continue from its saved stage.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">3</span><strong>FAILED</strong><p>Review the error, correct the underlying issue, then use <em>Retry failed stage</em>. Do not bypass validation or publication gates.</p></div>
+          </div>
+          <p class="workflow-note">The public leaderboard is capped at up to 500 eligible players. The private ranked population is discovered dynamically on each run and is not hard-coded.</p>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
     import Papa from "https://cdn.jsdelivr.net/npm/papaparse@5.5.3/+esm";
@@ -323,6 +393,9 @@
 
     const el = {
       headerStatus: document.getElementById("adminHeaderStatus"),
+      workflowButton: document.getElementById("workflowButton"),
+      workflowDialog: document.getElementById("workflowDialog"),
+      workflowClose: document.getElementById("workflowCloseButton"),
       authStatus: document.getElementById("authStatus"),
       signedOut: document.getElementById("signedOutPanel"),
       signedIn: document.getElementById("signedInPanel"),
@@ -837,6 +910,15 @@
         if (state.refreshPayload) renderRefresh(state.refreshPayload);
       }
     }
+
+    el.workflowButton.addEventListener("click", () => {
+      if (typeof el.workflowDialog.showModal === "function") el.workflowDialog.showModal();
+      else el.workflowDialog.setAttribute("open", "");
+    });
+    el.workflowClose.addEventListener("click", () => el.workflowDialog.close());
+    el.workflowDialog.addEventListener("click", (event) => {
+      if (event.target === el.workflowDialog) el.workflowDialog.close();
+    });
 
     el.loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
