@@ -154,6 +154,7 @@
         </div>
 
         <div class="action-row">
+          <button id="templateButton" class="ghost-action" type="button">Download blank template</button>
           <button id="exportButton" class="ghost-action" type="button" hidden>Export current source</button>
           <button id="stageButton" class="primary-action" type="button" disabled>Stage & validate</button>
           <button id="activateButton" class="danger-action" type="button" disabled>Activate validated data</button>
@@ -296,7 +297,7 @@
         <section class="workflow-section" aria-labelledby="workflowRoutineTitle">
           <h3 id="workflowRoutineTitle">Routine source update</h3>
           <div class="workflow-step-grid">
-            <div class="workflow-step"><span class="workflow-step-num">1</span><strong>Check freshness & choose source</strong><p>Review Source freshness, then select the matching import. Hitters and Pitchers have separate Player Masters; supported sources can be exported, edited, and re-imported.</p></div>
+            <div class="workflow-step"><span class="workflow-step-num">1</span><strong>Check freshness & choose source</strong><p>Review Source freshness, then select the matching import. Use <em>Export current source</em> to audit/edit live data or <em>Download blank template</em> to build a clean import from scratch. Every source supports both paths.</p></div>
             <div class="workflow-step"><span class="workflow-step-num">2</span><strong>Preview & validate</strong><p>Upload to staging, review the row-count/change preview, then review validation. Large source-size changes are flagged before activation.</p></div>
             <div class="workflow-step"><span class="workflow-step-num">3</span><strong>Activate</strong><p>Activate only after validation passes. The previously current source remains in place until this step succeeds.</p></div>
             <div class="workflow-step"><span class="workflow-step-num">4</span><strong>Use the recommended scope</strong><p>Activation preselects the model and refresh scope. Confirm the recommendation before starting.</p></div>
@@ -364,6 +365,8 @@
         kind: "master",
         recommendedScope: "FULL",
         note: "Hitter canonical identity/master data only. Export the current hitter master, edit or add hitters, then re-import; or upload a complete compatible hitter master directly. Omitted existing hitters are preserved.",
+        templateColumns: ["player_id","player_slug","fangraphs_id","full_name","age","birth_date","bats","throws","height","weight","primary_position","current_team","current_level","current_org","has_stats_row","has_scouting_row","source_status","identity_confidence","manual_status","manual_status_reason","notes","last_updated","mlb_fangraphs_id","mlb_mlbam_id","milb_minor_master_id","birth_date_precision","birth_date_source"],
+        templateFilename: "diamondrank-hitter-player-master",
         exportAction: "export_players_master",
         exportFilename: "diamondrank-hitter-player-master",
         exportLabel: "Export hitter master",
@@ -378,6 +381,8 @@
         kind: "master",
         recommendedScope: "FULL",
         note: "Pitcher canonical identity/master data only. The export contains the current/relevant pitcher universe rather than all historical donors. Edit/add pitchers and re-import, or upload a compatible pitcher master directly. Omitted historical identities are preserved.",
+        templateColumns: ["player_id","canonical_name","name_ascii","birth_date","bats","throws","height_inches","weight_lbs","current_org","current_level","first_seen_season","last_seen_season","fangraphs_player_id","mlbam_id","minor_master_id"],
+        templateFilename: "diamondrank-pitcher-player-master",
         exportAction: "export_pitcher_players_master",
         exportFilename: "diamondrank-pitcher-player-master",
         exportLabel: "Export pitcher master",
@@ -391,7 +396,14 @@
         mode: "direct",
         kind: "stats",
         recommendedScope: "DATA",
-        note: "Routine hitter MiLB evidence. Upload the FanGraphs table directly; include SwStr% in the same file. Standard MiLB evidence and SwStr are staged together.",
+        note: "Routine hitter MiLB evidence. Export the current source to audit/edit it or upload a fresh FanGraphs table directly; include SwStr% in the same file. Standard MiLB evidence and SwStr are staged together.",
+        templateColumns: ["Name","Season","Age","Team","Level","PA","BB%","K%","ISO","Spd","wRC+","Pull%","GB%","FB%","LD%","G","AVG","OBP","SLG","OPS","H","HR","R","RBI","SB","PlayerId","MinorMasterId","NameASCII","MLBAMID","PlayerTeamId","Cent%","Oppo%","SwStr%"],
+        templateFilename: "diamondrank-hitter-milb",
+        exportAction: "export_hitter_milb",
+        exportPaged: true,
+        exportPageAction: "export_hitter_milb_page",
+        exportFilename: "diamondrank-hitter-milb",
+        exportLabel: "Export hitter MiLB source",
         resetAction: "reset_hitter_milb",
         loadAction: "load_hitter_milb_chunk",
         validateAction: "validate_hitter_milb",
@@ -402,7 +414,12 @@
         mode: "direct",
         kind: "stats",
         recommendedScope: "DATA",
-        note: "Routine FanGraphs MLB season-by-season hitter data. Upload the table directly; the existing MLB audit runs before activation.",
+        note: "Routine FanGraphs MLB season-by-season hitter data. Export the current source to audit/edit it or upload a fresh FanGraphs table directly; the existing MLB audit runs before activation.",
+        templateColumns: ["Season","Name","Team","G","PA","AB","H","R","HR","RBI","SB","BB","SO","AVG","OBP","SLG","OPS","BB%","K%","ISO","Spd","wRC+","LD%","Pull%","Cent%","Oppo%","GB%","FB%","WAR","NameASCII","PlayerId","MLBAMID"],
+        templateFilename: "diamondrank-hitter-mlb-seasons",
+        exportAction: "export_hitter_mlb_seasons",
+        exportFilename: "diamondrank-hitter-mlb-seasons",
+        exportLabel: "Export hitter MLB seasons",
         resetAction: "reset_hitter_mlb_seasons",
         loadAction: "load_hitter_mlb_seasons_chunk",
         validateAction: "validate_hitter_mlb_seasons",
@@ -414,6 +431,8 @@
         kind: "stats",
         recommendedScope: "DATA",
         note: "FanGraphs MLB hitter career totals. Export/edit/re-import the current career source or upload a fresh compatible FanGraphs career leaderboard directly. The source is archived by export date; matched current hitters update the live career table and unmatched source rows remain archived for historical reference.",
+        templateColumns: ["Name","Team","G","PA","AB","H","R","HR","RBI","SB","BB","SO","AVG","OBP","SLG","OPS","BB%","K%","ISO","Spd","wRC+","LD%","Pull%","Cent%","Oppo%","GB%","FB%","WAR","NameASCII","PlayerId","MLBAMID"],
+        templateFilename: "diamondrank-hitter-mlb-career",
         exportAction: "export_hitter_mlb_career",
         exportFilename: "diamondrank-hitter-mlb-career",
         exportLabel: "Export hitter MLB career",
@@ -428,6 +447,8 @@
         kind: "scouting",
         recommendedScope: "SCOUTING_ONLY",
         note: "Hitter FanGraphs Board scouting only. Export/edit/re-import the current scouting table or upload a compatible FanGraphs Board table directly. Every row must resolve to the Hitter Player Master before activation.",
+        templateColumns: ["player_id","fangraphs_id","full_name","position","current_level","eta","risk_grade","hit_grade_raw","game_power_grade_raw","raw_power_grade_raw","speed_grade_raw","field_grade_raw","overall_fv_raw","source","export_date"],
+        templateFilename: "diamondrank-hitter-scouting",
         exportAction: "export_hitter_scouting",
         exportFilename: "diamondrank-hitter-scouting",
         exportLabel: "Export hitter scouting",
@@ -442,7 +463,14 @@
         kind: "stats",
         recommendedScope: "DATA",
         sourceKey: "fangraphs_milb_pitching_2021_2026",
-        note: "Routine current MiLB pitcher evidence. Upload the FanGraphs table directly. The previous current source batch remains recoverable until the new batch is activated."
+        templateColumns: ["Season","Name","Team","Level","Age","G","GS","IP","W","L","ERA","BB","SO","TBF","H","R","HR","ER","HBP","SV","HLD","K/9","BB/9","K/BB","HR/9","K%","BB%","AVG","WHIP","BABIP","xFIP","SwStr%","LD%","GB%","FB%","HR/FB","Oppo%","Cent%","Pull%","Balls","Strikes","Pitches","PlayerId","MinorMasterId","NameASCII","MLBAMID","PlayerTeamId"],
+        templateFilename: "diamondrank-pitcher-milb-current",
+        exportAction: "export_pitcher_milb_current",
+        exportPaged: true,
+        exportPageAction: "export_pitcher_source_page",
+        exportFilename: "diamondrank-pitcher-milb-current",
+        exportLabel: "Export pitcher MiLB source",
+        note: "Routine current MiLB pitcher evidence. Export the current versioned source to audit/edit it or upload a fresh FanGraphs table directly. The previous current source batch remains recoverable until the new batch is activated."
       },
       pitcher_mlb_seasons: {
         project: "pitcher",
@@ -450,7 +478,14 @@
         kind: "stats",
         recommendedScope: "DATA",
         sourceKey: "fangraphs_mlb_pitching_seasons",
-        note: "Routine FanGraphs MLB pitcher season-by-season data. Versioned source batch; activation does not refresh rankings automatically."
+        templateColumns: ["Season","Name","Team","W","L","G","GS","SV","IP","TBF","H","R","ERA","ER","HR","BB","SO","K/9","BB/9","HR/9","BABIP","HR/FB","xFIP","HLD","Balls","Strikes","Pitches","AVG","WHIP","LD%","GB%","FB%","K%","BB%","LOB%","Pull%","Cent%","Oppo%","SwStr%","WAR","NameASCII","PlayerId","MLBAMID"],
+        templateFilename: "diamondrank-pitcher-mlb-seasons",
+        exportAction: "export_pitcher_mlb_seasons",
+        exportPaged: true,
+        exportPageAction: "export_pitcher_source_page",
+        exportFilename: "diamondrank-pitcher-mlb-seasons",
+        exportLabel: "Export pitcher MLB seasons",
+        note: "Routine FanGraphs MLB pitcher season-by-season data. Export the current versioned source to audit/edit it or upload a fresh FanGraphs table directly. Activation does not refresh rankings automatically."
       },
       pitcher_mlb_career: {
         project: "pitcher",
@@ -458,6 +493,8 @@
         kind: "stats",
         recommendedScope: "DATA",
         sourceKey: "fangraphs_mlb_pitching_career",
+        templateColumns: ["Name","Team","W","L","G","GS","SV","IP","TBF","H","R","ERA","ER","HR","BB","SO","K/9","BB/9","HR/9","BABIP","HR/FB","xFIP","HLD","Balls","Strikes","Pitches","AVG","WHIP","LD%","GB%","FB%","K%","BB%","LOB%","Pull%","Cent%","Oppo%","SwStr%","WAR","NameASCII","PlayerId","MLBAMID"],
+        templateFilename: "diamondrank-pitcher-mlb-career",
         exportAction: "export_pitcher_mlb_career",
         exportFilename: "diamondrank-pitcher-mlb-career",
         exportLabel: "Export pitcher MLB career",
@@ -469,6 +506,8 @@
         kind: "scouting",
         recommendedScope: "SCOUTING_ONLY",
         sourceKey: "fangraphs_board_pitchers",
+        templateColumns: ["Name","Org","Pos","Current Level","Age","Ht","Wt","B","T","FB","SL","CB","CH","CMD","FV","TJ Date","playerId"],
+        templateFilename: "diamondrank-pitcher-scouting",
         exportAction: "export_pitcher_scouting",
         exportFilename: "diamondrank-pitcher-scouting",
         exportLabel: "Export pitcher scouting",
@@ -480,7 +519,14 @@
         kind: "history",
         recommendedScope: "FULL",
         sourceKey: "fangraphs_milb_pitching_2010_2019",
-        note: "Historical MiLB pitcher donor evidence. Upload the complete historical table directly. Because donor evidence can change, a Full rebuild is required after activation."
+        templateColumns: ["Season","Name","Team","Level","Age","G","GS","IP","W","L","ERA","BB","SO","TBF","H","R","HR","ER","HBP","SV","HLD","K/9","BB/9","K/BB","HR/9","K%","BB%","AVG","WHIP","BABIP","xFIP","SwStr%","LD%","GB%","FB%","HR/FB","Oppo%","Cent%","Pull%","Balls","Strikes","Pitches","PlayerId","MinorMasterId","NameASCII","MLBAMID","PlayerTeamId"],
+        templateFilename: "diamondrank-pitcher-milb-history",
+        exportAction: "export_pitcher_milb_history",
+        exportPaged: true,
+        exportPageAction: "export_pitcher_source_page",
+        exportFilename: "diamondrank-pitcher-milb-history",
+        exportLabel: "Export historical pitcher MiLB source",
+        note: "Historical MiLB pitcher donor evidence. Export the current donor source to audit it or upload the complete historical table directly. Because donor evidence can change, a Full rebuild is required after activation."
       }
     };
 
@@ -561,6 +607,7 @@
       file: document.getElementById("fileInput"),
       sourceNote: document.getElementById("sourceNote"),
       sourceProjectPill: document.getElementById("sourceProjectPill"),
+      templateButton: document.getElementById("templateButton"),
       exportButton: document.getElementById("exportButton"),
       fileSummary: document.getElementById("fileSummary"),
       fileName: document.getElementById("fileName"),
@@ -1022,6 +1069,8 @@
       el.sourceNote.textContent = unavailable
         ? `${cfg.note} ${label} operations are currently unavailable, so this source cannot be staged yet.`
         : `${cfg.note} Recommended refresh: ${cfg.recommendedScope.replaceAll("_", " ")}.`;
+      el.templateButton.hidden = !Array.isArray(cfg.templateColumns) || !cfg.templateColumns.length;
+      el.templateButton.textContent = cfg.templateLabel || "Download blank template";
       el.exportButton.hidden = !cfg.exportAction || unavailable;
       el.exportButton.textContent = cfg.exportLabel || "Export current source";
       resetImportState({ keepFile: true });
@@ -1062,6 +1111,23 @@
         setProgress((done / total) * 100, `Uploaded ${done.toLocaleString()} of ${total.toLocaleString()} rows`);
       }
     }
+    function downloadTemplate() {
+      const cfg = sourceConfig();
+      if (!Array.isArray(cfg.templateColumns) || !cfg.templateColumns.length) return;
+      const csv = Papa.unparse({ fields: cfg.templateColumns, data: [] }, { newline: "\r\n" });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${cfg.templateFilename || cfg.exportFilename || `diamondrank-${el.source.value}`}-template.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setPill(el.importStatus, "Template downloaded", "pass");
+      showMessage(el.importMessage, `Downloaded a blank ${projectLabel(cfg.project).toLowerCase()} template with ${cfg.templateColumns.length.toLocaleString()} accepted columns. Add rows, save as CSV, and import it through this same source.`, "pass");
+    }
+
     async function exportCurrentSource() {
       const cfg = sourceConfig();
       if (!cfg.exportAction) return;
@@ -1069,10 +1135,38 @@
       setPill(el.importStatus, "Exporting…", "warning");
       hideMessage(el.importMessage);
       try {
-        const payload = await api(cfg.project, cfg.exportAction, {}, { timeoutMs: 30000 });
-        const rows = payload?.rows || [];
-        if (!Array.isArray(rows) || !rows.length) throw new Error("Current source export returned no rows.");
-        const csv = Papa.unparse(rows, { newline: "\r\n" });
+        let csv = "";
+        let exportedRows = 0;
+        if (cfg.exportPaged && cfg.exportPageAction) {
+          const pageSize = 1000;
+          const parts = [];
+          for (let offset = 0; ; offset += pageSize) {
+            const payload = await api(cfg.project, cfg.exportPageAction, {
+              source_key: cfg.sourceKey || null,
+              offset,
+              limit: pageSize
+            }, { timeoutMs: 30000 });
+            const rows = payload?.rows || [];
+            if (!Array.isArray(rows)) throw new Error("Paged source export returned an invalid response.");
+            if (!rows.length) break;
+            parts.push(Papa.unparse(rows, {
+              newline: "\r\n",
+              header: offset === 0,
+              columns: cfg.templateColumns || undefined
+            }));
+            exportedRows += rows.length;
+            setPill(el.importStatus, `Exporting ${exportedRows.toLocaleString()}…`, "warning");
+            if (rows.length < pageSize) break;
+          }
+          if (!exportedRows) throw new Error("Current source export returned no rows.");
+          csv = parts.join("\r\n");
+        } else {
+          const payload = await api(cfg.project, cfg.exportAction, {}, { timeoutMs: 30000 });
+          const rows = payload?.rows || [];
+          if (!Array.isArray(rows) || !rows.length) throw new Error("Current source export returned no rows.");
+          exportedRows = rows.length;
+          csv = Papa.unparse(rows, { newline: "\r\n", columns: cfg.templateColumns || undefined });
+        }
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -1084,7 +1178,7 @@
         a.remove();
         URL.revokeObjectURL(url);
         setPill(el.importStatus, "Source exported", "pass");
-        showMessage(el.importMessage, `Exported ${rows.length.toLocaleString()} ${projectLabel(cfg.project).toLowerCase()} rows. You can edit this CSV and re-import it through the same source selector.`, "pass");
+        showMessage(el.importMessage, `Exported ${exportedRows.toLocaleString()} ${projectLabel(cfg.project).toLowerCase()} rows. You can audit or edit this CSV and re-import it through the same source selector.`, "pass");
       } finally { el.exportButton.disabled = false; }
     }
     async function stageAndValidate() {
@@ -1354,6 +1448,11 @@
       try { await refreshOperationsStatus(); }
       finally { el.freshnessReload.disabled = false; }
     });
+    el.templateButton.addEventListener("click", () => {
+      try { downloadTemplate(); }
+      catch (error) { showMessage(el.importMessage, error.message || String(error), "fail"); }
+    });
+
     el.exportButton.addEventListener("click", async () => {
       try { await exportCurrentSource(); }
       catch (error) { setPill(el.importStatus, "Export failed", "fail"); showMessage(el.importMessage, error.message, "fail"); }
